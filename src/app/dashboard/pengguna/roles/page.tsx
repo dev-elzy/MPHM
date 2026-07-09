@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Card } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui-custom/PageHeader';
-import { Check, Shield, UserCheck, Settings, BookOpen, Users2 } from 'lucide-react';
+import { Check, Shield, BookOpen, Users2 } from 'lucide-react';
 
 interface PermissionRow {
   module: string;
