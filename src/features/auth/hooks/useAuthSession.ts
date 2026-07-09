@@ -30,6 +30,7 @@ export function useAuthSession() {
   const isAdmin = role === 'super_admin' || role === 'admin' || role === 'operator';
   const isMustahiq = role === 'mustahiq' || role === 'teacher' || role === 'ustadz';
   const isMudir = role === 'mudir';
+  const isMufatish = role === 'mufatish' || role === 'pengawas';
 
   return {
     ...query,
@@ -38,5 +39,6 @@ export function useAuthSession() {
     isAdmin,
     isMustahiq,
     isMudir,
+    isMufatish,
   };
 }

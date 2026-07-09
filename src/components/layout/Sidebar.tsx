@@ -39,7 +39,7 @@ const routes: SidebarItem[] = [
     label: 'Manajemen Akademik',
     icon: GraduationCap,
     href: '/dashboard/akademik',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir'],
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Tahun Ajaran', href: '/dashboard/akademik/tahun-ajaran' },
       { label: 'Semester', href: '/dashboard/akademik/semester' },
@@ -75,7 +75,7 @@ const routes: SidebarItem[] = [
     label: 'Monitoring & Audit',
     icon: Activity,
     href: '/dashboard/audit',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir'],
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Audit System Log', href: '/dashboard/audit' },
       { label: 'Recycle Bin', href: '/dashboard/recycle-bin' },
@@ -137,6 +137,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       case 'operator': return 'Operator Akademik';
       case 'mustahiq': return 'Staff Pengajar';
       case 'mudir': return 'Mudir (Pimpinan)';
+      case 'mufatish': return 'Mufatish (Pengawas Akademik)';
       default: return r || 'Pengguna';
     }
   };

@@ -13,6 +13,7 @@ interface PermissionRow {
   operator: boolean;
   mustahiq: boolean;
   mudir: boolean;
+  mufatish: boolean;
 }
 
 export default function RolesPermissionsPage() {
@@ -25,6 +26,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: false,
       mudir: false,
+      mufatish: false,
     },
     {
       module: 'Kurikulum & Pelajaran',
@@ -34,6 +36,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: false,
       mudir: false,
+      mufatish: true,
     },
     {
       module: 'Kelas Rombel',
@@ -43,6 +46,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: false,
       mudir: false,
+      mufatish: false,
     },
     {
       module: 'Database Siswi',
@@ -52,6 +56,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: false,
       mudir: false,
+      mufatish: false,
     },
     {
       module: 'Input Nilai & Absensi',
@@ -61,6 +66,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: true,
       mudir: false,
+      mufatish: true,
     },
     {
       module: 'Cetak & Finalisasi Raport',
@@ -70,6 +76,7 @@ export default function RolesPermissionsPage() {
       operator: true,
       mustahiq: true,
       mudir: true,
+      mufatish: true,
     },
     {
       module: 'Manajemen Pengguna',
@@ -79,6 +86,7 @@ export default function RolesPermissionsPage() {
       operator: false,
       mustahiq: false,
       mudir: false,
+      mufatish: false,
     },
     {
       module: 'Log Aktivitas (Audit)',
@@ -88,6 +96,7 @@ export default function RolesPermissionsPage() {
       operator: false,
       mustahiq: false,
       mudir: true,
+      mufatish: true,
     },
   ];
 
@@ -135,6 +144,16 @@ export default function RolesPermissionsPage() {
               </span>
             </div>
           </Card>
+
+          <Card className="p-4 border-zinc-200 dark:border-zinc-800 flex items-start gap-3 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-xl">
+            <Shield className="h-9 w-9 text-indigo-600 p-1.5 bg-indigo-50 dark:bg-indigo-950/20 rounded-xl" />
+            <div className="text-left">
+              <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-50 block">Mufatish (Pengawas Akademik)</span>
+              <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 block">
+                Pengawasan akademik, monitoring kurikulum & evaluasi ujian, serta verifikasi nilai santriwati.
+              </span>
+            </div>
+          </Card>
         </div>
 
         {/* Matrix Card */}
@@ -149,20 +168,23 @@ export default function RolesPermissionsPage() {
                   <th className="py-3 px-4 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider min-w-[200px]">
                     Deskripsi Hak Akses
                   </th>
-                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[100px]">
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
                     Super Admin
                   </th>
-                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[100px]">
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
                     Admin
                   </th>
-                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[100px]">
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
                     Operator
                   </th>
-                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[100px]">
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
                     Mustahiq
                   </th>
-                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[100px]">
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
                     Mudir
+                  </th>
+                  <th className="py-3 px-2 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider w-[90px]">
+                    Mufatish
                   </th>
                 </tr>
               </thead>
@@ -208,6 +230,13 @@ export default function RolesPermissionsPage() {
                     </td>
                     <td className="py-4 px-2 text-center">
                       {row.mudir ? (
+                        <Check className="h-5 w-5 text-emerald-600 mx-auto" />
+                      ) : (
+                        <span className="text-zinc-300 dark:text-zinc-700 text-sm">-</span>
+                      )}
+                    </td>
+                    <td className="py-4 px-2 text-center">
+                      {row.mufatish ? (
                         <Check className="h-5 w-5 text-emerald-600 mx-auto" />
                       ) : (
                         <span className="text-zinc-300 dark:text-zinc-700 text-sm">-</span>
