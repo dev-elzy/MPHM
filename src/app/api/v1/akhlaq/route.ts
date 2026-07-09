@@ -11,11 +11,11 @@ import { logActivity } from '@/lib/audit';
 
 
 const bulkAkhlaqSchema = z.object({
-  academicYearId: z.string().uuid(),
-  semesterId: z.string().uuid(),
-  classId: z.string().uuid(),
+  academicYearId: z.string().min(1),
+  semesterId: z.string().min(1),
+  classId: z.string().min(1),
   records: z.array(z.object({
-    studentId: z.string().uuid(),
+    studentId: z.string().min(1),
     category: z.string().min(1),
     grade: z.enum(['A', 'B', 'C', 'D']),
     description: z.string().optional(),

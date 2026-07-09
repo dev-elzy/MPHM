@@ -11,7 +11,7 @@ import { notDeleted } from '@/lib/soft-delete';
 
 
 const queryParamsSchema = z.object({
-  academicYearId: z.string().uuid('ID tahun ajaran tidak valid').optional(),
+  academicYearId: z.string().min(1, 'ID tahun ajaran tidak valid').optional(),
 });
 
 const createSemesterSchema = z.object({

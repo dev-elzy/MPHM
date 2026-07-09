@@ -29,9 +29,9 @@ const createStudentSchema = z.object({
   status: z.string().default('active'),
   notes: z.string().optional().nullable(),
   // Dynamic enrollment on creation
-  classId: z.string().uuid().optional().nullable(),
-  academicYearId: z.string().uuid().optional().nullable(),
-  semesterId: z.string().uuid().optional().nullable(),
+  classId: z.string().min(1).optional().nullable(),
+  academicYearId: z.string().min(1).optional().nullable(),
+  semesterId: z.string().min(1).optional().nullable(),
 });
 
 const queryParamsSchema = z.object({

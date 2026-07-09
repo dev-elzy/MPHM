@@ -13,10 +13,10 @@ import { getPaginationParams, getPaginationMeta } from '@/lib/api/pagination';
 
 
 const createSessionSchema = z.object({
-  academicYearId: z.string().uuid(),
-  semesterId: z.string().uuid(),
-  classId: z.string().uuid(),
-  curriculumSubjectId: z.string().uuid(),
+  academicYearId: z.string().min(1),
+  semesterId: z.string().min(1),
+  classId: z.string().min(1),
+  curriculumSubjectId: z.string().min(1),
 });
 
 const querySchema = z.object({

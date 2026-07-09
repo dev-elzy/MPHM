@@ -10,8 +10,8 @@ import { apiSuccess, apiError } from '@/lib/api/response';
 
 
 const saveScoreSchema = z.object({
-  scoreSessionId: z.string().uuid(),
-  studentId: z.string().uuid(),
+  scoreSessionId: z.string().min(1),
+  studentId: z.string().min(1),
   scoreType: z.enum(['tamrin', 'ujian']),
   score: z.number().min(0).max(100).nullable(),
   notes: z.string().optional(),

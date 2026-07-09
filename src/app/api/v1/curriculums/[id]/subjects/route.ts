@@ -13,7 +13,7 @@ import { notDeleted } from '@/lib/soft-delete';
 const linkSubjectsSchema = z.object({
   subjects: z.array(
     z.object({
-      subjectId: z.string().uuid('ID mata pelajaran tidak valid'),
+      subjectId: z.string().min(1, 'ID mata pelajaran tidak valid'),
       sortOrder: z.number().default(0),
       maxScore: z.number().default(100),
       minScore: z.number().default(60),

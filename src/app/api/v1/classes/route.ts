@@ -17,9 +17,9 @@ import { notDeleted } from '@/lib/soft-delete';
 
 // Validation Schemas
 const createClassSchema = z.object({
-  academicYearId: z.string().uuid('Tahun ajaran tidak valid'),
-  semesterId: z.string().uuid('Semester tidak valid').optional().nullable(),
-  curriculumId: z.string().uuid('Kurikulum tidak valid').optional().nullable(),
+  academicYearId: z.string().min(1, 'Tahun ajaran wajib diisi'),
+  semesterId: z.string().min(1).optional().nullable(),
+  curriculumId: z.string().min(1).optional().nullable(),
   jenjang: z.string().min(1, 'Jenjang wajib diisi'), // e.g. "MTs", "MA"
   tingkat: z.string().min(1, 'Tingkat wajib diisi'), // e.g. "7", "8"
   bagian: z.string().min(1, 'Bagian kelas wajib diisi'), // e.g. "A", "B"
