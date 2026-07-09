@@ -56,7 +56,7 @@ export async function PATCH(
     }
 
     // Prevent activating semesters of archived years
-    if (currentSemester.status === 'archived') {
+    if (currentSemester.status?.toLowerCase() === 'archived') {
       return apiError('Tidak dapat mengaktifkan semester dari tahun ajaran yang diarsipkan', 400);
     }
 

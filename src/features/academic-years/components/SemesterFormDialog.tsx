@@ -51,8 +51,8 @@ export function SemesterFormDialog({
       academicYearId: academicYearId,
       name: initialData?.name || '',
       status: initialData?.status || 'Draft',
-      startDate: initialData?.startDate || '',
-      endDate: initialData?.endDate || '',
+      startDate: initialData?.startDate ? initialData.startDate.slice(0, 10) : '',
+      endDate: initialData?.endDate ? initialData.endDate.slice(0, 10) : '',
     },
   });
 
@@ -63,8 +63,8 @@ export function SemesterFormDialog({
         academicYearId: academicYearId,
         name: initialData?.name || '',
         status: initialData?.status || 'Draft',
-        startDate: initialData?.startDate || '',
-        endDate: initialData?.endDate || '',
+        startDate: initialData?.startDate ? initialData.startDate.slice(0, 10) : '',
+        endDate: initialData?.endDate ? initialData.endDate.slice(0, 10) : '',
       });
     }
   }, [open, initialData, academicYearId, form]);
@@ -158,7 +158,7 @@ export function SemesterFormDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="h-10 rounded-[10px] bg-zinc-50/50 shadow-xs border-zinc-200">
                         <SelectValue placeholder="Pilih status" />

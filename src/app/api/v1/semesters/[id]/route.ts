@@ -11,9 +11,11 @@ import { notDeleted } from '@/lib/soft-delete';
 
 
 const updateSemesterSchema = z.object({
-  name: z.string().min(2, 'Nama semester minimal 2 karakter').optional(),
-  startDate: z.string().min(10, 'Format tanggal mulai salah').optional(),
-  endDate: z.string().min(10, 'Format tanggal selesai salah').optional(),
+  name: z.string().min(1, 'Nama semester wajib diisi').optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  status: z.enum(['Draft', 'Active', 'Completed']).optional(),
+  isActive: z.boolean().optional(),
 });
 
 // PATCH /api/v1/semesters/[id]
@@ -71,19 +73,34 @@ export async function PATCH(
     }
 
     // Prevent modifying semesters of archived years
-    if (currentSemester.status === 'archived') {
+    if (currentSemester.status?.toLowerCase() === 'archived') {
       return apiError('Semester dari tahun ajaran yang diarsipkan tidak dapat diubah', 400);
     }
 
-    // Update details
-    await db
-      .update(semesters)
-      .set({
-        ...updateData,
-        updatedAt: new Date(),
-        updatedBy: session.userId,
-      })
-      .where(eq(semesters.id, id));
+    const nextIsActive = updateData.status === 'Active' ? true : updateData.isActive;
+
+    await db.transaction(async (tx) => {
+      if (nextIsActive) {
+        await tx
+          .update(semesters)
+          .set({
+            isActive: false,
+            updatedAt: new Date(),
+            updatedBy: session.userId,
+          })
+          .where(eq(semesters.academicYearId, currentSemester.academicYearId));
+      }
+
+      await tx
+        .update(semesters)
+        .set({
+          ...updateData,
+          ...(nextIsActive !== undefined ? { isActive: nextIsActive } : {}),
+          updatedAt: new Date(),
+          updatedBy: session.userId,
+        })
+        .where(eq(semesters.id, id));
+    });
 
     if (d1) {
       await logActivity(d1, {

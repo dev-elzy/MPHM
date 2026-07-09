@@ -31,13 +31,19 @@ export const semestersService = {
   },
 
   createSemester: async (data: SemesterFormData): Promise<Semester> => {
-    // Note: In our system design, semesters are automatically generated when an academic year is created.
-    // However, if the client calls this to add manually, we provide a placeholder or return the first semester.
-    const yearSemesters = await semestersService.getSemestersByAcademicYear(data.academicYearId);
-    if (yearSemesters.length > 0) {
-      return yearSemesters[0];
+    const res = await fetch('/api/v1/semesters', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({ message: 'Gagal membuat semester' }))) as { message?: string };
+      throw new Error(err.message || 'Gagal membuat semester');
     }
-    throw new Error('Semester secara otomatis dibuat bersamaan dengan pembuatan Tahun Ajaran.');
+
+    const yearSemesters = await semestersService.getSemestersByAcademicYear(data.academicYearId);
+    return yearSemesters.find((s) => s.name === data.name) || yearSemesters[yearSemesters.length - 1];
   },
 
   updateSemester: async (id: string, data: SemesterFormData): Promise<Semester> => {
@@ -52,7 +58,7 @@ export const semestersService = {
       }
     }
 
-    // 2. Perform detail update (dates, name)
+    // 2. Perform detail update (dates, name, status)
     const res = await fetch(`/api/v1/semesters/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -60,6 +66,8 @@ export const semestersService = {
         name: data.name,
         startDate: data.startDate,
         endDate: data.endDate,
+        status: data.status,
+        isActive: data.status === 'Active',
       }),
     });
 
