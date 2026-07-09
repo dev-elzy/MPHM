@@ -218,6 +218,8 @@ student_statuses
 
 user_statuses
 
+violation_types
+
 settings
 ```
 
@@ -255,6 +257,8 @@ score_results
 attendance
 
 akhlaq
+
+student_violations
 
 reports
 ```
@@ -579,6 +583,46 @@ Tidak digabung dengan Nilai Akademik.
 
 ---
 
+# 23. Violation Types & Student Violations (Pelanggaran Santri)
+
+Modul Pelanggaran Santri dipisahkan dari tabel Akhlaq dan Nilai Akademik.
+
+Master jenis pelanggaran disimpan pada tabel:
+
+```text
+violation_types
+```
+
+Atribut utama:
+- `id` (UUID, PK)
+- `name` (TEXT)
+- `category` (TEXT - Kerapian, Kedisiplinan, Adab, Ibadah, dll.)
+- `severity_level` (TEXT - Ringan, Sedang, Berat)
+- `points` (INTEGER, Opsional)
+- `description` (TEXT)
+- `is_active` (BOOLEAN, default true)
+
+Pencatatan kejadian pelanggaran disimpan pada tabel:
+
+```text
+student_violations
+```
+
+Atribut utama:
+- `id` (UUID, PK)
+- `academic_year_id` (UUID, FK -> academic_years.id)
+- `student_id` (UUID, FK -> students.id)
+- `violation_type_id` (UUID, FK -> violation_types.id)
+- `incident_date` (DATE)
+- `incident_time` (TIME, Opsional)
+- `location` (TEXT, Opsional)
+- `description` (TEXT)
+- `evidence_url` (TEXT, Opsional)
+- `reported_by` (UUID, FK -> users.id)
+- `status` (TEXT - Draft, Dilaporkan, Diproses, Selesai, Dibatalkan)
+
+---
+
 # 23. Reports
 
 Raport dihasilkan ketika Finalisasi.
@@ -741,6 +785,10 @@ class_id + student_id
 score_session_id + student_id
 
 curriculum_id + subject_id
+
+academic_year_id + student_id (student_violations)
+
+violation_type_id + status
 ```
 
 ---

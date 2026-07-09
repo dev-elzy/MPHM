@@ -14,4 +14,7 @@ export * from './audit-logs';
 export * from './import-export';
 export * from './schedules';
 export * from './promotions';
-
+export * from './people';
+export * from './person-profiles';
+export * from './violations';
+export * from './academic';

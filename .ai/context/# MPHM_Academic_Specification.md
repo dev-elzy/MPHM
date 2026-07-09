@@ -36,6 +36,8 @@ Seluruh modul berikut wajib mengikuti blueprint ini:
 
 - Raport
 
+- Pelanggaran Santri
+
 - Alumni
 
 ---

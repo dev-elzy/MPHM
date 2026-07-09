@@ -732,6 +732,18 @@ Mudir.
 /dashboard/mudir
 ```
 
+Petugas Keamanan.
+
+```text
+/dashboard/security
+```
+
+Wali Santri.
+
+```text
+/dashboard/parent
+```
+
 Semua Dashboard menggunakan View atau Query teroptimasi.
 
 ---
@@ -924,6 +936,42 @@ Proses berikut dijalankan sebagai Background Job menggunakan Cloudflare Workers.
 - Perhitungan Statistik Dashboard
 
 Frontend hanya menerima Status Job.
+
+---
+
+# 31.1 Violation APIs (Pelanggaran Santri)
+
+## Violation Types (Master Jenis Pelanggaran)
+
+```text
+GET
+/violation-types
+
+POST
+/violation-types
+
+PATCH
+/violation-types/:id
+
+DELETE
+/violation-types/:id
+```
+
+## Student Violations (Pencatatan & Riwayat Pelanggaran)
+
+```text
+GET
+/student-violations
+
+POST
+/student-violations
+
+PATCH
+/student-violations/:id
+
+DELETE
+/student-violations/:id
+```
 
 ---
 

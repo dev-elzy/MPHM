@@ -143,10 +143,10 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
   };
 
   return (
-    <div className="flex h-full flex-col glass-panel rounded-2xl shadow-premium-3d text-left overflow-hidden">
-      <div className="flex h-20 shrink-0 items-center px-5 border-b border-zinc-200/40 dark:border-zinc-800/40 bg-white/40 dark:bg-zinc-950/40">
+    <div className="flex h-full flex-col bg-linear-to-b from-slate-900 via-emerald-950 to-slate-950 rounded-3xl border border-emerald-500/30 shadow-[0_20px_50px_-10px_rgba(16,185,129,0.25)] text-left overflow-hidden backdrop-blur-xl">
+      <div className="flex h-20 shrink-0 items-center px-5 border-b border-emerald-500/20 bg-emerald-950/40">
         <div className="flex items-center gap-3.5">
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-white dark:bg-zinc-900 p-1.5 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-slate-900/90 p-1.5 border border-emerald-500/40 shadow-md">
             <Image
               src="/logo.png"
               alt="Logo Madrasah Putri Hidayatul Mubtadi'at"
@@ -158,21 +158,21 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
             />
           </div>
           <div className="flex flex-col text-left min-w-0">
-            <span className="font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight text-sm leading-tight truncate">
+            <span className="font-extrabold text-white tracking-tight text-sm leading-tight truncate">
               MPHM Portal
             </span>
-            <span className="text-[10px] text-primary dark:text-primary-foreground font-bold uppercase tracking-wider truncate">
+            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider truncate">
               Hidayatul Mubtadi&apos;at
             </span>
           </div>
         </div>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto px-3 py-4 scrollbar-none">
         <nav className="flex flex-col gap-1.5">
           {filteredRoutes.map((route) => {
             const hasSubItems = !!route.subItems;
-            
+
             // Highlight parent link if path active
             const isActive = hasSubItems
               ? pathname.startsWith(route.href) && !pathname.endsWith('/siswi')
@@ -188,24 +188,24 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                     type="button"
                     onClick={() => toggleExpand(route.label)}
                     className={cn(
-                      'group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
+                      'group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
                       isActive
-                        ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground border-l-2 border-brand-gold pl-2 rounded-l-none'
-                        : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/40 dark:hover:text-zinc-50'
+                        ? 'bg-linear-to-r from-emerald-600/35 to-emerald-500/10 text-emerald-200 border-l-4 border-emerald-400 font-bold shadow-sm shadow-emerald-500/10'
+                        : 'text-slate-300 hover:bg-emerald-500/15 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <route.icon
                         className={cn(
                           'h-4 w-4 shrink-0 transition-colors',
-                          isActive ? 'text-brand-gold' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                          isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-300'
                         )}
                       />
                       {route.label}
                     </div>
                     <ChevronDown
                       className={cn(
-                        'h-3.5 w-3.5 text-zinc-400 transition-transform duration-200',
+                        'h-3.5 w-3.5 text-slate-400 transition-transform duration-200',
                         isExpanded ? 'transform rotate-180' : ''
                       )}
                     />
@@ -216,16 +216,16 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                     href={route.href}
                     onClick={onNavigate}
                     className={cn(
-                      'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
+                      'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
                       isActive
-                        ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground border-l-2 border-brand-gold pl-2 rounded-l-none shadow-sm shadow-primary/5'
-                        : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/40 dark:hover:text-zinc-50'
+                        ? 'bg-linear-to-r from-emerald-600/35 to-emerald-500/10 text-emerald-200 border-l-4 border-emerald-400 font-bold shadow-sm shadow-emerald-500/10'
+                        : 'text-slate-300 hover:bg-emerald-500/15 hover:text-white'
                     )}
                   >
                     <route.icon
                       className={cn(
                         'h-4 w-4 shrink-0 transition-colors',
-                        isActive ? 'text-brand-gold' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                        isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-300'
                       )}
                     />
                     {route.label}
@@ -234,7 +234,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
 
                 {/* Sub-menu Items */}
                 {hasSubItems && isExpanded && (
-                  <div className="ml-4 flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 pl-3 mt-0.5 mb-1.5 animate-in slide-in-from-top-1 duration-150">
+                  <div className="ml-4 flex flex-col gap-1 border-l border-emerald-500/30 pl-3 mt-0.5 mb-1.5 animate-in slide-in-from-top-1 duration-150">
                     {route.subItems?.map((sub) => {
                       const isSubActive = pathname === sub.href;
                       return (
@@ -243,10 +243,10 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                           href={sub.href}
                           onClick={onNavigate}
                           className={cn(
-                            'block rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200',
+                            'block rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200',
                             isSubActive
-                              ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground font-semibold border-l-2 border-brand-gold pl-2 rounded-l-none'
-                              : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/30 dark:hover:text-zinc-50'
+                              ? 'bg-emerald-500/25 text-emerald-300 font-bold border-l-2 border-emerald-400 pl-2 rounded-l-none'
+                              : 'text-slate-400 hover:bg-emerald-500/10 hover:text-slate-200'
                           )}
                         >
                           {sub.label}
@@ -262,28 +262,28 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       </div>
 
       {/* AdminHMD-style User Profile Card & System Status Footer */}
-      <div className="p-3 border-t border-zinc-200/40 dark:border-zinc-800/40 bg-zinc-50/70 dark:bg-zinc-900/40 flex flex-col gap-2.5">
-        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
-          <div className="h-9 w-9 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0 shadow-inner">
+      <div className="p-3.5 border-t border-emerald-500/20 bg-slate-950/60 flex flex-col gap-2.5">
+        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 shadow-md transition-all hover:border-emerald-400/50">
+          <div className="h-9 w-9 rounded-full bg-emerald-600/30 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-xs shrink-0 shadow-inner">
             {user?.name ? user.name.slice(0, 2).toUpperCase() : 'AV'}
           </div>
           <div className="flex flex-col min-w-0 flex-1">
-            <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+            <span className="text-xs font-bold text-white truncate">
               {user?.name || 'Admin Hasan'}
             </span>
-            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium truncate">
+            <span className="text-[10px] text-emerald-400 font-semibold truncate">
               {user ? getRoleBadgeLabel(role) : 'Active Workspace'}
             </span>
           </div>
         </div>
 
         {/* System running smoothly status line */}
-        <div className="flex items-center gap-2 px-1 py-0.5">
+        <div className="flex items-center gap-2 px-1.5 py-0.5">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
           </span>
-          <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 tracking-tight">
+          <span className="text-[11px] font-medium text-slate-300 tracking-tight">
             System running smoothly
           </span>
         </div>
@@ -317,9 +317,9 @@ export function MobileSidebar() {
         <Menu className="h-5 w-5" />
         <span className="sr-only">Toggle Menu</span>
       </Button>
-      <SheetContent side="left" className="p-0 w-72 bg-white dark:bg-zinc-950">
+      <SheetContent side="left" className="p-0 w-72 bg-slate-950 border-r border-emerald-500/30">
         <SheetTitle className="sr-only">Navigasi Utama</SheetTitle>
-        <div className="h-full p-4 bg-zinc-50 dark:bg-zinc-950">
+        <div className="h-full p-3 bg-slate-950">
           <SidebarContent onNavigate={() => setOpen(false)} />
         </div>
       </SheetContent>

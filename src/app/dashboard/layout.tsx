@@ -1,9 +1,11 @@
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
+import { GlobalCommandPalette } from '@/components/common/GlobalCommandPalette';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
+      <GlobalCommandPalette />
       <Sidebar />
       <div className="flex flex-col flex-1 w-full lg:pl-64 overflow-hidden">
         <Header />
@@ -16,3 +18,4 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
+

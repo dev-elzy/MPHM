@@ -111,7 +111,10 @@ Role:
 - Admin
 - Operator
 - Mustahiq
-- Mudir
+- Mufattisy
+- Pimpinan
+- Petugas Keamanan
+- Wali Santri
 
 Seluruh endpoint wajib melakukan validasi Role.
 
@@ -361,3 +364,16 @@ Seluruh fitur baru yang dikembangkan wajib:
 - Tidak membuat implementasi baru jika komponen reusable telah tersedia.
 
 Konsistensi arsitektur lebih diutamakan daripada kecepatan implementasi.
+
+---
+
+# 23. Aturan Modul Pelanggaran Santri & Petugas Keamanan
+
+1. **Master Jenis Pelanggaran**: Bersifat dinamis dan dikelola secara sentral oleh Administrator melalui Dashboard Admin.
+2. **Incident-Based Recording**: Pelanggaran santri dicatat berdasarkan kejadian dan terpisah dari penilaian Akhlaq semesteran.
+3. **Hak Akses Petugas Keamanan**:
+   - Dapat melakukan pencarian biodata dasar santri, kelas, dan kamar untuk keperluan verifikasi identitas.
+   - Dapat membuat laporan pelanggaran santri dan mengunggah bukti pelanggaran.
+   - Dilarang mengakses, melihat, atau mengubah data akademik (Nilai, Absensi, Akhlaq, Raport).
+4. **Immutability Log**: Setiap pencatatan pelanggaran tercatat secara permanen pada riwayat santri dan Audit Log sistem.
+

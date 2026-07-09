@@ -17,7 +17,9 @@
   "vars": {
     "APP_URL": "https://m.p3hm.my.id",
     "APP_ENV": "production",
-    "SESSION_SECRET": "mphm-portal-secure-production-session-secret-token"
+    "SESSION_SECRET": "mphm-portal-secure-production-session-secret-token",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "riwomz8g",
+    "CLOUDINARY_UPLOAD_PRESET": "mphm_portal_preset"
   },
   "observability": {
     "enabled": true

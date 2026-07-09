@@ -606,6 +606,29 @@ Dashboard menjadi pusat kontrol sistem.
 
 ---
 
+# 34.1 Dashboard Petugas Keamanan & Wali Santri
+
+## Dashboard Petugas Keamanan
+Dirancang khusus untuk pencatatan dan monitoring kedisiplinan secara cepat dan efisien:
+- **Global Search Santri**: Pencarian instan berdasarkan Nama, NIS, Kelas, atau Kamar.
+- **Quick Report Card**: Form pencatatan pelanggaran santri cepat (1-click select santri & jenis pelanggaran).
+- **Daily Incident Chart**: Grafik kejadian pelanggaran harian/mingguan.
+- **Recent Violations Feed**: Daftar riwayat pelanggaran terbaru dengan status penanganan (Draft, Dilaporkan, Diproses, Selesai).
+
+## Dashboard Wali Santri
+Dirancang dengan pendekatan Read-Only Portal yang bersih dan transparan:
+- **Profile & Academic Overview**: Ringkasan kelas, wali kelas, dan kehadiran putri.
+- **Akhlaq & Disciplinary Log**: Riwayat kedisiplinan dan catatan pembinaan.
+
+---
+
+# 34.2 Halaman Pelanggaran & Master Jenis Pelanggaran
+
+- **Master Jenis Pelanggaran**: Menggunakan standar Universal Data Grid dengan filter Kategori & Tingkat Pelanggaran (Ringan, Sedang, Berat), serta Pill Badges warna untuk tingkat pelanggaran.
+- **Form Laporan Pelanggaran**: Auto-save atau Quick Modal dengan dukungan lampiran foto bukti kejadian.
+
+---
+
 # 35. Visual Hierarchy
 
 Prioritaskan informasi berdasarkan kepentingannya.

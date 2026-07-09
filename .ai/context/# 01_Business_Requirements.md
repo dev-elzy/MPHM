@@ -436,39 +436,45 @@ Pimpinan memiliki akses baca terhadap seluruh data lintas jenjang.
 
 ---
 
-## 13.7 Akun Pengecekan
+## 13.7 Petugas Keamanan
 
-Merupakan akun khusus untuk kebutuhan verifikasi data.
+Petugas Keamanan merupakan pengguna yang bertugas melakukan verifikasi data santri serta mencatat pelanggaran kedisiplinan.
 
-Hak akses:
+Hak akses meliputi:
 
 - Global Database Search
 - Melihat biodata dasar santri
 - Melihat lokasi kamar
 - Melihat status santri
+- Membuat laporan pelanggaran santri
+- Melihat riwayat pelanggaran santri
+- Mengunggah bukti pelanggaran (opsional)
 
 Data yang dapat dilihat:
 
 - Nama
 - NIS
 - NISN
-- Alamat
+- Jenjang
+- Kelas
 - Kamar
+- Nama Wali
+- Alamat
 - Tahun Masuk
-- Tahun Keluar
 - Status
 
-Data berikut tidak dapat diakses:
+Petugas Keamanan tidak dapat mengakses:
 
 - Nilai
 - Absensi
 - Akhlaq
 - Raport
-- Catatan Internal
+- Pengaturan Sistem
+- Master Data
 
-Role ini bersifat Read Only.
+Seluruh laporan pelanggaran akan tercatat pada Audit Log.
 
----
+Role ini tidak dapat mengubah data akademik.
 
 ## 13.8 Wali Santri
 
@@ -552,7 +558,46 @@ Riwayat penilaian Akhlaq disimpan pada setiap semester.
 
 ---
 
-# 18. Promosi / Kenaikan Kelas
+# 18. Pelanggaran Santri
+
+Sistem menyediakan modul Pelanggaran Santri untuk mencatat seluruh kejadian pelanggaran kedisiplinan selama santri aktif.
+
+Modul ini terpisah dari penilaian Akhlaq.
+
+Pelanggaran dicatat berdasarkan kejadian (incident based) dan menjadi bagian dari riwayat santri.
+
+Pelanggaran dapat dibuat oleh:
+
+- Petugas Keamanan
+- Administrator Akademik (opsional)
+
+Setiap laporan pelanggaran minimal memuat:
+
+- Santri
+- Tanggal Kejadian
+- Waktu Kejadian (Opsional)
+- Jenis Pelanggaran
+- Kategori Pelanggaran
+- Tingkat Pelanggaran
+- Deskripsi Kejadian
+- Lokasi Kejadian (Opsional)
+- Bukti Foto atau Dokumen (Opsional)
+- Petugas Pelapor
+- Status Penanganan
+
+Status laporan terdiri dari:
+
+- Draft
+- Dilaporkan
+- Diproses
+- Selesai
+- Dibatalkan
+
+Seluruh riwayat pelanggaran disimpan secara permanen sebagai bagian dari histori santri.
+
+Riwayat pelanggaran dapat digunakan sebagai bahan evaluasi pembinaan sesuai kebijakan MPHM.
+
+# 18.1 Promosi / Kenaikan Kelas
 
 Promosi dilakukan pada akhir Tahun Ajaran.
 

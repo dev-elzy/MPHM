@@ -149,6 +149,30 @@ Mudir dapat melihat:
 
 ---
 
+## Operator
+
+Bertugas membantu operasional administrasi harian madrasah, pengelolaan data santri, dan kelas di bawah supervisi Admin.
+
+---
+
+## Mufattisy
+
+Pimpinan tingkatan yang bertugas melakukan monitoring akademik pada jenjang/tingkatan yang ditugaskan.
+
+---
+
+## Petugas Keamanan
+
+Bertugas melakukan verifikasi data santri (pencarian santri, kelas, dan kamar) serta mencatat laporan kejadian pelanggaran kedisiplinan santri. Role ini bersifat non-akademik dan tidak memiliki akses ke nilai/raport.
+
+---
+
+## Wali Santri
+
+Memiliki akses read-only portal untuk memantau perkembangan akademik, kehadiran, akhlaq, dan riwayat kedisiplinan putri.
+
+---
+
 # 6. Scope
 
 Versi pertama MPHM mencakup.
@@ -198,6 +222,16 @@ Versi pertama MPHM mencakup.
 - Finalisasi
 - Monitoring
 - Audit
+
+---
+
+## Disciplinary & Incident Management (Pelanggaran Santri)
+
+- Master Jenis Pelanggaran (Dikelola Admin)
+- Pencatatan Laporan Pelanggaran (Petugas Keamanan & Admin)
+- Unggah Bukti Pelanggaran
+- Riwayat Pelanggaran Santri
+- Status Penanganan Pelanggaran
 
 ---
 

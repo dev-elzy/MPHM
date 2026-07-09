@@ -134,6 +134,10 @@ settings/
 
 notifications/
 
+violations/
+
+violation-types/
+
 audit/
 
 recycle-bin/
