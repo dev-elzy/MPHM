@@ -1,0 +1,17 @@
+export * from './users';
+export * from './roles';
+export * from './academic-years';
+export * from './semesters';
+export * from './curriculums';
+export * from './classes';
+export * from './students';
+export * from './scores';
+export * from './attendance';
+export * from './akhlaq';
+export * from './reports';
+export * from './notifications';
+export * from './audit-logs';
+export * from './import-export';
+export * from './schedules';
+export * from './promotions';
+

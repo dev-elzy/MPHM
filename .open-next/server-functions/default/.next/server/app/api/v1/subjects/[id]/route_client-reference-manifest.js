@@ -1,0 +1,1 @@
+globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/api/v1/subjects/[id]/route"]={"moduleLoading":{"prefix":"/_next/"},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"D:\\DEVELZY\\MPHM\\src\\app\\api\\v1\\subjects\\[id]\\route":[]},"rscModuleMapping":{},"edgeRscModuleMapping":{}};

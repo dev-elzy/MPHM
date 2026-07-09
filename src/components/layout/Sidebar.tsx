@@ -1,0 +1,258 @@
+'use client';
+
+import * as React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import {
+  LayoutDashboard,
+  GraduationCap,
+  Users,
+  Settings,
+  Menu,
+  Layers,
+  ChevronDown,
+  ClipboardCheck,
+  Activity,
+  UsersRound,
+} from 'lucide-react';
+
+interface SidebarItem {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  subItems?: { label: string; href: string }[];
+}
+
+const routes: SidebarItem[] = [
+  {
+    label: 'Ringkasan',
+    icon: LayoutDashboard,
+    href: '/dashboard',
+  },
+  {
+    label: 'Manajemen Akademik',
+    icon: GraduationCap,
+    href: '/dashboard/akademik',
+    subItems: [
+      { label: 'Tahun Ajaran', href: '/dashboard/akademik/tahun-ajaran' },
+      { label: 'Semester', href: '/dashboard/akademik/semester' },
+      { label: 'Kelas (Rombel)', href: '/dashboard/akademik/kelas' },
+      { label: 'Kurikulum', href: '/dashboard/akademik/kurikulum' },
+      { label: 'Mata Pelajaran', href: '/dashboard/akademik/mata-pelajaran' },
+      { label: 'Jadwal Akademik', href: '/dashboard/akademik/jadwal' },
+      { label: 'Kenaikan Kelas', href: '/dashboard/akademik/promosi' },
+    ],
+  },
+  {
+    label: 'Data Santri',
+    icon: Users,
+    href: '/dashboard/akademik/siswi',
+  },
+  {
+    label: 'Penilaian & Absensi',
+    icon: ClipboardCheck,
+    href: '/dashboard/akademik/nilai',
+    subItems: [
+      { label: 'Input Nilai', href: '/dashboard/akademik/nilai' },
+      { label: 'Absensi Harian', href: '/dashboard/akademik/absensi' },
+      { label: 'Penilaian Akhlaq', href: '/dashboard/akademik/akhlaq' },
+    ],
+  },
+  {
+    label: 'Monitoring & Audit',
+    icon: Activity,
+    href: '/dashboard/audit',
+    subItems: [
+      { label: 'Audit System Log', href: '/dashboard/audit' },
+      { label: 'Recycle Bin', href: '/dashboard/recycle-bin' },
+    ],
+  },
+  {
+    label: 'Manajemen Pengguna',
+    icon: UsersRound,
+    href: '/dashboard/pengguna',
+    subItems: [
+      { label: 'Daftar Staff', href: '/dashboard/pengguna' },
+      { label: 'Hak Akses & Role', href: '/dashboard/pengguna/roles' },
+    ],
+  },
+  {
+    label: 'Pengaturan Sistem',
+    icon: Settings,
+    href: '/dashboard/pengaturan',
+  },
+];
+
+interface SidebarContentProps {
+  onNavigate?: () => void;
+}
+
+function SidebarContent({ onNavigate }: SidebarContentProps) {
+  const pathname = usePathname();
+  
+  // Track which submenus are expanded
+  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({
+    'Manajemen Akademik': pathname.startsWith('/dashboard/akademik') && !pathname.endsWith('/siswi'),
+    'Penilaian & Absensi': pathname.startsWith('/dashboard/akademik/nilai') || pathname.startsWith('/dashboard/akademik/absensi') || pathname.startsWith('/dashboard/akademik/akhlaq'),
+    'Monitoring & Audit': pathname.startsWith('/dashboard/audit') || pathname.startsWith('/dashboard/recycle-bin'),
+    'Manajemen Pengguna': pathname.startsWith('/dashboard/pengguna'),
+  });
+
+  const toggleExpand = (label: string) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
+  return (
+    <div className="flex h-full flex-col glass-panel rounded-2xl shadow-premium-3d text-left overflow-hidden">
+      <div className="flex h-16 shrink-0 items-center px-6 border-b border-zinc-200/20 dark:border-zinc-800/20 bg-white/10 dark:bg-black/10">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white dark:text-zinc-900 shadow-md shadow-primary/20">
+            <Layers className="h-4.5 w-4.5" />
+          </div>
+          <div className="flex flex-col text-left">
+            <span className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-sm leading-none">
+              MPHM Portal
+            </span>
+            <span className="text-[10px] text-brand-gold font-semibold mt-1 uppercase tracking-wider">
+              Academic Hub
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto px-3 py-4 scrollbar-none">
+        <nav className="flex flex-col gap-1.5">
+          {routes.map((route) => {
+            const hasSubItems = !!route.subItems;
+            
+            // Highlight parent link if path active
+            const isActive = hasSubItems
+              ? pathname.startsWith(route.href) && !pathname.endsWith('/siswi')
+              : pathname === route.href || (route.href !== '/dashboard' && pathname.startsWith(route.href + '/'));
+
+            const isExpanded = !!expanded[route.label];
+
+            return (
+              <div key={route.label} className="flex flex-col gap-1">
+                {hasSubItems ? (
+                  // Expandable Menu Header
+                  <button
+                    type="button"
+                    onClick={() => toggleExpand(route.label)}
+                    className={cn(
+                      'group flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
+                      isActive
+                        ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground border-l-2 border-brand-gold pl-2 rounded-l-none'
+                        : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/40 dark:hover:text-zinc-50'
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <route.icon
+                        className={cn(
+                          'h-4 w-4 shrink-0 transition-colors',
+                          isActive ? 'text-brand-gold' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                        )}
+                      />
+                      {route.label}
+                    </div>
+                    <ChevronDown
+                      className={cn(
+                        'h-3.5 w-3.5 text-zinc-400 transition-transform duration-200',
+                        isExpanded ? 'transform rotate-180' : ''
+                      )}
+                    />
+                  </button>
+                ) : (
+                  // Direct Navigation Link
+                  <Link
+                    href={route.href}
+                    onClick={onNavigate}
+                    className={cn(
+                      'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
+                      isActive
+                        ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground border-l-2 border-brand-gold pl-2 rounded-l-none shadow-sm shadow-primary/5'
+                        : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/40 dark:hover:text-zinc-50'
+                    )}
+                  >
+                    <route.icon
+                      className={cn(
+                        'h-4 w-4 shrink-0 transition-colors',
+                        isActive ? 'text-brand-gold' : 'text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                      )}
+                    />
+                    {route.label}
+                  </Link>
+                )}
+
+                {/* Sub-menu Items */}
+                {hasSubItems && isExpanded && (
+                  <div className="ml-4 flex flex-col gap-1 border-l border-zinc-200 dark:border-zinc-800 pl-3 mt-0.5 mb-1.5 animate-in slide-in-from-top-1 duration-150">
+                    {route.subItems?.map((sub) => {
+                      const isSubActive = pathname === sub.href;
+                      return (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          onClick={onNavigate}
+                          className={cn(
+                            'block rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-200',
+                            isSubActive
+                              ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-foreground font-semibold border-l-2 border-brand-gold pl-2 rounded-l-none'
+                              : 'text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/30 dark:hover:text-zinc-50'
+                          )}
+                        >
+                          {sub.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <aside className="hidden lg:flex h-screen w-64 flex-col fixed inset-y-0 z-50 p-4">
+      <SidebarContent />
+    </aside>
+  );
+}
+
+export function MobileSidebar() {
+  const [isMounted, setIsMounted] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsMounted(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isMounted) return null;
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50" onClick={() => setOpen(true)}>
+        <Menu className="h-5 w-5" />
+        <span className="sr-only">Toggle Menu</span>
+      </Button>
+      <SheetContent side="left" className="p-0 w-72 bg-white dark:bg-zinc-950">
+        <SheetTitle className="sr-only">Navigasi Utama</SheetTitle>
+        <div className="h-full p-4 bg-zinc-50 dark:bg-zinc-950">
+          <SidebarContent onNavigate={() => setOpen(false)} />
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
