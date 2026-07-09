@@ -82,8 +82,8 @@ export const semestersService = {
     return updated;
   },
 
-  deleteSemester: async (_id: string): Promise<void> => {
-    // Semesters are bound to Year lifespan. Manual deleting is restricted to soft delete of parent year.
+  deleteSemester: async (_id?: string): Promise<void> => {
+    void _id;
     throw new Error('Semester terikat dengan daur hidup Tahun Ajaran dan tidak dapat dihapus secara manual.');
   },
 };

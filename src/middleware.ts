@@ -9,11 +9,13 @@ export async function middleware(request: NextRequest) {
   
   const sessionCookie = request.cookies.get('mphm_session');
   let isValidSession = false;
+  let userRole = '';
 
   if (sessionCookie) {
     const session = await verifySessionToken(sessionCookie.value);
     if (session) {
       isValidSession = true;
+      userRole = (session.role || '').toLowerCase();
     }
   }
 
@@ -38,6 +40,19 @@ export async function middleware(request: NextRequest) {
       response.cookies.delete('mphm_session');
     }
     return response;
+  }
+
+  // Role-based route guarding
+  const ADMIN_ONLY_PREFIXES = [
+    '/dashboard/pengguna',
+    '/dashboard/pengaturan',
+    '/dashboard/audit',
+    '/dashboard/recycle-bin',
+  ];
+
+  const isMustahiqOrTeacher = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+  if (isMustahiqOrTeacher && ADMIN_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();

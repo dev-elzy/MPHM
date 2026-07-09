@@ -17,13 +17,17 @@ import {
   ClipboardCheck,
   Activity,
   UsersRound,
+  Calendar,
+  UserCheck,
 } from 'lucide-react';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 interface SidebarItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   subItems?: { label: string; href: string }[];
+  allowedRoles?: string[];
 }
 
 const routes: SidebarItem[] = [
@@ -36,6 +40,7 @@ const routes: SidebarItem[] = [
     label: 'Manajemen Akademik',
     icon: GraduationCap,
     href: '/dashboard/akademik',
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir'],
     subItems: [
       { label: 'Tahun Ajaran', href: '/dashboard/akademik/tahun-ajaran' },
       { label: 'Semester', href: '/dashboard/akademik/semester' },
@@ -45,6 +50,12 @@ const routes: SidebarItem[] = [
       { label: 'Jadwal Akademik', href: '/dashboard/akademik/jadwal' },
       { label: 'Kenaikan Kelas', href: '/dashboard/akademik/promosi' },
     ],
+  },
+  {
+    label: 'Jadwal Mengajar',
+    icon: Calendar,
+    href: '/dashboard/akademik/jadwal',
+    allowedRoles: ['mustahiq', 'teacher', 'ustadz'],
   },
   {
     label: 'Data Santri',
@@ -65,6 +76,7 @@ const routes: SidebarItem[] = [
     label: 'Monitoring & Audit',
     icon: Activity,
     href: '/dashboard/audit',
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir'],
     subItems: [
       { label: 'Audit System Log', href: '/dashboard/audit' },
       { label: 'Recycle Bin', href: '/dashboard/recycle-bin' },
@@ -74,6 +86,7 @@ const routes: SidebarItem[] = [
     label: 'Manajemen Pengguna',
     icon: UsersRound,
     href: '/dashboard/pengguna',
+    allowedRoles: ['super_admin', 'admin', 'operator'],
     subItems: [
       { label: 'Daftar Staff', href: '/dashboard/pengguna' },
       { label: 'Hak Akses & Role', href: '/dashboard/pengguna/roles' },
@@ -83,6 +96,7 @@ const routes: SidebarItem[] = [
     label: 'Pengaturan Sistem',
     icon: Settings,
     href: '/dashboard/pengaturan',
+    allowedRoles: ['super_admin', 'admin'],
   },
 ];
 
@@ -92,6 +106,7 @@ interface SidebarContentProps {
 
 function SidebarContent({ onNavigate }: SidebarContentProps) {
   const pathname = usePathname();
+  const { user, role } = useAuthSession();
   
   // Track which submenus are expanded
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({
@@ -106,6 +121,25 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       ...prev,
       [label]: !prev[label],
     }));
+  };
+
+  const filteredRoutes = React.useMemo(() => {
+    if (!role) return routes.filter((r) => !r.allowedRoles);
+    return routes.filter((route) => {
+      if (!route.allowedRoles) return true;
+      return route.allowedRoles.includes(role);
+    });
+  }, [role]);
+
+  const getRoleBadgeLabel = (r: string) => {
+    switch (r) {
+      case 'super_admin': return 'Super Admin';
+      case 'admin': return 'Administrator';
+      case 'operator': return 'Operator Akademik';
+      case 'mustahiq': return 'Staff Pengajar';
+      case 'mudir': return 'Mudir (Pimpinan)';
+      default: return r || 'Pengguna';
+    }
   };
 
   return (
@@ -128,7 +162,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       
       <div className="flex-1 overflow-y-auto px-3 py-4 scrollbar-none">
         <nav className="flex flex-col gap-1.5">
-          {routes.map((route) => {
+          {filteredRoutes.map((route) => {
             const hasSubItems = !!route.subItems;
             
             // Highlight parent link if path active
@@ -218,6 +252,24 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
           })}
         </nav>
       </div>
+
+      {user && (
+        <div className="p-3 border-t border-zinc-200/40 dark:border-zinc-800/40 bg-zinc-50/50 dark:bg-zinc-900/30">
+          <div className="flex items-center gap-3 px-2 py-1.5">
+            <div className="h-8 w-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+              {user.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                {user.name}
+              </span>
+              <span className="text-[10px] text-brand-gold font-medium uppercase tracking-wider truncate">
+                {getRoleBadgeLabel(role)}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
