@@ -24,53 +24,66 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <div className={cn(
-      'sticky top-0 z-10 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between py-4',
-      'bg-white/70 dark:bg-zinc-950/70 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 transition-all duration-300',
-      className
-    )}>
-      <div className="flex flex-col gap-1">
-        {breadcrumbs && breadcrumbs.length > 0 && (
-          <nav className="flex items-center gap-1 text-xs text-zinc-400 dark:text-zinc-500 mb-1">
-            {breadcrumbs.map((crumb, i) => (
-              <React.Fragment key={i}>
-                {i > 0 && <ChevronRight className="h-3 w-3 shrink-0" />}
-                {crumb.href ? (
-                  <Link
-                    href={crumb.href}
-                    className="hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-                  >
-                    {crumb.label}
-                  </Link>
-                ) : (
-                  <span
-                    className={
-                      i === breadcrumbs.length - 1
-                        ? 'text-zinc-700 dark:text-zinc-300 font-medium'
-                        : ''
-                    }
-                  >
-                    {crumb.label}
-                  </span>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-        )}
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 leading-none">
-          {title}
-        </h1>
-        {description && (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
-            {description}
-          </p>
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-linear-to-r from-zinc-900 via-zinc-850 to-zinc-900 text-white p-6 sm:p-7 shadow-xl transition-all duration-300',
+        className
+      )}
+    >
+      {/* Decorative subtle ambient accent glow */}
+      <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+      <div className="absolute right-1/4 -bottom-12 h-36 w-36 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-2">
+          {breadcrumbs && breadcrumbs.length > 0 && (
+            <nav className="flex items-center flex-wrap gap-1.5 text-xs text-zinc-400 mb-1">
+              {breadcrumbs.map((crumb, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <ChevronRight className="h-3.5 w-3.5 text-zinc-600 shrink-0" />}
+                  {crumb.href ? (
+                    <Link
+                      href={crumb.href}
+                      className="hover:text-white transition-colors font-medium"
+                    >
+                      {crumb.label}
+                    </Link>
+                  ) : (
+                    <span
+                      className={
+                        i === breadcrumbs.length - 1
+                          ? 'text-zinc-200 font-semibold bg-white/10 px-2.5 py-0.5 rounded-full border border-white/10'
+                          : 'text-zinc-400'
+                      }
+                    >
+                      {crumb.label}
+                    </span>
+                  )}
+                </React.Fragment>
+              ))}
+            </nav>
+          )}
+
+          <div className="flex items-center gap-3">
+            <span className="w-1.5 h-7 rounded-full bg-primary shrink-0 shadow-sm shadow-primary/40" />
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-none">
+              {title}
+            </h1>
+          </div>
+
+          {description && (
+            <p className="text-sm text-zinc-300/90 max-w-2xl leading-relaxed pl-4.5">
+              {description}
+            </p>
+          )}
+        </div>
+
+        {actions && (
+          <div className="flex items-center gap-3 flex-wrap lg:justify-end shrink-0 pt-2 lg:pt-0">
+            {actions}
+          </div>
         )}
       </div>
-      {actions && (
-        <div className="flex items-center gap-2 mt-3 sm:mt-0 shrink-0">
-          {actions}
-        </div>
-      )}
     </div>
   );
 }

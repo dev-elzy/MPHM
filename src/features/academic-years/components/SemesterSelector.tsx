@@ -29,9 +29,9 @@ export function SemesterSelector({ academicYearId, value, onChange }: SemesterSe
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-zinc-500 font-medium hidden sm:inline-block">Semester:</span>
+      <span className="text-sm text-zinc-300 font-medium hidden sm:inline-block">Semester:</span>
       <Select value={value} onValueChange={(val) => onChange(val || '')} disabled={isLoading || !semesters?.length}>
-        <SelectTrigger className="w-[180px] h-9 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-xs">
+        <SelectTrigger className="w-[180px] h-10 rounded-full bg-white/10 hover:bg-white/15 text-white border border-white/20 shadow-sm focus:ring-primary/40 transition-all font-medium cursor-pointer">
           <SelectValue placeholder={isLoading ? 'Memuat...' : 'Pilih Semester'} />
         </SelectTrigger>
         <SelectContent>

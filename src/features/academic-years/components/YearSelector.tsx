@@ -30,7 +30,7 @@ export function YearSelector({ value, onChange }: YearSelectorProps) {
 
   return (
     <Select value={value} onValueChange={(val) => { if (val) onChange(val); }}>
-      <SelectTrigger className="w-[240px] h-10 rounded-[10px] bg-white dark:bg-zinc-950 shadow-sm border-zinc-200 dark:border-zinc-800 focus:ring-zinc-400 dark:focus:ring-zinc-600 transition-all">
+      <SelectTrigger className="w-[230px] h-10 rounded-full bg-white/10 hover:bg-white/15 text-white border border-white/20 shadow-sm focus:ring-primary/40 transition-all font-medium cursor-pointer">
         <SelectValue placeholder="Pilih Tahun Ajaran" />
       </SelectTrigger>
       <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 shadow-xl">
