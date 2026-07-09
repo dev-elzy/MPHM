@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ import {
   Users,
   Settings,
   Menu,
-  Layers,
   ChevronDown,
   ClipboardCheck,
   Activity,
@@ -144,17 +144,25 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
 
   return (
     <div className="flex h-full flex-col glass-panel rounded-2xl shadow-premium-3d text-left overflow-hidden">
-      <div className="flex h-16 shrink-0 items-center px-6 border-b border-zinc-200/20 dark:border-zinc-800/20 bg-white/10 dark:bg-black/10">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white dark:text-zinc-900 shadow-md shadow-primary/20">
-            <Layers className="h-4.5 w-4.5" />
+      <div className="flex h-20 shrink-0 items-center px-5 border-b border-zinc-200/40 dark:border-zinc-800/40 bg-white/40 dark:bg-zinc-950/40">
+        <div className="flex items-center gap-3.5">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl overflow-hidden bg-white dark:bg-zinc-900 p-1.5 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+            <Image
+              src="/logo.png"
+              alt="Logo Madrasah Putri Hidayatul Mubtadi'at"
+              width={44}
+              height={44}
+              className="h-full w-full object-contain"
+              priority
+              unoptimized
+            />
           </div>
-          <div className="flex flex-col text-left">
-            <span className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-sm leading-none">
+          <div className="flex flex-col text-left min-w-0">
+            <span className="font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight text-sm leading-tight truncate">
               MPHM Portal
             </span>
-            <span className="text-[10px] text-brand-gold font-semibold mt-1 uppercase tracking-wider">
-              Academic Hub
+            <span className="text-[10px] text-primary dark:text-primary-foreground font-bold uppercase tracking-wider truncate">
+              Hidayatul Mubtadi&apos;at
             </span>
           </div>
         </div>
