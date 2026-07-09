@@ -227,19 +227,19 @@ export function UserFormDialog({
               )}
             />
 
-            <DialogFooter className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+            <DialogFooter className="pt-5 border-t border-zinc-100 dark:border-zinc-800/80 flex gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                className="h-9.5 text-sm rounded-lg"
+                className="h-10 px-5 text-sm rounded-full border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="h-9.5 text-sm font-semibold bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg shadow-sm"
+                className="h-10 px-6 text-sm font-semibold bg-primary text-primary-foreground hover:opacity-95 rounded-full shadow-md shadow-primary/20 cursor-pointer transition-all"
               >
                 {isPending ? 'Menyimpan...' : 'Simpan'}
               </Button>

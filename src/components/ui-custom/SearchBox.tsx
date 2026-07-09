@@ -46,14 +46,14 @@ export function SearchBox({
   };
 
   return (
-    <div className={`relative flex items-center max-w-sm w-full ${className}`}>
-      <Search className="absolute left-3 h-4 w-4 text-zinc-400 pointer-events-none" />
+    <div className={`relative flex items-center max-w-md w-full group ${className}`}>
+      <Search className="absolute left-3.5 h-4 w-4 text-zinc-400 group-focus-within:text-primary transition-colors pointer-events-none" />
       <Input
         type="text"
         placeholder={placeholder}
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
-        className="pl-9 pr-8 h-9 w-full bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 focus-visible:ring-1 focus-visible:ring-zinc-400 dark:focus-visible:ring-zinc-700"
+        className="pl-10 pr-9 h-9.5 w-full bg-zinc-100/70 dark:bg-zinc-900/70 border border-zinc-200/70 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 focus-visible:bg-white dark:focus-visible:bg-zinc-950 focus-visible:ring-1 focus-visible:ring-primary rounded-full transition-all text-sm shadow-sm placeholder:text-zinc-400"
       />
       {localValue && (
         <Button
@@ -61,7 +61,7 @@ export function SearchBox({
           variant="ghost"
           size="icon"
           onClick={handleClear}
-          className="absolute right-1.5 h-6 w-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 rounded-md"
+          className="absolute right-2 h-6 w-6 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 rounded-full cursor-pointer"
         >
           <X className="h-3.5 w-3.5" />
         </Button>

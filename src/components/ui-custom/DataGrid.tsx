@@ -204,7 +204,7 @@ export function DataGrid<TData>({
               variant="outline"
               size="icon"
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`h-9 w-9 border-zinc-200 dark:border-zinc-800 shrink-0 ${
+              className={`h-9.5 w-9.5 rounded-full border-zinc-200/80 dark:border-zinc-800 shrink-0 shadow-sm cursor-pointer ${
                 isFilterOpen ? 'bg-zinc-100 dark:bg-zinc-800' : ''
               }`}
             >
@@ -214,11 +214,11 @@ export function DataGrid<TData>({
 
           {/* Column Visibility Manager */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-white shadow-xs hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-850 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 h-9 w-9 shrink-0 cursor-pointer">
+            <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary border border-zinc-200/80 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 h-9.5 w-9.5 shrink-0 cursor-pointer">
               <SlidersHorizontal className="h-4 w-4 text-zinc-500" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[180px] bg-white dark:bg-zinc-950">
-              <DropdownMenuLabel className="text-xs">Kelola Kolom</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-[180px] rounded-xl bg-white dark:bg-zinc-950 border-zinc-200/80 dark:border-zinc-800 shadow-lg">
+              <DropdownMenuLabel className="text-xs font-semibold">Kelola Kolom</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {table
                 .getAllColumns()
@@ -240,14 +240,14 @@ export function DataGrid<TData>({
         </div>
 
         {/* Global actions */}
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+        <div className="flex items-center gap-2.5 w-full md:w-auto justify-end flex-wrap">
           {onRefreshClick && (
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={onRefreshClick}
-              className="h-9 w-9 border-zinc-200 dark:border-zinc-800 shrink-0"
+              className="h-9.5 w-9.5 rounded-full border-zinc-200/80 dark:border-zinc-800 shrink-0 shadow-sm cursor-pointer"
             >
               <RotateCw className="h-4 w-4 text-zinc-500" />
             </Button>
@@ -257,9 +257,9 @@ export function DataGrid<TData>({
               type="button"
               variant="outline"
               onClick={onImportClick}
-              className="h-9 text-xs border-zinc-200 dark:border-zinc-800 flex items-center gap-1.5"
+              className="h-9.5 px-3.5 rounded-full text-xs font-medium border-zinc-200/80 dark:border-zinc-800 flex items-center gap-1.5 shadow-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
             >
-              <Upload className="h-4 w-4 text-zinc-500" />
+              <Upload className="h-3.5 w-3.5 text-zinc-500" />
               Impor
             </Button>
           )}
@@ -268,9 +268,9 @@ export function DataGrid<TData>({
               type="button"
               variant="outline"
               onClick={onExportClick}
-              className="h-9 text-xs border-zinc-200 dark:border-zinc-800 flex items-center gap-1.5"
+              className="h-9.5 px-3.5 rounded-full text-xs font-medium border-zinc-200/80 dark:border-zinc-800 flex items-center gap-1.5 shadow-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
             >
-              <Download className="h-4 w-4 text-zinc-500" />
+              <Download className="h-3.5 w-3.5 text-zinc-500" />
               Ekspor
             </Button>
           )}
@@ -278,7 +278,7 @@ export function DataGrid<TData>({
             <Button
               type="button"
               onClick={onAddClick}
-              className="h-9 text-xs bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 flex items-center gap-1.5 font-semibold hover:bg-zinc-850 dark:hover:bg-zinc-100"
+              className="h-9.5 px-4 rounded-full text-xs bg-primary text-primary-foreground flex items-center gap-1.5 font-semibold shadow-md shadow-primary/20 hover:opacity-95 cursor-pointer transition-all"
             >
               <Plus className="h-4 w-4" />
               {addLabel}
@@ -308,15 +308,15 @@ export function DataGrid<TData>({
       )}
 
       {/* 4. TABLE CONTAINER */}
-      <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden bg-white dark:bg-zinc-950 shadow-sm">
+      <div className="border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl overflow-hidden bg-white dark:bg-zinc-950 shadow-sm transition-all">
         {isLoading ? (
           <TableSkeleton />
         ) : data.length > 0 ? (
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50 sticky top-0 border-b border-zinc-200 dark:border-zinc-800">
+              <TableHeader className="bg-zinc-50/90 dark:bg-zinc-900/40 sticky top-0 border-b border-zinc-200/80 dark:border-zinc-800/80">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  <TableRow key={headerGroup.id} className="hover:bg-transparent border-0">
                     {headerGroup.headers.map((header) => {
                       const isSortable = header.column.getCanSort() && onSortChange;
                       
@@ -324,8 +324,8 @@ export function DataGrid<TData>({
                         <TableHead
                           key={header.id}
                           onClick={() => isSortable && handleSort(header.column.id)}
-                          className={`text-xs font-semibold text-zinc-500 p-3 h-10 select-none ${
-                            isSortable ? 'cursor-pointer hover:text-zinc-950 dark:hover:text-zinc-200' : ''
+                          className={`text-[11px] font-bold tracking-wider uppercase text-zinc-400 dark:text-zinc-500 py-3.5 px-4 h-11 select-none ${
+                            isSortable ? 'cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors' : ''
                           }`}
                         >
                           <div className="flex items-center gap-1.5">
@@ -351,10 +351,10 @@ export function DataGrid<TData>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className="hover:bg-zinc-50/70 dark:hover:bg-zinc-900/35 border-b border-zinc-150 dark:border-zinc-800/80 last:border-0"
+                    className="hover:bg-zinc-50/90 dark:hover:bg-zinc-900/50 border-b border-zinc-150/70 dark:border-zinc-800/60 last:border-0 transition-colors"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="p-3 text-sm text-zinc-700 dark:text-zinc-300">
+                      <TableCell key={cell.id} className="py-3.5 px-4 text-sm text-zinc-700 dark:text-zinc-300">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
