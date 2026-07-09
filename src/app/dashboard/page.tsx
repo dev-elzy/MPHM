@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
   Users, BookOpen, GraduationCap, School, Activity,
@@ -53,7 +54,7 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="/dashboard/akademik/nilai" className="group">
+        <Link href="/dashboard/akademik/nilai" className="group">
           <Card className="dark:bg-zinc-950 overflow-hidden shadow-premium-3d shadow-premium-3d-hover border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl transition-all group-hover:border-primary/40">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -68,9 +69,9 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
               </div>
             </CardContent>
           </Card>
-        </a>
+        </Link>
 
-        <a href="/dashboard/akademik/absensi" className="group">
+        <Link href="/dashboard/akademik/absensi" className="group">
           <Card className="dark:bg-zinc-950 overflow-hidden shadow-premium-3d shadow-premium-3d-hover border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl transition-all group-hover:border-primary/40">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -85,9 +86,9 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
               </div>
             </CardContent>
           </Card>
-        </a>
+        </Link>
 
-        <a href="/dashboard/akademik/akhlaq" className="group">
+        <Link href="/dashboard/akademik/akhlaq" className="group">
           <Card className="dark:bg-zinc-950 overflow-hidden shadow-premium-3d shadow-premium-3d-hover border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl transition-all group-hover:border-primary/40">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -102,7 +103,7 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
               </div>
             </CardContent>
           </Card>
-        </a>
+        </Link>
       </div>
 
       <Card className="glass-panel shadow-premium-3d rounded-2xl">
@@ -122,7 +123,7 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
             ].map((link) => {
               const Icon = link.icon;
               return (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   className="flex items-center gap-2.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-all group"
@@ -133,7 +134,7 @@ function MustahiqDashboardView({ userName }: { userName: string }) {
                   <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
                     {link.label}
                   </span>
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -174,10 +175,6 @@ export default function DashboardPage() {
   const { user, isMustahiq } = useAuthSession();
   const { data, isLoading } = useAdminDashboard();
 
-  if (isMustahiq) {
-    return <MustahiqDashboardView userName={user?.name || 'Ustadz/ah'} />;
-  }
-
   const stats = data?.stats;
   const activity = React.useMemo(() => data?.recentActivity || [], [data?.recentActivity]);
 
@@ -188,6 +185,10 @@ export default function DashboardPage() {
     });
     return counts;
   }, [activity]);
+
+  if (isMustahiq) {
+    return <MustahiqDashboardView userName={user?.name || 'Ustadz/ah'} />;
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -303,7 +304,7 @@ export default function DashboardPage() {
               ].map((link) => {
                 const Icon = link.icon;
                 return (
-                  <a
+                  <Link
                     key={link.href}
                     href={link.href}
                     className="flex items-center gap-2.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-all group"
@@ -314,7 +315,7 @@ export default function DashboardPage() {
                     <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
                       {link.label}
                     </span>
-                  </a>
+                  </Link>
                 );
               })}
             </div>

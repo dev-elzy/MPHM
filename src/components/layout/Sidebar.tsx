@@ -18,7 +18,6 @@ import {
   Activity,
   UsersRound,
   Calendar,
-  UserCheck,
 } from 'lucide-react';
 import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
