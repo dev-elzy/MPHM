@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus, Edit2, Trash2, Upload, Download } from 'lucide-react';
+import { Plus, Trash2, Upload, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PageHeader } from '@/components/ui-custom/PageHeader';
@@ -124,11 +124,16 @@ export default function PenggunaPage() {
   const columns: ColumnDef<User>[] = [
     {
       accessorKey: 'name',
-      header: 'Nama Lengkap',
+      header: 'Pengguna',
       cell: ({ row }) => (
-        <div className="flex flex-col text-left">
-          <span className="font-semibold text-zinc-900 dark:text-zinc-50">{row.original.name}</span>
-          <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{row.original.email}</span>
+        <div className="flex items-center gap-3 text-left">
+          <div className="h-9 w-9 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0 shadow-inner">
+            {row.original.name ? row.original.name.slice(0, 2).toUpperCase() : 'US'}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-semibold text-zinc-900 dark:text-zinc-50 text-sm">{row.original.name}</span>
+            <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">{row.original.email}</span>
+          </div>
         </div>
       ),
     },
@@ -148,7 +153,7 @@ export default function PenggunaPage() {
             ? 'Mustahiq / Guru'
             : 'Mudir';
         return (
-          <span className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg text-xs font-semibold">
+          <span className="px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-full text-xs font-semibold border border-zinc-200/60 dark:border-zinc-700">
             {label}
           </span>
         );
@@ -174,12 +179,12 @@ export default function PenggunaPage() {
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
+            size="sm"
             onClick={() => handleEdit(row.original)}
-            className="h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 rounded-lg cursor-pointer"
+            className="h-8 px-3 rounded-full text-xs font-medium border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer shadow-none"
           >
-            <Edit2 className="h-3.5 w-3.5" />
+            Lihat / Edit
           </Button>
           <Button
             variant="ghost"

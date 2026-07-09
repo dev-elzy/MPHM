@@ -24,33 +24,23 @@ Standar ini berlaku untuk seluruh modul tanpa pengecualian.
 
 MPHM menggunakan konsep:
 
-> **Modern Enterprise SaaS Dashboard**
+> **Ultra-Modern Enterprise Professional SaaS Dashboard (AdminHMD Inspired)**
 
-Karakteristik utama:
-
-- Bersih (Clean)
-- Modern
-- Elegan
-- Ringan
-- Profesional
-- Informatif
-- Tidak ramai
-- Konsisten
-- Cepat dipahami
-- Berorientasi pada produktivitas
+Karakteristik utama yang WAJIB dipenuhi:
+- **Modern & Eksklusif** (Tidak boleh kaku, klasik, atau terlihat seperti sistem lama/tradisional)
+- **Profesional & Premium** (Proporsi spasi yang lega, tipografi tajam, kontras visual yang elegan)
+- **Bersih (Clean & Scannable)**
+- **Informatif & Berorientasi Produktivitas**
+- **Konsisten di seluruh modul**
 
 Inspirasi desain berasal dari:
-
+- **AdminHMD Professional Template** (Identity Cell, Pill Badges, Executive Topbar, User Profile Widget)
 - Linear
 - Vercel Dashboard
 - Stripe Dashboard
-- Notion
 - Supabase
-- Clerk
-- GitHub
-- Raycast
 
-MPHM **bukan** menggunakan gaya AdminLTE, Bootstrap Admin, atau dashboard lama.
+MPHM **dilarang keras** menggunakan gaya desain kaku/klasik, AdminLTE lama, atau antarmuka yang kurang profesional.
 
 ---
 
@@ -267,31 +257,33 @@ Seluruh halaman mengikuti struktur yang sama.
 
 ---
 
-# 12. Sidebar
+# 12. Sidebar (Modern Enterprise AdminHMD Model)
 
-Sidebar bersifat tetap.
+Sidebar bersifat tetap (Fixed layout).
 
-Menu menggunakan Icon + Label.
+Menu menggunakan Icon + Label dengan kejelasan visual tinggi.
 
-Mendukung.
+Mendukung:
+- Collapse & Expand dengan animasi halus
+- Active State bergaya pill / bar tegas
+- Nested Menu terstruktur
 
-- Collapse
-- Expand
-- Tooltip
-- Active State
-- Nested Menu
+Wajib memiliki komponen di bagian bawah (Sidebar Footer):
+1. **User Profile Card**: Kartu profil rounded eksklusif berisi inisial Avatar, Nama Lengkap, dan Role/Workspace.
+2. **System Health Indicator**: Indikator titik hijau aktif berdenyut (*pulsing green dot*) dengan label status sistem (`System running smoothly`).
 
 ---
 
-# 13. Header
+# 13. Header / Executive Topbar
 
-Header minimal berisi.
+Header wajib bernuansa modern, profesional, dan tidak kaku.
 
-- Breadcrumb
-- Search
-- Notification
-- User Menu
-- Theme (Future Ready)
+Header minimal berisi:
+- **Breadcrumb Navigasi**
+- **Executive Search Bar**: Input pencarian berbentuk *pill (`rounded-full`)* dengan shortcut badge `Ctrl K`
+- **Notification Bell**: Indikator notifikasi dengan alert badge berdenyut
+- **User Profile Pill Menu**: Navigasi profil cepat
+- **Theme Toggle**: Pengatur tema Light/Dark Mode
 
 ---
 

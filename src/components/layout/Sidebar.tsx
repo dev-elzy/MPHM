@@ -253,23 +253,33 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
         </nav>
       </div>
 
-      {user && (
-        <div className="p-3 border-t border-zinc-200/40 dark:border-zinc-800/40 bg-zinc-50/50 dark:bg-zinc-900/30">
-          <div className="flex items-center gap-3 px-2 py-1.5">
-            <div className="h-8 w-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
-              {user.name?.charAt(0).toUpperCase() || 'U'}
-            </div>
-            <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
-                {user.name}
-              </span>
-              <span className="text-[10px] text-brand-gold font-medium uppercase tracking-wider truncate">
-                {getRoleBadgeLabel(role)}
-              </span>
-            </div>
+      {/* AdminHMD-style User Profile Card & System Status Footer */}
+      <div className="p-3 border-t border-zinc-200/40 dark:border-zinc-800/40 bg-zinc-50/70 dark:bg-zinc-900/40 flex flex-col gap-2.5">
+        <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
+          <div className="h-9 w-9 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0 shadow-inner">
+            {user?.name ? user.name.slice(0, 2).toUpperCase() : 'AV'}
+          </div>
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+              {user?.name || 'Admin Hasan'}
+            </span>
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium truncate">
+              {user ? getRoleBadgeLabel(role) : 'Active Workspace'}
+            </span>
           </div>
         </div>
-      )}
+
+        {/* System running smoothly status line */}
+        <div className="flex items-center gap-2 px-1 py-0.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 tracking-tight">
+            System running smoothly
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

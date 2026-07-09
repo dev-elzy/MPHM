@@ -582,6 +582,24 @@ Seluruh Data Grid wajib menggunakan:
 
 ---
 
+# Cell Formatting & Ultra-Modern Table Visual Standard (AdminHMD Model)
+
+Seluruh tampilan tabel dan sel data **WAJIB** bernuansa modern, profesional, dan elegan (berkarakter Enterprise SaaS), tidak boleh kaku atau bergaya klasik tradisional.
+
+1. **Identity Cell Pattern (Kolom Entitas Orang)**:
+   Setiap data pengguna/santri/pengajar/staff wajib di-render dengan kombinasi:
+   - **Avatar / Inisial Bundar** (`rounded-full`) dengan latar lembut (`bg-primary/10`)
+   - **Nama Utama Tebal (`font-semibold text-sm`)**
+   - **Sub-info / Email / NIP (`text-xs text-zinc-400`)** tepat di bawah nama
+
+2. **Status & Role Pill Badges**:
+   Seluruh status akun maupun role wajib menggunakan *pill badge (`rounded-full`)* berspasi rapi dengan warna semantik modern (Hijau `Active`, Kuning/Amber `Pending`, Abu-abu/Merah `Suspended`).
+
+3. **Row Action Pill Button**:
+   Tombol aksi per baris menggunakan desain *pill outline / light button (`rounded-full`)* seperti tombol `Lihat / Edit` agar tabel tampak bersih dan berkelas.
+
+---
+
 # Prinsip
 
 Universal Data Grid merupakan standar antarmuka utama dalam sistem MPHM.

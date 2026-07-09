@@ -19,15 +19,15 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="relative hidden md:flex items-center w-64 lg:w-80 group">
-          <Search className="absolute left-3 h-4 w-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
+        <div className="relative hidden md:flex items-center w-64 lg:w-96 group">
+          <Search className="absolute left-3.5 h-4 w-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
           <Input
             type="search"
-            placeholder="Search..."
-            className="w-full bg-zinc-100/50 dark:bg-zinc-900/50 pl-9 pr-12 rounded-lg border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 focus-visible:bg-white dark:focus-visible:bg-zinc-950 focus-visible:ring-1 focus-visible:ring-primary h-9 text-sm shadow-none transition-all placeholder:text-zinc-500"
+            placeholder="Cari pengguna, santri, kelas, laporan..."
+            className="w-full bg-zinc-100/70 dark:bg-zinc-900/70 pl-10 pr-12 rounded-full border border-zinc-200/60 dark:border-zinc-800/80 hover:border-zinc-300 dark:hover:border-zinc-700 focus-visible:bg-white dark:focus-visible:bg-zinc-950 focus-visible:ring-1 focus-visible:ring-primary h-9.5 text-sm shadow-sm transition-all placeholder:text-zinc-500"
           />
-          <div className="absolute right-2 flex items-center justify-center h-5 w-5 rounded border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pointer-events-none">
-            <span className="text-[10px] font-medium text-zinc-500">/</span>
+          <div className="absolute right-2.5 flex items-center justify-center h-5 px-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pointer-events-none">
+            <span className="text-[10px] font-medium text-zinc-500">Ctrl K</span>
           </div>
         </div>
         <div className="flex items-center gap-2 pl-2 border-l border-zinc-200/50 dark:border-zinc-800/50">
