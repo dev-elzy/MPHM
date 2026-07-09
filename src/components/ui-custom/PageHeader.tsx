@@ -66,7 +66,7 @@ export function PageHeader({
 
           <div className="flex items-center gap-3">
             <span className="w-1.5 h-7 rounded-full bg-primary shrink-0 shadow-sm shadow-primary/40" />
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight break-words">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight wrap-break-word">
               {title}
             </h1>
           </div>
