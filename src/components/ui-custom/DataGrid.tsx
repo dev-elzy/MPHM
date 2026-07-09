@@ -190,7 +190,7 @@ export function DataGrid<TData>({
   return (
     <div className="space-y-4 text-left">
       {/* 1. TOOLBAR AREA */}
-      <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         <div className="flex items-center gap-2.5 w-full md:max-w-md">
           {onSearchChange && (
             <SearchBox

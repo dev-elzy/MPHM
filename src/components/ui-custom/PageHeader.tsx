@@ -26,7 +26,7 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-linear-to-r from-zinc-900 via-zinc-850 to-zinc-900 text-white p-6 sm:p-7 shadow-xl transition-all duration-300',
+        'relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-linear-to-r from-zinc-900 via-zinc-850 to-zinc-900 text-white p-4 sm:p-6 md:p-7 shadow-xl transition-all duration-300',
         className
       )}
     >
@@ -35,7 +35,7 @@ export function PageHeader({
       <div className="absolute right-1/4 -bottom-12 h-36 w-36 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
 
       <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 min-w-0">
           {breadcrumbs && breadcrumbs.length > 0 && (
             <nav className="flex items-center flex-wrap gap-1.5 text-xs text-zinc-400 mb-1">
               {breadcrumbs.map((crumb, i) => (
@@ -66,20 +66,20 @@ export function PageHeader({
 
           <div className="flex items-center gap-3">
             <span className="w-1.5 h-7 rounded-full bg-primary shrink-0 shadow-sm shadow-primary/40" />
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-none">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight break-words">
               {title}
             </h1>
           </div>
 
           {description && (
-            <p className="text-sm text-zinc-300/90 max-w-2xl leading-relaxed pl-4.5">
+            <p className="text-xs sm:text-sm text-zinc-300/90 max-w-2xl leading-relaxed pl-4.5">
               {description}
             </p>
           )}
         </div>
 
         {actions && (
-          <div className="flex items-center gap-3 flex-wrap lg:justify-end shrink-0 pt-2 lg:pt-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full lg:w-auto lg:justify-end shrink-0 pt-3 lg:pt-0">
             {actions}
           </div>
         )}
