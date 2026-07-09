@@ -21,6 +21,14 @@ interface SearchResult {
   roles: RoleBadge[];
 }
 
+interface SearchApiResponse {
+  success: boolean;
+  data?: {
+    results?: SearchResult[];
+  };
+  message?: string;
+}
+
 export function GlobalCommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -51,7 +59,7 @@ export function GlobalCommandPalette() {
       setIsLoading(true);
       try {
         const res = await fetch(`/api/v1/data-center/search?q=${encodeURIComponent(query)}`);
-        const data: any = await res.json();
+        const data = (await res.json()) as SearchApiResponse;
         if (data.success && data.data?.results) {
           setResults(data.data.results);
         } else {
@@ -70,14 +78,16 @@ export function GlobalCommandPalette() {
   if (!isOpen) {
     return (
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors"
+        className="relative flex items-center w-full h-9.5 px-3.5 bg-zinc-100/80 dark:bg-zinc-900/80 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/80 rounded-full border border-zinc-200/60 dark:border-zinc-800 text-sm text-zinc-500 transition-all cursor-pointer shadow-sm group"
       >
-        <Search className="w-4 h-4" />
-        <span>Cari Pusat Data...</span>
-        <kbd className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-semibold text-slate-500 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-700">
-          <Command className="w-3 h-3" /> K
-        </kbd>
+        <Search className="w-4 h-4 mr-2.5 text-zinc-400 group-hover:text-emerald-500 shrink-0 transition-colors" />
+        <span className="truncate text-xs sm:text-sm">Cari santri, pengajar, kelas...</span>
+        <div className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-[10px] font-semibold text-zinc-500 shrink-0">
+          <Command className="w-3 h-3" />
+          <span>K</span>
+        </div>
       </button>
     );
   }
@@ -112,22 +122,22 @@ export function GlobalCommandPalette() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 bg-slate-900/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 bg-slate-950/70 backdrop-blur-md">
       <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden mx-4">
         {/* Top Search Input */}
-        <div className="flex items-center px-4 border-b border-slate-200 dark:border-slate-800">
-          <Search className="w-5 h-5 text-slate-400 mr-3" />
+        <div className="flex items-center px-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900">
+          <Search className="w-5 h-5 text-emerald-500 mr-3 shrink-0" />
           <input
             type="text"
             autoFocus
-            placeholder="Cari warga MPHM (Nama, NIS, HP, Alamat)..."
+            placeholder="Cari warga MPHM (Nama, NIS, NISN, HP)..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full py-4 text-base bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none"
+            className="w-full py-4 text-sm sm:text-base bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none"
           />
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -136,7 +146,7 @@ export function GlobalCommandPalette() {
         {/* Search Results List */}
         <div className="max-h-96 overflow-y-auto p-2">
           {isLoading ? (
-            <div className="py-8 text-center text-sm text-slate-500">Mencari di Pusat Data...</div>
+            <div className="py-8 text-center text-sm text-slate-500">Mencari di Pusat Data MPHM...</div>
           ) : results.length === 0 ? (
             <div className="py-8 text-center text-sm text-slate-500">
               {query ? 'Tidak ada data warga yang sesuai pencarian.' : 'Ketik nama, NIS, atau nomor HP untuk mencari.'}
@@ -147,16 +157,16 @@ export function GlobalCommandPalette() {
                 key={person.id}
                 onClick={() => {
                   setIsOpen(false);
-                  router.push(`/data-center/profile/${person.id}`);
+                  router.push(`/dashboard/data-center/profile/${person.id}`);
                 }}
                 className="flex items-center justify-between p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/60 rounded-xl cursor-pointer transition-colors group"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">
                     {person.fullName.substring(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <div className="font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <div className="font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
                       {person.fullName}
                     </div>
                     <div className="text-xs text-slate-500 truncate">
@@ -177,7 +187,7 @@ export function GlobalCommandPalette() {
                       {role.label}
                     </span>
                   ))}
-                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all ml-1" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all ml-1" />
                 </div>
               </div>
             ))
