@@ -74,6 +74,31 @@ export async function GET(request: Request) {
       conditions.push(eq(classes.curriculumId, curriculumId));
     }
 
+    // Role-based filtering for mustahiq/teachers (only assigned classes)
+    const isTeacher = ['mustahiq', 'teacher', 'ustadz'].includes(session.role.toLowerCase());
+    if (isTeacher) {
+      // Find class IDs assigned to this teacher
+      const assignedClassIdsSubquery = db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.status, 'active')
+          )
+        );
+      
+      const assignedResult = await assignedClassIdsSubquery;
+      const assignedIds = assignedResult.map(r => r.classId);
+      
+      if (assignedIds.length > 0) {
+        conditions.push(sql`${classes.id} IN (${sql.raw(assignedIds.map(id => `'${id}'`).join(','))})`);
+      } else {
+        // Teacher has no classes, force empty results
+        conditions.push(eq(classes.id, 'none_assigned'));
+      }
+    }
+
     const finalCondition = and(...conditions);
 
     // 2. Count Total

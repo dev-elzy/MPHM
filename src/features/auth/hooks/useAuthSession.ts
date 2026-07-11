@@ -20,7 +20,7 @@ export function useAuthSession() {
       const json = (await res.json()) as { data: AuthUser };
       return json.data;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Resolve instantly on role change/login
     retry: false,
   });
 

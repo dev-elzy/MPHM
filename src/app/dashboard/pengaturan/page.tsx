@@ -95,7 +95,7 @@ export default function PengaturanPage() {
     try {
       const res = await fetch('/api/v1/users');
       if (res.ok) {
-        const json = await res.json();
+        const json = (await res.json()) as any;
         setUsersList(json.data || []);
       }
     } catch (err) {
@@ -110,7 +110,7 @@ export default function PengaturanPage() {
     try {
       const res = await fetch('/api/v1/notifications/sent');
       if (res.ok) {
-        const json = await res.json();
+        const json = (await res.json()) as any;
         setSentNotifications(json.data || []);
       }
     } catch (err) {
@@ -146,7 +146,7 @@ export default function PengaturanPage() {
         }),
       });
 
-      const json = await res.json();
+      const json = (await res.json()) as any;
       if (res.ok && json.success) {
         toast.success('Profil berhasil diperbarui!');
         refetchSession();
@@ -184,7 +184,7 @@ export default function PengaturanPage() {
         }),
       });
 
-      const json = await res.json();
+      const json = (await res.json()) as any;
       if (res.ok && json.success) {
         toast.success('Kata sandi berhasil diubah!');
         setOldPassword('');
@@ -221,7 +221,7 @@ export default function PengaturanPage() {
         }),
       });
 
-      const json = await res.json();
+      const json = (await res.json()) as any;
       if (res.ok && json.success) {
         toast.success('Notifikasi realtime berhasil dikirim!');
         setNotifTitle('');

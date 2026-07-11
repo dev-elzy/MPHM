@@ -22,7 +22,7 @@ export function Header() {
     queryFn: async () => {
       const res = await fetch('/api/v1/notifications');
       if (res.ok) {
-        const json = await res.json();
+        const json = (await res.json()) as any;
         return json.data || [];
       }
       return [];
@@ -66,13 +66,11 @@ export function Header() {
 
         <div className="flex items-center gap-2 pl-2 border-l border-zinc-200/50 dark:border-zinc-800/50">
           <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg relative cursor-pointer">
-                <Bell className="h-4.5 w-4.5" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-zinc-950 animate-pulse" />
-                )}
-              </Button>
+            <PopoverTrigger className="h-9 w-9 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-lg relative cursor-pointer flex items-center justify-center">
+              <Bell className="h-4.5 w-4.5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-emerald-500 rounded-full ring-2 ring-white dark:ring-zinc-950 animate-pulse" />
+              )}
             </PopoverTrigger>
             <PopoverContent className="w-80 p-0 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl overflow-hidden" align="end">
               <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex items-center justify-between">
