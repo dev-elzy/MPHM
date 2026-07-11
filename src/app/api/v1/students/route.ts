@@ -3,7 +3,7 @@ import { eq, sql, and, like, or, SQL } from 'drizzle-orm';
 import { AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 import { getDb } from '@/db/client';
 import { students, classStudents } from '@/db/schema/students';
-import { classes } from '@/db/schema/classes';
+import { classes, classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
 import { validateBody, validateQueryParams } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';
@@ -64,6 +64,37 @@ export async function GET(request: Request) {
 
     const db = getDb();
 
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    let activeClassId = classId;
+
+    if (isMustahiq) {
+      // Find classes assigned to this mustahiq
+      const assignments = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.status, 'active')
+          )
+        );
+      
+      const mustahiqClassIds = assignments.map((a) => a.classId);
+      if (mustahiqClassIds.length === 0) {
+        return apiSuccess({ items: [], meta: getPaginationMeta(0, page, limit) }, 'Berhasil mengambil daftar siswi');
+      }
+
+      if (classId) {
+        if (!mustahiqClassIds.includes(classId)) {
+          return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+        }
+      } else {
+        // Force filter to mustahiq's classes
+        activeClassId = mustahiqClassIds[0];
+      }
+    }
+
     // 1. Build conditions
     const conditions = [
       eq(students.institutionId, session.institutionId),
@@ -84,7 +115,7 @@ export async function GET(request: Request) {
     }
 
     // Handle class enrollment filter
-    const isEnrolledFilter = classId || (academicYearId && semesterId);
+    const isEnrolledFilter = activeClassId || (academicYearId && semesterId);
 
     const baseQuery = db
       .select({ count: sql<number>`count(distinct ${students.id})` })
@@ -94,7 +125,7 @@ export async function GET(request: Request) {
       const joinConditions = [eq(classStudents.studentId, students.id)];
       if (academicYearId) joinConditions.push(eq(classStudents.academicYearId, academicYearId));
       if (semesterId) joinConditions.push(eq(classStudents.semesterId, semesterId));
-      if (classId) joinConditions.push(eq(classStudents.classId, classId));
+      if (activeClassId) joinConditions.push(eq(classStudents.classId, activeClassId));
 
       baseQuery.innerJoin(classStudents, and(...joinConditions));
     }
@@ -135,7 +166,7 @@ export async function GET(request: Request) {
     const joinConditions = [eq(classStudents.studentId, students.id)];
     if (academicYearId) joinConditions.push(eq(classStudents.academicYearId, academicYearId));
     if (semesterId) joinConditions.push(eq(classStudents.semesterId, semesterId));
-    if (classId) joinConditions.push(eq(classStudents.classId, classId));
+    if (activeClassId) joinConditions.push(eq(classStudents.classId, activeClassId));
 
     if (isEnrolledFilter) {
       selectQuery
