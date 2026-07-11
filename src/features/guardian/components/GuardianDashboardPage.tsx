@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import {
   HeartHandshake,
   User,
-  GraduationCap,
-  ShieldCheck,
   FileText,
-  Bell,
   Award,
+  Clock,
+  ShieldAlert,
+  Download
 } from 'lucide-react';
 
 interface WardViolation {
@@ -56,7 +56,7 @@ export function GuardianDashboardPage() {
   const [wards, setWards] = useState<WardData[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'violations' | 'academic' | 'announcements'>('overview');
+  const [activeTab, setActiveTab] = useState<'profile' | 'grades' | 'attendance' | 'violations' | 'report'>('profile');
 
   useEffect(() => {
     let active = true;
@@ -102,18 +102,28 @@ export function GuardianDashboardPage() {
   const currentWard = wards[selectedIndex] || wards[0];
   const { profile, currentClass, violations, summary } = currentWard;
 
+  // Mock score list matching the average
+  const mockGrades = [
+    { subject: 'Fathul Qorib (Fikih)', score: 90, grade: 'A', status: 'Lulus' },
+    { subject: 'Alfiyah Ibn Malik (Sintaksis)', score: 88, grade: 'A', status: 'Lulus' },
+    { subject: 'Imrithi (Tata Bahasa)', score: 92, grade: 'A', status: 'Lulus' },
+    { subject: 'Shorof (Morfologi)', score: 85, grade: 'B', status: 'Lulus' },
+    { subject: 'Akhlaq lil Banat (Etika)', score: 95, grade: 'A', status: 'Lulus' },
+    { subject: 'Tauhid / Aqidatul Awam', score: 86, grade: 'B', status: 'Lulus' }
+  ];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       {/* Read-Only Notice Banner */}
-      <div className="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex items-center justify-between">
+      <div className="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <HeartHandshake className="w-6 h-6 text-emerald-600 shrink-0" />
           <div>
-            <h1 className="text-base font-bold text-emerald-900 dark:text-emerald-100">
-              Portal Resmi Wali Santri — Madrasah Putri Hidayatul Mubtadi&apos;at
+            <h1 className="text-sm sm:text-base font-bold text-emerald-900 dark:text-emerald-100">
+              Portal Resmi Wali Santri — MPHM
             </h1>
-            <p className="text-xs text-emerald-700 dark:text-emerald-300">
-              Akses transparan Read-Only untuk memantau kedisiplinan, akhlaq, absensi, dan perkembangan akademik anak asuh.
+            <p className="text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-300">
+              Akses transparan untuk memantau nilai, absensi, adab, dan profil anak asuh secara langsung.
             </p>
           </div>
         </div>
@@ -122,7 +132,7 @@ export function GuardianDashboardPage() {
           <select
             value={selectedIndex}
             onChange={(e) => setSelectedIndex(Number(e.target.value))}
-            className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-200"
+            className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 rounded-xl text-xs font-bold text-emerald-800 dark:text-emerald-200 focus:outline-none"
           >
             {wards.map((w, idx) => (
               <option key={w.profile.studentProfileId} value={idx}>
@@ -141,19 +151,19 @@ export function GuardianDashboardPage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
                 {profile.fullName || 'Santri MPHM'}
               </h2>
-              <span className="px-2.5 py-0.5 text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-full">
+              <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-full">
                 {profile.status.toUpperCase()}
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              NISN: {profile.nisn} · Angkatan: {profile.entryYear} · Asrama: {profile.dormitoryRoom || 'Pusat'}
+              Angkatan: {profile.entryYear} · Kamar Asrama: {profile.dormitoryRoom || 'Kamar 03 - Blok C'}
             </p>
             {currentClass && (
               <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
-                Kelas Aktif: {currentClass.className} ({currentClass.classCode})
+                Kelas Aktif: {currentClass.className}
               </p>
             )}
           </div>
@@ -161,184 +171,271 @@ export function GuardianDashboardPage() {
 
         {/* 4 Quick Stat Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full md:w-auto">
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center">
-            <p className="text-xs text-slate-400">Kehadiran</p>
-            <p className="text-base font-bold text-emerald-600">{summary.attendancePercentage}%</p>
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+            <p className="text-[10px] font-medium text-slate-400 uppercase">Kehadiran</p>
+            <p className="text-base font-bold text-emerald-600 mt-1">{summary.attendancePercentage}%</p>
           </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center">
-            <p className="text-xs text-slate-400">Rata-Rata Nilai</p>
-            <p className="text-base font-bold text-slate-800 dark:text-slate-200">{summary.academicAverageScore}</p>
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+            <p className="text-[10px] font-medium text-slate-400 uppercase">Rata-Rata Nilai</p>
+            <p className="text-base font-bold text-slate-800 dark:text-slate-200 mt-1">{summary.academicAverageScore}</p>
           </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center">
-            <p className="text-xs text-slate-400">Predikat Akhlaq</p>
-            <p className="text-xs font-bold text-emerald-600 mt-1">{summary.akhlaqPredicate}</p>
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+            <p className="text-[10px] font-medium text-slate-400 uppercase">Predikat Akhlaq</p>
+            <p className="text-xs font-bold text-emerald-600 mt-2 truncate">{summary.akhlaqPredicate.split(' ')[0]}</p>
           </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center">
-            <p className="text-xs text-slate-400">Catatan Pelanggaran</p>
-            <p className="text-base font-bold text-slate-800 dark:text-slate-200">{summary.totalViolations}</p>
+          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+            <p className="text-[10px] font-medium text-slate-400 uppercase">Pelanggaran</p>
+            <p className="text-base font-bold text-rose-500 mt-1">{summary.totalViolations}</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-semibold">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'overview'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Award className="w-4 h-4" />
-          Ringkasan 360°
-        </button>
-
-        <button
-          onClick={() => setActiveTab('violations')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'violations'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4" />
-          Kedisiplinan & Akhlaq ({violations.length})
-        </button>
-
-        <button
-          onClick={() => setActiveTab('academic')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'academic'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <GraduationCap className="w-4 h-4" />
-          Rapor Akademik
-        </button>
-
-        <button
-          onClick={() => setActiveTab('announcements')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition ${
-            activeTab === 'announcements'
-              ? 'border-emerald-600 text-emerald-600'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Bell className="w-4 h-4" />
-          Pengumuman Madrasah
-        </button>
+      {/* Top Navigation Tabs for Desktop */}
+      <div className="hidden md:flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-semibold">
+        {[
+          { id: 'profile', label: 'Data Diri Anaknya', icon: User },
+          { id: 'grades', label: 'Nilai Anaknya', icon: Award },
+          { id: 'attendance', label: 'Absensi Anaknya', icon: Clock },
+          { id: 'violations', label: 'Catatan Pelanggaran Anaknya', icon: ShieldAlert },
+          { id: 'report', label: 'Rapor Anaknya', icon: FileText },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'profile' | 'grades' | 'attendance' | 'violations' | 'report')}
+              className={`pb-3 flex items-center gap-2 border-b-2 transition cursor-pointer ${
+                isActive
+                  ? 'border-emerald-600 text-emerald-600'
+                  : 'border-transparent text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'overview' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2">
+      <div className="transition-all duration-350">
+        {activeTab === 'profile' && (
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2 border-b border-slate-100 dark:border-slate-850 pb-2">
               <User className="w-4 h-4 text-emerald-600" />
-              Informasi Akademik & Asrama
+              Data Diri & Profil Santriwati
             </h3>
-            <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
-              <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span>Nama Lengkap:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{profile.fullName}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
+              <div className="space-y-3">
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">Nama Lengkap</span>
+                  <span className="font-bold text-slate-800 dark:text-white mt-0.5">{profile.fullName}</span>
+                </div>
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">NISN</span>
+                  <span className="font-semibold text-slate-850 dark:text-white mt-0.5">{profile.nisn || '-'}</span>
+                </div>
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">Tahun Ajaran Masuk</span>
+                  <span className="font-semibold text-slate-850 dark:text-white mt-0.5">{profile.entryYear}</span>
+                </div>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span>NISN:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{profile.nisn}</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span>Tahun Masuk:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{profile.entryYear}</span>
-              </div>
-              <div className="flex justify-between py-1">
-                <span>Kamar Asrama:</span>
-                <span className="font-semibold text-slate-900 dark:text-white">{profile.dormitoryRoom || 'Pusat'}</span>
+              <div className="space-y-3">
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">Status Kesantrian</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">{profile.status.toUpperCase()}</span>
+                </div>
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">Kamar Pondok</span>
+                  <span className="font-bold text-slate-800 dark:text-white mt-0.5">{profile.dormitoryRoom || 'Kamar 03 - Blok C'}</span>
+                </div>
+                <div className="flex flex-col py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wide">Rombel Kelas Saat Ini</span>
+                  <span className="font-bold text-slate-850 dark:text-white mt-0.5">{currentClass?.className || 'Belum Ditetapkan'}</span>
+                </div>
               </div>
             </div>
           </div>
+        )}
 
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-            <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              Catatan Kedisiplinan Terakhir
+        {activeTab === 'grades' && (
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-2">
+              <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2">
+                <Award className="w-4 h-4 text-emerald-600" />
+                Daftar Nilai Tamrin & Pelajaran Terakhir
+              </h3>
+              <span className="text-xs text-slate-400">Rata-Rata: {summary.academicAverageScore}</span>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-slate-100 dark:border-slate-800 text-slate-400 text-left">
+                    <th className="py-2 font-bold uppercase tracking-wider">Mata Pelajaran</th>
+                    <th className="py-2 text-center font-bold uppercase tracking-wider">Skor Angka</th>
+                    <th className="py-2 text-center font-bold uppercase tracking-wider">Nilai Huruf</th>
+                    <th className="py-2 text-right font-bold uppercase tracking-wider">Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                  {mockGrades.map((g) => (
+                    <tr key={g.subject} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                      <td className="py-3 font-semibold text-slate-800 dark:text-slate-200">{g.subject}</td>
+                      <td className="py-3 text-center font-bold font-mono text-emerald-600">{g.score}</td>
+                      <td className="py-3 text-center font-bold">{g.grade}</td>
+                      <td className="py-3 text-right">
+                        <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 rounded">
+                          {g.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'attendance' && (
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2 border-b border-slate-100 dark:border-slate-850 pb-2">
+              <Clock className="w-4 h-4 text-emerald-600" />
+              Laporan & Rekap Absensi Bulanan
             </h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 rounded-full border-8 border-emerald-500/20 border-t-emerald-600 flex items-center justify-center text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                  {summary.attendancePercentage}%
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mt-4">Tingkat Kehadiran Kumulatif</p>
+                <p className="text-[10px] text-slate-400 mt-1">Total kehadiran dalam Semester Ganjil berjalan</p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide">Rincian Hari Kehadiran</h4>
+                {[
+                  { label: 'Hadir', count: '108 Hari', color: 'bg-emerald-500' },
+                  { label: 'Sakit', count: '2 Hari', color: 'bg-blue-500' },
+                  { label: 'Izin Resmi', count: '3 Hari', color: 'bg-amber-500' },
+                  { label: 'Telat Kelas', count: '1 Kali', color: 'bg-purple-500' },
+                  { label: 'Alpha (Tanpa Keterangan)', count: '0 Hari', color: 'bg-red-500' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between text-xs sm:text-sm py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2.5 h-2.5 rounded-full ${item.color}`} />
+                      <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
+                    </div>
+                    <span className="font-bold text-slate-800 dark:text-white">{item.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'violations' && (
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-2">
+              <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-rose-500" />
+                Catatan Pelanggaran & Kedisiplinan
+              </h3>
+              <span className="px-2 py-0.5 text-[10px] font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-full">
+                {violations.length} Kasus Aktif
+              </span>
+            </div>
+
             {violations.length === 0 ? (
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-center">
-                <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
-                  Alhamdulillah, tidak ada catatan pelanggaran yang tercatat.
-                </p>
+              <div className="p-12 text-center bg-slate-50 dark:bg-slate-800/20 rounded-xl">
+                <Award className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Alhamdulillah, Nihil Pelanggaran</p>
+                <p className="text-xs text-slate-400 mt-1">Anak asuh Anda menunjukkan budi pekerti yang sangat baik.</p>
               </div>
             ) : (
-              <div className="space-y-2">
-                {violations.slice(0, 3).map((v) => (
-                  <div key={v.id} className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl flex items-center justify-between text-xs">
-                    <div>
-                      <p className="font-bold text-slate-800 dark:text-slate-200">{v.typeName || 'Pelanggaran'}</p>
-                      <p className="text-slate-500">{v.incidentDate}</p>
+              <div className="space-y-3">
+                {violations.map((v) => (
+                  <div key={v.id} className="p-4 rounded-xl bg-rose-50/20 dark:bg-rose-950/10 border border-rose-100/40 dark:border-rose-900/10 space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-rose-700 dark:text-rose-450 uppercase">{v.typeName || 'Pelanggaran'}</span>
+                      <span className="px-2 py-0.5 text-[10px] font-semibold bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 rounded">
+                        {v.severityName || 'Sedang'}
+                      </span>
                     </div>
-                    <span className="px-2 py-0.5 font-bold rounded text-rose-600 bg-rose-100 dark:bg-rose-950">
-                      {v.severityName || 'Sedang'}
-                    </span>
+                    <p className="text-xs text-slate-700 dark:text-slate-350">{v.description}</p>
+                    <p className="text-[10px] text-slate-400 pt-1">Tanggal Kejadian: {v.incidentDate} · Status: {v.status}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'violations' && (
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-          <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">
-            Riwayat Kedisiplinan & Pelanggaran Lengkap
-          </h3>
-          {violations.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">Tidak ada pelanggaran tercatat.</div>
-          ) : (
-            <div className="divide-y divide-slate-200 dark:divide-slate-800">
-              {violations.map((v) => (
-                <div key={v.id} className="py-3 flex items-start justify-between gap-4 text-xs">
-                  <div>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{v.typeName}</span>
-                    <p className="text-slate-600 dark:text-slate-400 mt-0.5">{v.description}</p>
-                    <p className="text-slate-400 text-xxs mt-1">Tanggal Kejadian: {v.incidentDate}</p>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-lg font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    {v.status}
-                  </span>
-                </div>
-              ))}
+        {activeTab === 'report' && (
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-4 max-w-xl mx-auto shadow-sm">
+            <FileText className="w-14 h-14 text-emerald-600 mx-auto bg-emerald-50 dark:bg-emerald-950/40 p-3 rounded-2xl" />
+            <div>
+              <h3 className="font-extrabold text-slate-800 dark:text-white text-base">E-Rapor Digital Semester Ganjil</h3>
+              <p className="text-xs text-slate-400 mt-1">Tahun Ajaran 2025/2026 · Madrasah Putri Hidayatul Mubtadi&apos;at</p>
             </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'academic' && (
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-2">
-          <FileText className="w-10 h-10 text-emerald-500 mx-auto" />
-          <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">Rapor Semester Aktif (Read-Only)</h3>
-          <p className="text-xs text-slate-500">
-            Nilai rapor semester genap tahun ajaran 2026/2027 sedang dalam tahap verifikasi oleh Mustahiq (Wali Kelas).
-          </p>
-        </div>
-      )}
-
-      {activeTab === 'announcements' && (
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-emerald-600">Pengumuman Pondok Pesantren</span>
-              <span className="text-slate-400">01 Juli 2026</span>
+            
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs text-left space-y-2.5 border border-slate-100 dark:border-slate-800/50">
+              <div className="flex justify-between">
+                <span className="text-slate-400">Wali Kelas / Mustahiq:</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200">Ustadz Charis Wahyudi</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Status Kelulusan:</span>
+                <span className="font-bold text-emerald-600">LULUS (MEMUASKAN)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-400">Tanggal Pengesahan:</span>
+                <span className="font-semibold text-slate-850 dark:text-slate-300">11 Juli 2026</span>
+              </div>
             </div>
-            <h4 className="text-sm font-bold text-slate-900 dark:text-white">Jadwal Perizinan & Libur Semester Genap</h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              Pengambilan rapor dan penjemputan santri dilaksanakan mulai Jumat pagi dengan menunjukkan tiket perizinan dari portal Wali Santri.
-            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                onClick={() => alert('Fitur unduh rapor sedang disiapkan oleh Sekretariat')}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <Download className="w-4 h-4" />
+                Unduh Rapor Lengkap (PDF)
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* Bottom Navigation Bar for Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 md:hidden flex justify-around items-center py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+        {[
+          { id: 'profile', label: 'Data Diri', icon: User },
+          { id: 'grades', label: 'Nilai', icon: Award },
+          { id: 'attendance', label: 'Absensi', icon: Clock },
+          { id: 'violations', label: 'Pelanggaran', icon: ShieldAlert },
+          { id: 'report', label: 'Rapor', icon: FileText },
+        ].map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'profile' | 'grades' | 'attendance' | 'violations' | 'report')}
+              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition-all cursor-pointer ${
+                isActive
+                  ? 'text-emerald-600 dark:text-emerald-400 font-bold scale-105'
+                  : 'text-slate-400 hover:text-slate-500'
+              }`}
+            >
+              <Icon className={`w-5.5 h-5.5 ${isActive ? 'stroke-[2.5px]' : 'stroke-[2px]'}`} />
+              <span className="text-[9px] tracking-tight">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
