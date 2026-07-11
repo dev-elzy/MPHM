@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 interface NotificationItem {
   id: string;
@@ -22,6 +23,7 @@ interface NotificationItem {
 }
 
 export function Header() {
+  const { isWali } = useAuthSession();
   const queryClient = useQueryClient();
 
   // Fetch real notifications from database
@@ -67,10 +69,12 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-3">
-        {/* Global Command Palette search bar inside Header */}
-        <div className="w-64 lg:w-96">
-          <GlobalCommandPalette />
-        </div>
+        {/* Global Command Palette search bar inside Header - hidden for Wali Santri and on mobile/tablet for others */}
+        {!isWali && (
+          <div className="hidden md:block w-64 lg:w-96">
+            <GlobalCommandPalette />
+          </div>
+        )}
 
         <div className="flex items-center gap-2 pl-2 border-l border-zinc-200/50 dark:border-zinc-800/50">
           <Popover>
