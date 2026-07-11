@@ -197,9 +197,6 @@ export function GuardianDashboardPage() {
             <h1 className="text-sm sm:text-base font-bold text-emerald-900 dark:text-emerald-100">
               Portal Resmi Wali Santri — MPHM
             </h1>
-            <p className="text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-300">
-              Akses transparan untuk memantau nilai, absensi, adab, dan profil anak asuh secara langsung.
-            </p>
           </div>
         </div>
 
