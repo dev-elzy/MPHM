@@ -4,7 +4,7 @@ import { getDb } from '@/db/client';
 import { scoreSessions } from '@/db/schema/scores';
 import { curriculumSubjects } from '@/db/schema/curriculums';
 import { subjects } from '@/db/schema/curriculums';
-import { classes } from '@/db/schema/classes';
+import { classes, classAssignments } from '@/db/schema/classes';
 import { academicYears } from '@/db/schema/academic-years';
 import { getSession } from '@/lib/auth/session';
 import { validateBody, validateQueryParams } from '@/lib/api/validation';
@@ -51,6 +51,35 @@ export async function GET(request: Request) {
         return apiError('Tahun ajaran tidak ditemukan atau bukan milik institusi Anda', 403);
       }
     }
+
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    let activeClassId = classId;
+
+    if (isMustahiq) {
+      const assignments = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.status, 'active')
+          )
+        );
+      
+      const mustahiqClassIds = assignments.map((a) => a.classId);
+      if (mustahiqClassIds.length === 0) {
+        return apiSuccess({ items: [], meta: getPaginationMeta(0, page, limit) }, 'Berhasil mengambil sesi nilai');
+      }
+
+      if (classId) {
+        if (!mustahiqClassIds.includes(classId)) {
+          return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+        }
+      } else {
+        activeClassId = mustahiqClassIds[0];
+      }
+    }
     const rows = await db
       .select({
         id: scoreSessions.id,
@@ -78,7 +107,7 @@ export async function GET(request: Request) {
           ...[
             academicYearId ? eq(scoreSessions.academicYearId, academicYearId) : undefined,
             semesterId ? eq(scoreSessions.semesterId, semesterId) : undefined,
-            classId ? eq(scoreSessions.classId, classId) : undefined,
+            activeClassId ? eq(scoreSessions.classId, activeClassId) : undefined,
             status ? eq(scoreSessions.status, status) : undefined,
           ].filter(Boolean) as SQL[]
         )
@@ -94,7 +123,7 @@ export async function GET(request: Request) {
           ...[
             academicYearId ? eq(scoreSessions.academicYearId, academicYearId) : undefined,
             semesterId ? eq(scoreSessions.semesterId, semesterId) : undefined,
-            classId ? eq(scoreSessions.classId, classId) : undefined,
+            activeClassId ? eq(scoreSessions.classId, activeClassId) : undefined,
             status ? eq(scoreSessions.status, status) : undefined,
           ].filter(Boolean) as SQL[]
         )
@@ -131,6 +160,26 @@ export async function POST(request: Request) {
       .limit(1);
     if (yearCheck.length === 0) {
       return apiError('Tahun ajaran tidak ditemukan atau bukan milik institusi Anda', 403);
+    }
+
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    if (isMustahiq) {
+      const assignment = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.classId, classId),
+            eq(classAssignments.status, 'active')
+          )
+        )
+        .limit(1);
+
+      if (assignment.length === 0) {
+        return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+      }
     }
 
     // Check for existing session (unique constraint)

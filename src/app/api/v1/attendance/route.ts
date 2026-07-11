@@ -4,6 +4,7 @@ import { getDb } from '@/db/client';
 import { attendance } from '@/db/schema/attendance';
 import { academicYears } from '@/db/schema/academic-years';
 import { students, classStudents } from '@/db/schema/students';
+import { classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';
@@ -48,6 +49,26 @@ export async function GET(request: Request) {
       .limit(1);
     if (yearCheck.length === 0) {
       return apiError('Tahun ajaran tidak ditemukan atau bukan milik institusi Anda', 403);
+    }
+
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    if (isMustahiq) {
+      const assignment = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.classId, classId),
+            eq(classAssignments.status, 'active')
+          )
+        )
+        .limit(1);
+
+      if (assignment.length === 0) {
+        return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+      }
     }
 
     if (summary) {
@@ -147,6 +168,26 @@ export async function POST(request: Request) {
       .limit(1);
     if (yearCheck.length === 0) {
       return apiError('Tahun ajaran tidak ditemukan atau bukan milik institusi Anda', 403);
+    }
+
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    if (isMustahiq) {
+      const assignment = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.classId, classId),
+            eq(classAssignments.status, 'active')
+          )
+        )
+        .limit(1);
+
+      if (assignment.length === 0) {
+        return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+      }
     }
 
     // Upsert each attendance record
