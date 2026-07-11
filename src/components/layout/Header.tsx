@@ -6,23 +6,31 @@ import { MobileSidebar } from '@/components/layout/Sidebar';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 import { UserNav } from '@/components/layout/UserNav';
 import { GlobalCommandPalette } from '@/components/common/GlobalCommandPalette';
-import { Bell, Trash2, Check, Inbox } from 'lucide-react';
+import { Bell, Check, Inbox } from 'lucide-react';
 import { Breadcrumb } from '@/components/ui-custom/Breadcrumb';
 import { Button } from '@/components/ui/button';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
 
+interface NotificationItem {
+  id: string;
+  title: string;
+  type: string;
+  message: string;
+  createdAt: string | number | Date;
+}
+
 export function Header() {
   const queryClient = useQueryClient();
 
   // Fetch real notifications from database
-  const { data: notificationsList = [], refetch } = useQuery<any[]>({
+  const { data: notificationsList = [] } = useQuery<NotificationItem[]>({
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await fetch('/api/v1/notifications');
       if (res.ok) {
-        const json = (await res.json()) as any;
+        const json = (await res.json()) as { data?: NotificationItem[] };
         return json.data || [];
       }
       return [];

@@ -134,7 +134,7 @@ export async function PATCH(
     }
 
     // Prepare update payload
-    const updateData: Record<string, any> = {
+    const updateData: Record<string, unknown> = {
       ...updateFields,
       updatedAt: new Date(),
       updatedBy: session.userId,

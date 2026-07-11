@@ -4,7 +4,7 @@ import { promotionPeriods } from '@/db/schema/promotions';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-export async function GET(_req: Request) {
+export async function GET() {
   try {
     const db = getDb();
     const periods = await db.query.promotionPeriods.findMany({

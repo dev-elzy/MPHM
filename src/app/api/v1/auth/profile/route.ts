@@ -50,7 +50,7 @@ export async function PATCH(request: Request) {
       return apiError('Pengguna tidak ditemukan', 404);
     }
 
-    const updateData: Record<string, any> = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
       updatedBy: session.userId,
     };

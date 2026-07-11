@@ -7,6 +7,7 @@ export interface AuthUser {
   role: 'super_admin' | 'admin' | 'operator' | 'mustahiq' | 'mudir' | string;
   roleId: string | null;
   institutionId: string;
+  avatarUrl?: string;
 }
 
 export function useAuthSession() {

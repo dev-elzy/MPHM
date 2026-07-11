@@ -1,1 +1,0 @@
-globalThis.__RSC_MANIFEST=(globalThis.__RSC_MANIFEST||{});globalThis.__RSC_MANIFEST["/api/v1/cron/cleanup/route"]={"moduleLoading":{"prefix":"/_next/"},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"clientModules":{},"entryCSSFiles":{"D:\\DEVELZY\\MPHM\\src\\app\\api\\v1\\cron\\cleanup\\route":[]},"rscModuleMapping":{},"edgeRscModuleMapping":{}};

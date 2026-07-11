@@ -1,7 +1,6 @@
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { notifications } from '@/db/schema/notifications';
-import { users } from '@/db/schema/users';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';

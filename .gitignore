@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 node_modules
+
+# OpenNext & Wrangler build output and state
+.open-next/
+.wrangler/

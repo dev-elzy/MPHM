@@ -1,31 +1,6 @@
 import { Curriculum, CurriculumSubject } from '../types';
 import { CurriculumFormData } from '../schemas';
 
-interface CurriculumDbItem {
-  id: string;
-  academicYearId: string;
-  name: string;
-  description?: string | null;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-interface CurriculumSubjectDbItem {
-  id: string;
-  curriculumId: string;
-  subjectId: string;
-  sortOrder: number;
-  maxScore: number;
-  minScore: number;
-  weight: number;
-  status: string;
-  notes?: string | null;
-  name: string;
-  code: string;
-  arabicName?: string | null;
-  category: string;
-}
 
 export const curriculumsService = {
   getAll: async (academicYearId?: string): Promise<Curriculum[]> => {

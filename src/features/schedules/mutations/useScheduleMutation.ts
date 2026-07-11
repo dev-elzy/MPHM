@@ -11,7 +11,7 @@ export function useCreateSchedule() {
       toast.success('Jadwal berhasil ditambahkan');
       qc.invalidateQueries({ queryKey: ['schedules'] });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || 'Gagal menambahkan jadwal');
     },
   });
@@ -26,7 +26,7 @@ export function useUpdateSchedule() {
       toast.success('Jadwal berhasil diperbarui');
       qc.invalidateQueries({ queryKey: ['schedules'] });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || 'Gagal memperbarui jadwal');
     },
   });
@@ -40,7 +40,7 @@ export function useDeleteSchedule() {
       toast.success('Jadwal berhasil dihapus');
       qc.invalidateQueries({ queryKey: ['schedules'] });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err.message || 'Gagal menghapus jadwal');
     },
   });

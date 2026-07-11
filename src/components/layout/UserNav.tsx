@@ -31,7 +31,7 @@ export function UserNav() {
 
   const name = user?.name || 'Admin MPHM';
   const email = user?.email || 'admin@mphm.id';
-  const avatarUrl = (user as any)?.avatarUrl || '';
+  const avatarUrl = user?.avatarUrl || '';
   const initials = name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase() || 'AD';
 
   return (

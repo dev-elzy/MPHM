@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import * as React from 'react';
@@ -17,16 +18,17 @@ import {
   User,
   Key,
   Bell,
-  Plus,
   Send,
   Trash2,
 } from 'lucide-react';
 
-interface NotificationInput {
-  userId: string;
+interface SentNotificationItem {
+  id: string;
   title: string;
-  message: string;
   type: string;
+  message: string;
+  targetUserName: string;
+  createdAt: number;
 }
 
 function PengaturanPageContent() {
@@ -36,13 +38,7 @@ function PengaturanPageContent() {
 
   // Get active tab from URL or fallback
   const tabFromUrl = searchParams.get('tab');
-  const [activeTab, setActiveTab] = React.useState('umum');
-
-  React.useEffect(() => {
-    if (tabFromUrl) {
-      setActiveTab(tabFromUrl);
-    }
-  }, [tabFromUrl]);
+  const activeTab = tabFromUrl || 'umum';
 
   // Madrasah Settings State
   const [madrasahName, setMadrasahName] = React.useState('Madrasah Putri Hidayatul Mubtadi\'at');
@@ -72,30 +68,15 @@ function PengaturanPageContent() {
   const [isSendingNotif, setIsSendingNotif] = React.useState(false);
 
   // Real-time notifications created list
-  const [sentNotifications, setSentNotifications] = React.useState<any[]>([]);
+  const [sentNotifications, setSentNotifications] = React.useState<SentNotificationItem[]>([]);
   const [isLoadingNotifications, setIsLoadingNotifications] = React.useState(false);
-
-  React.useEffect(() => {
-    if (user) {
-      setProfileName(user.name);
-      setProfileAvatar((user as any).avatarUrl || '');
-    }
-  }, [user]);
-
-  // Load all users and notifications if user is Admin and in the notifications tab
-  React.useEffect(() => {
-    if (activeTab === 'notifikasi' && isAdmin) {
-      fetchUsers();
-      fetchSentNotifications();
-    }
-  }, [activeTab, isAdmin]);
 
   const fetchUsers = async () => {
     setIsLoadingUsers(true);
     try {
       const res = await fetch('/api/v1/users');
       if (res.ok) {
-        const json = (await res.json()) as any;
+        const json = (await res.json()) as { data?: { id: string; name: string; email: string }[] };
         setUsersList(json.data || []);
       }
     } catch (err) {
@@ -110,7 +91,7 @@ function PengaturanPageContent() {
     try {
       const res = await fetch('/api/v1/notifications/sent');
       if (res.ok) {
-        const json = (await res.json()) as any;
+        const json = (await res.json()) as { data?: SentNotificationItem[] };
         setSentNotifications(json.data || []);
       }
     } catch (err) {
@@ -119,6 +100,21 @@ function PengaturanPageContent() {
       setIsLoadingNotifications(false);
     }
   };
+
+  React.useEffect(() => {
+    if (user) {
+      setProfileName(user.name);
+      setProfileAvatar(user.avatarUrl || '');
+    }
+  }, [user]);
+
+  // Load all users and notifications if user is Admin and in the notifications tab
+  React.useEffect(() => {
+    if (activeTab === 'notifikasi' && isAdmin) {
+      fetchUsers();
+      fetchSentNotifications();
+    }
+  }, [activeTab, isAdmin]);
 
   const handleSaveCommon = () => {
     setIsSaving(true);
@@ -146,7 +142,7 @@ function PengaturanPageContent() {
         }),
       });
 
-      const json = (await res.json()) as any;
+      const json = (await res.json()) as { success?: boolean; message?: string };
       if (res.ok && json.success) {
         toast.success('Profil berhasil diperbarui!');
         refetchSession();
@@ -184,7 +180,7 @@ function PengaturanPageContent() {
         }),
       });
 
-      const json = (await res.json()) as any;
+      const json = (await res.json()) as { success?: boolean; message?: string };
       if (res.ok && json.success) {
         toast.success('Kata sandi berhasil diubah!');
         setOldPassword('');
@@ -221,7 +217,7 @@ function PengaturanPageContent() {
         }),
       });
 
-      const json = (await res.json()) as any;
+      const json = (await res.json()) as { success?: boolean; message?: string };
       if (res.ok && json.success) {
         toast.success('Notifikasi realtime berhasil dikirim!');
         setNotifTitle('');
@@ -280,7 +276,6 @@ function PengaturanPageContent() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id);
                   router.push(`/dashboard/pengaturan?tab=${tab.id}`);
                 }}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer whitespace-nowrap md:w-full text-left ${
