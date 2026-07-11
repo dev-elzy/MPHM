@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Command, User, GraduationCap, Briefcase, ShieldAlert, ArrowRight, X } from 'lucide-react';
+import { Search, Command, User, GraduationCap, Briefcase, ShieldAlert, ArrowRight, X } from 'lucide-react'; 
 
 interface RoleBadge {
   type: string;
@@ -128,26 +128,32 @@ export function GlobalCommandPalette() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 bg-slate-950/70 backdrop-blur-md">
-      <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden mx-4">
-        {/* Top Search Input */}
-        <div className="flex items-center px-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900">
-          <Search className="w-5 h-5 text-emerald-500 mr-3 shrink-0" />
-          <input
-            type="text"
-            autoFocus
-            placeholder="Cari warga MPHM (Nama, NIS, NISN, HP)..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full py-4 text-sm sm:text-base bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none"
-          />
-          <button
-            onClick={() => setIsOpen(false)}
-            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <div className="relative w-full">
+      {/* Search Input Bar (stays in place) */}
+      <div className="flex items-center w-full h-9.5 px-3.5 bg-zinc-100/80 dark:bg-zinc-900/80 rounded-full border border-zinc-200/60 dark:border-zinc-800 text-sm transition-all shadow-sm">
+        <Search className="w-4 h-4 mr-2.5 text-emerald-500 shrink-0" />
+        <input
+          type="text"
+          autoFocus
+          placeholder="Cari santri, pengajar, kelas..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none text-xs sm:text-sm"
+        />
+        <button
+          onClick={() => {
+            setQuery('');
+            setResults([]);
+            setIsOpen(false);
+          }}
+          className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Floating Dropdown Results Card */}
+      <div className="absolute top-11 right-0 w-full min-w-[320px] sm:min-w-[480px] md:min-w-[560px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-50">
 
         {/* Search Results List */}
         <div className="max-h-96 overflow-y-auto p-2">
