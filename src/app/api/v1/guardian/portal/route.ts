@@ -26,7 +26,13 @@ export async function GET() {
     const parentPhone = currentUser?.phone;
 
     // 2. Cari data siswi yang terhubung lewat parentPhone
-    let studentRows = [];
+    let studentRows: {
+      studentProfileId: string;
+      nisn: string | null;
+      entryYear: string | null;
+      status: string;
+      fullName: string;
+    }[] = [];
     if (parentPhone) {
       studentRows = await db
         .select({
