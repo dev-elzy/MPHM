@@ -56,6 +56,12 @@ export function GlobalCommandPalette() {
     if (!isOpen) return;
 
     const timer = setTimeout(async () => {
+      if (!query.trim()) {
+        setResults([]);
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       try {
         const res = await fetch(`/api/v1/data-center/search?q=${encodeURIComponent(query)}`);
