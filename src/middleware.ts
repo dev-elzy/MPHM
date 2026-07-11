@@ -43,14 +43,29 @@ export async function middleware(request: NextRequest) {
   }
 
   // Role-based route guarding
-  const ADMIN_ONLY_PREFIXES = [
-    '/dashboard/pengguna',
-    '/dashboard/audit',
-    '/dashboard/recycle-bin',
-  ];
-
   const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
-  if (!isSekretariat && ADMIN_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+  const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+  const isMufattisy = ['mufattisy', 'mufatish', 'pengawas'].includes(userRole);
+  const isPimpinan = ['pimpinan', 'mundzir', 'mudir'].includes(userRole);
+  const isKeamanan = ['petugas_keamanan', 'security', 'keamanan'].includes(userRole);
+  const isWali = ['wali_santri', 'guardian', 'parent', 'wali'].includes(userRole);
+
+  if (pathname.startsWith('/dashboard/sekretariat') && !isSekretariat) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (pathname.startsWith('/dashboard/mustahiq') && !isMustahiq) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (pathname.startsWith('/dashboard/mufattisy') && !isMufattisy) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (pathname.startsWith('/dashboard/pimpinan') && !isPimpinan) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (pathname.startsWith('/dashboard/keamanan') && !isKeamanan) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  if (pathname.startsWith('/dashboard/parent') && !isWali) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

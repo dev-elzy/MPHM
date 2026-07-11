@@ -164,6 +164,12 @@ export async function POST(request: Request) {
 
     const userRole = (session.role || '').toLowerCase();
     const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+
+    if (!isMustahiq && !isSekretariat) {
+      return apiError('Anda tidak memiliki izin untuk membuat sesi nilai', 403);
+    }
+
     if (isMustahiq) {
       const assignment = await db
         .select({ classId: classAssignments.classId })

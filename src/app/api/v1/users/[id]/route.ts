@@ -14,7 +14,7 @@ const updateUserSchema = z.object({
   email: z.string().email('Format email tidak valid').optional(),
   name: z.string().min(3, 'Nama minimal 3 karakter').optional(),
   password: z.string().min(6, 'Password minimal 6 karakter').optional().nullable(),
-  role: z.enum(['super_admin', 'admin', 'operator', 'mustahiq', 'mudir']).optional(),
+  role: z.enum(['super_admin', 'admin', 'operator', 'mustahiq', 'mudir', 'mufatish', 'security']).optional(),
   status: z.enum(['active', 'inactive']).optional(),
   phone: z.string().optional().nullable(),
 });

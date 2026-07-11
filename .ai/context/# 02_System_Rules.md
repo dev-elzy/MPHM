@@ -94,7 +94,7 @@ Setiap pengguna memiliki Dashboard yang berbeda sesuai tugas, tanggung jawab, da
 - **Fungsi:** Memantau perkembangan anak yang terhubung langsung dengan akun wali. **Wajib hanya dapat melihat data anaknya saja & hanya data monitoring terkait anaknya saja.** Tidak dapat melihat data santri lain.
 - **Ringkasan Dashboard (Widget/Statistik):** Biodata Anak, Kelas Saat Ini, Persentase Kehadiran, Nilai Terbaru, Akhlaq, Pelanggaran, Pengumuman.
 - **Struktur Menu:** Dashboard, Profil Anak, Nilai, Absensi, Akhlaq, Pelanggaran, Rapor, Kalender Akademik, Pengumuman.
-- **Quick Actions:** Lihat Rapor, Unduh Rapor, Lihat Absensi, Lihat Nilai, Lihat Pengumuman.
+- **Quick Actions:** Lihat Rapor, Lihat Absensi, Lihat Nilai, Lihat Pengumuman.
 
 ## 2. Aturan Pengelolaan Tabel & Data Massal
 

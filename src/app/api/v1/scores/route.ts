@@ -4,6 +4,7 @@ import { getDb } from '@/db/client';
 import { scores, scoreSessions, scoreResults } from '@/db/schema/scores';
 import { classStudents } from '@/db/schema/students';
 import { students } from '@/db/schema/students';
+import { classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';
@@ -106,13 +107,39 @@ export async function PATCH(request: Request) {
 
     // Check session exists and is not locked
     const scoreSession = await db
-      .select({ status: scoreSessions.status })
+      .select({ status: scoreSessions.status, classId: scoreSessions.classId })
       .from(scoreSessions)
       .where(eq(scoreSessions.id, scoreSessionId))
       .limit(1);
 
     if (!scoreSession.length) return apiError('Sesi nilai tidak ditemukan', 404);
     if (scoreSession[0].status === 'locked') return apiError('Nilai sudah dikunci, tidak dapat diubah', 403);
+
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+
+    if (!isMustahiq && !isSekretariat) {
+      return apiError('Anda tidak memiliki izin untuk mengedit nilai', 403);
+    }
+
+    if (isMustahiq) {
+      const assignment = await db
+        .select({ classId: classAssignments.classId })
+        .from(classAssignments)
+        .where(
+          and(
+            eq(classAssignments.userId, session.userId),
+            eq(classAssignments.classId, scoreSession[0].classId),
+            eq(classAssignments.status, 'active')
+          )
+        )
+        .limit(1);
+
+      if (assignment.length === 0) {
+        return apiError('Anda tidak memiliki akses ke kelas ini', 403);
+      }
+    }
 
     // Upsert score
     const existing = await db

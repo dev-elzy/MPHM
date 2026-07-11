@@ -3,6 +3,7 @@ import { getDb } from '@/db/client';
 import { schedules } from '@/db/schema/schedules';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
+import { getSession } from '@/lib/auth/session';
 
 export async function GET(req: Request) {
   try {
@@ -61,6 +62,16 @@ const postSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
+    }
+    const userRole = (session.role || '').toLowerCase();
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    if (!isSekretariat) {
+      return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
+    }
+
     const body = await req.json();
     const data = postSchema.parse(body);
 
@@ -81,6 +92,16 @@ export async function POST(req: Request) {
 
 export async function PATCH(req: Request) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
+    }
+    const userRole = (session.role || '').toLowerCase();
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    if (!isSekretariat) {
+      return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
@@ -99,6 +120,16 @@ export async function PATCH(req: Request) {
 
 export async function DELETE(req: Request) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
+    }
+    const userRole = (session.role || '').toLowerCase();
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    if (!isSekretariat) {
+      return NextResponse.json({ success: false, message: 'Forbidden' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });

@@ -109,12 +109,43 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
   const pathname = usePathname();
   const { user, role, isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali } = useAuthSession();
   
+  // Dynamic path transformation based on roles
+  const getRoleHref = React.useCallback((href: string) => {
+    if (isSekretariat) {
+      if (href === '/dashboard') return '/dashboard/sekretariat';
+      if (href.startsWith('/dashboard/akademik/siswi')) return '/dashboard/sekretariat/siswi';
+      if (href.startsWith('/dashboard/akademik')) return href.replace('/dashboard/akademik', '/dashboard/sekretariat/akademik');
+      if (href.startsWith('/dashboard/audit')) return '/dashboard/sekretariat/audit';
+      if (href.startsWith('/dashboard/recycle-bin')) return '/dashboard/sekretariat/recycle-bin';
+      if (href.startsWith('/dashboard/pengguna')) return href.replace('/dashboard/pengguna', '/dashboard/sekretariat/pengguna');
+      if (href.startsWith('/dashboard/pengaturan')) return '/dashboard/sekretariat/pengaturan';
+    } else if (isMustahiq) {
+      if (href === '/dashboard') return '/dashboard/mustahiq';
+      if (href.startsWith('/dashboard/akademik/siswi')) return '/dashboard/mustahiq/siswi';
+      if (href.startsWith('/dashboard/akademik/jadwal')) return '/dashboard/mustahiq/jadwal';
+      if (href.startsWith('/dashboard/akademik')) return href.replace('/dashboard/akademik', '/dashboard/mustahiq');
+    } else if (isMufattisy) {
+      if (href === '/dashboard') return '/dashboard/mufattisy';
+      if (href.startsWith('/dashboard/akademik/siswi')) return '/dashboard/mufattisy/monitoring';
+      if (href.startsWith('/dashboard/akademik')) return href.replace('/dashboard/akademik', '/dashboard/mufattisy/akademik');
+    } else if (isPimpinan) {
+      if (href === '/dashboard') return '/dashboard/pimpinan';
+      if (href.startsWith('/dashboard/akademik')) return href.replace('/dashboard/akademik', '/dashboard/pimpinan/akademik');
+    } else if (isKeamanan) {
+      if (href === '/dashboard') return '/dashboard/keamanan';
+      if (href.startsWith('/dashboard/violations')) return '/dashboard/keamanan/pelanggaran';
+    } else if (isWali) {
+      if (href === '/dashboard') return '/dashboard/parent';
+    }
+    return href;
+  }, [isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali]);
+
   // Track which submenus are expanded
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({
-    'Manajemen Akademik': pathname.startsWith('/dashboard/akademik') && !pathname.endsWith('/siswi'),
-    'Penilaian & Absensi': pathname.startsWith('/dashboard/akademik/nilai') || pathname.startsWith('/dashboard/akademik/absensi') || pathname.startsWith('/dashboard/akademik/akhlaq'),
-    'Monitoring & Audit': pathname.startsWith('/dashboard/audit') || pathname.startsWith('/dashboard/recycle-bin'),
-    'Manajemen Pengguna': pathname.startsWith('/dashboard/pengguna'),
+    'Manajemen Akademik': pathname.includes('/akademik') && !pathname.endsWith('/siswi'),
+    'Penilaian & Absensi': pathname.includes('/nilai') || pathname.includes('/absensi') || pathname.includes('/akhlaq'),
+    'Monitoring & Audit': pathname.includes('/audit') || pathname.includes('/recycle-bin'),
+    'Manajemen Pengguna': pathname.includes('/pengguna'),
   });
 
   const toggleExpand = (label: string) => {
@@ -125,8 +156,8 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
   };
 
   const filteredRoutes = React.useMemo(() => {
-    if (!role) return routes.filter((r) => !r.allowedRoles);
-    return routes.filter((route) => {
+    if (!role) return [];
+    const allowed = routes.filter((route) => {
       if (!route.allowedRoles) return true;
       return route.allowedRoles.some((allowedRole) => {
         const ar = allowedRole.toLowerCase();
@@ -151,7 +182,17 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
         return false;
       });
     });
-  }, [role, isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali]);
+
+    // Map hrefs dynamically
+    return allowed.map((route) => ({
+      ...route,
+      href: getRoleHref(route.href),
+      subItems: route.subItems?.map((sub) => ({
+        ...sub,
+        href: getRoleHref(sub.href),
+      })),
+    }));
+  }, [role, isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali, getRoleHref]);
 
   const getRoleBadgeLabel = (r: string) => {
     const roleLower = (r || '').toLowerCase();

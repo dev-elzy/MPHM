@@ -74,6 +74,14 @@ export async function POST(request: Request) {
       return apiError('Sesi tidak valid atau telah berakhir', 401);
     }
 
+    const userRole = (session.role || '').toLowerCase();
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isKeamanan = ['petugas_keamanan', 'security', 'keamanan'].includes(userRole);
+
+    if (!isSekretariat && !isKeamanan) {
+      return apiError('Anda tidak memiliki izin untuk mencatat pelanggaran', 403);
+    }
+
     const body = await request.json();
     const parsed = createIncidentSchema.safeParse(body);
     if (!parsed.success) {

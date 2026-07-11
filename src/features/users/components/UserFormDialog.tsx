@@ -178,6 +178,7 @@ export function UserFormDialog({
                         <SelectItem value="mustahiq">Mustahiq / Guru</SelectItem>
                         <SelectItem value="mudir">Mudir Pesantren</SelectItem>
                         <SelectItem value="mufatish">Mufatish / Pengawas</SelectItem>
+                        <SelectItem value="security">Petugas Keamanan</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage className="text-xs" />

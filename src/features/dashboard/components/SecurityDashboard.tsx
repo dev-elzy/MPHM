@@ -235,7 +235,7 @@ export function SecurityDashboard() {
                 Tutup
               </button>
               <a
-                href="/dashboard/violations"
+                href="/dashboard/keamanan/pelanggaran"
                 className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700"
               >
                 Buka Modul Pelanggaran

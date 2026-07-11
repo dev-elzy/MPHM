@@ -33,12 +33,14 @@ export async function POST(
 
     const userRole = (session.role || '').toLowerCase();
     const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
-    const isAdmin = ['admin', 'super_admin'].includes(userRole);
+    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
 
     let nextStatus = 'ready';
-    if (isAdmin) {
+    if (isSekretariat) {
       nextStatus = 'final';
-    } else if (!isMustahiq) {
+    } else if (isMustahiq) {
+      nextStatus = 'ready';
+    } else {
       return apiError('Hanya pengajar atau administrator yang dapat memproses nilai', 403);
     }
 
