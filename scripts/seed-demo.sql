@@ -18,10 +18,10 @@ DELETE FROM students WHERE id LIKE 'demo_%';
 
 -- 2. Akun Tambahan (Mufatish, Mundzir, Dzuriyyah, Operator)
 INSERT OR IGNORE INTO users (id, institution_id, name, email, password_hash, role, role_id, status) VALUES
-('demo_user_mufatish', 'default', 'Ustadz Mufatish', 'mufatish@mphm.my.id', '$pbkdf2$SHA-256$10000$87fd0f3d99e5251147a760b943261942$3b839ea0cc7b9f36f6d0fcd80bb14a72d3e421bfdfb6be63c2288cd72ad853ef', 'mufatish', 'mudir', 'active'),
-('demo_user_mundzir', 'default', 'Kiai Mundzir', 'mundzir@mphm.my.id', '$pbkdf2$SHA-256$10000$87fd0f3d99e5251147a760b943261942$3b839ea0cc7b9f36f6d0fcd80bb14a72d3e421bfdfb6be63c2288cd72ad853ef', 'mudir', 'mudir', 'active'),
-('demo_user_dzuriyyah', 'default', 'Gus Dzuriyyah', 'dzuriyyah@mphm.my.id', '$pbkdf2$SHA-256$10000$87fd0f3d99e5251147a760b943261942$3b839ea0cc7b9f36f6d0fcd80bb14a72d3e421bfdfb6be63c2288cd72ad853ef', 'mudir', 'mudir', 'active'),
-('demo_user_operator', 'default', 'Operator MPHM', 'operator@mphm.my.id', '$pbkdf2$SHA-256$10000$87fd0f3d99e5251147a760b943261942$3b839ea0cc7b9f36f6d0fcd80bb14a72d3e421bfdfb6be63c2288cd72ad853ef', 'operator', 'operator', 'active');
+('demo_user_mufatish', 'default', 'Ustadz Mufatish', 'mufatish@mphm.my.id', '$pbkdf2$SHA-256$100000$a843ea090982e6112b12e4d57827cb8f$a0a476a8c888524ad6b0252511d594f6d3e6b770bec1624cc466b60799e3c955', 'mufatish', 'mudir', 'active'),
+('demo_user_mundzir', 'default', 'Kiai Mundzir', 'mundzir@mphm.my.id', '$pbkdf2$SHA-256$100000$a843ea090982e6112b12e4d57827cb8f$a0a476a8c888524ad6b0252511d594f6d3e6b770bec1624cc466b60799e3c955', 'mudir', 'mudir', 'active'),
+('demo_user_dzuriyyah', 'default', 'Gus Dzuriyyah', 'dzuriyyah@mphm.my.id', '$pbkdf2$SHA-256$100000$a843ea090982e6112b12e4d57827cb8f$a0a476a8c888524ad6b0252511d594f6d3e6b770bec1624cc466b60799e3c955', 'mudir', 'mudir', 'active'),
+('demo_user_operator', 'default', 'Operator MPHM', 'operator@mphm.my.id', '$pbkdf2$SHA-256$100000$a843ea090982e6112b12e4d57827cb8f$a0a476a8c888524ad6b0252511d594f6d3e6b770bec1624cc466b60799e3c955', 'operator', 'operator', 'active');
 
 -- 3. Tahun Ajaran, Semester, dan Kurikulum
 INSERT OR IGNORE INTO academic_years (id, institution_id, name, start_date, end_date, status) VALUES

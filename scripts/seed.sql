@@ -9,9 +9,9 @@ INSERT OR IGNORE INTO roles (id, name, display_name, description, is_system) VAL
 ('mustahiq', 'mustahiq', 'Mustahiq / Wali Kelas', 'Mustahiq pengampu satu kelas.', 1),
 ('mudir', 'mudir', 'Mudir / Kepala Madrasah', 'Monitoring progress akademik.', 1);
 
--- 2. Insert Default Super Admin User (Password: password123)
+-- 2. Insert Default Super Admin User (Password: mphm1234)
 INSERT OR IGNORE INTO users (id, institution_id, name, email, password_hash, role, role_id, status) VALUES
-('579fd35e-3333-438c-a7ac-9cdbba54c6fc', 'default', 'Super Admin MPHM', 'admin@mphm.com', '$pbkdf2$SHA-256$10000$32f18f4f04f094a7992ed6535903bea3$1ed6de21a4f3a9200d8651c0a43271734a52a9fedf714b5088c229cb0767dfae', 'super_admin', 'super_admin', 'active');
+('579fd35e-3333-438c-a7ac-9cdbba54c6fc', 'default', 'Super Admin MPHM', 'admin@mphm.com', '$pbkdf2$SHA-256$100000$a843ea090982e6112b12e4d57827cb8f$a0a476a8c888524ad6b0252511d594f6d3e6b770bec1624cc466b60799e3c955', 'super_admin', 'super_admin', 'active');
 
 -- 3. Define Standard Permissions
 INSERT OR IGNORE INTO permissions (id, name, module, action, description) VALUES ('941019b8-f763-478d-baec-42cda8bc62ba', 'auth:view', 'auth', 'view', 'Permission to view in auth module.');
