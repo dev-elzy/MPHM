@@ -29,7 +29,7 @@ interface NotificationInput {
   type: string;
 }
 
-export default function PengaturanPage() {
+function PengaturanPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, isAdmin, refetch: refetchSession } = useAuthSession();
@@ -647,5 +647,13 @@ export default function PengaturanPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PengaturanPage() {
+  return (
+    <React.Suspense fallback={<div className="p-8 text-center text-zinc-500 animate-pulse">Memuat pengaturan...</div>}>
+      <PengaturanPageContent />
+    </React.Suspense>
   );
 }
