@@ -13,7 +13,7 @@ DELETE FROM curriculums WHERE id LIKE 'demo_%';
 DELETE FROM semesters WHERE id LIKE 'demo_%';
 DELETE FROM academic_years WHERE id LIKE 'demo_%';
 DELETE FROM users WHERE id LIKE 'demo_%';
-DELETE FROM student_profiles WHERE id LIKE 'demo_%';
+DELETE FROM class_students WHERE id LIKE 'demo_%';
 DELETE FROM students WHERE id LIKE 'demo_%';
 
 -- 2. Akun Tambahan (Mufatish, Mundzir, Dzuriyyah, Operator)
@@ -35,14 +35,14 @@ INSERT OR IGNORE INTO curriculums (id, academic_year_id, name, description, stat
 
 -- 4. Pelajaran Master (Subjects) & Hubungan Kurikulum (Curriculum Subjects)
 -- Ada 8 Pelajaran contoh yang saling berhubungan
-INSERT OR IGNORE INTO subjects (id, institution_id, name, arabicName, code, category, status) VALUES
+INSERT OR IGNORE INTO subjects (id, institution_id, name, arabic_name, code, category, status) VALUES
 ('demo_sub_1', 'default', 'Fathul Qarib', 'فتح القريب', 'FQ01', 'Kitab Kuning', 'active'),
 ('demo_sub_2', 'default', 'Imrithi', 'العمريطي', 'IM02', 'Nahwu', 'active'),
 ('demo_sub_3', 'default', 'Tafsir Jalalain', 'تفسير الجلالين', 'TJ03', 'Tafsir', 'active'),
 ('demo_sub_4', 'default', 'Bulughul Maram', 'بلوغ المرام', 'BM04', 'Hadits', 'active'),
 ('demo_sub_5', 'default', 'Jurumiyyah', 'الآجرومية', 'JR05', 'Nahwu', 'active'),
 ('demo_sub_6', 'default', 'Aqidatul Awam', 'عقيدة العوام', 'AA06', 'Tauhid', 'active'),
-('demo_sub_7', 'default', 'Ta\'lim Muta\'allim', 'تعليم المتعلم', 'TM07', 'Akhlaq', 'active'),
+('demo_sub_7', 'default', 'Ta''lim Muta''allim', 'تعليم المتعلم', 'TM07', 'Akhlaq', 'active'),
 ('demo_sub_8', 'default', 'Shorof', 'التصريف', 'SR08', 'Shorof', 'active');
 
 INSERT OR IGNORE INTO curriculum_subjects (id, curriculum_id, subject_id, sort_order, max_score, min_score, weight, status) VALUES
@@ -86,37 +86,37 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_1_4', 'Rufaidah Al-Aslamiyah', '2501014', 'active'),
 ('demo_st_1_5', 'Fatima Fihriyah', '2501015', 'active'),
 ('demo_st_1_6', 'Lubna Al-Qurthubiyyah', '2501016', 'active'),
-('demo_st_1_7', 'Nusaibah Binti Ka\'ab', '2501017', 'active'),
+('demo_st_1_7', 'Nusaibah Binti Ka''ab', '2501017', 'active'),
 ('demo_st_1_8', 'Asma Binti Abu Bakar', '2501018', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_1_1', 'demo_st_1_1', 'demo_cls_1', 'active'),
-('demo_pr_1_2', 'demo_st_1_2', 'demo_cls_1', 'active'),
-('demo_pr_1_3', 'demo_st_1_3', 'demo_cls_1', 'active'),
-('demo_pr_1_4', 'demo_st_1_4', 'demo_cls_1', 'active'),
-('demo_pr_1_5', 'demo_st_1_5', 'demo_cls_1', 'active'),
-('demo_pr_1_6', 'demo_st_1_6', 'demo_cls_1', 'active'),
-('demo_pr_1_7', 'demo_st_1_7', 'demo_cls_1', 'active'),
-('demo_pr_1_8', 'demo_st_1_8', 'demo_cls_1', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_1_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_1', 'demo_cls_1', 'active'),
+('demo_pr_1_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_2', 'demo_cls_1', 'active'),
+('demo_pr_1_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_3', 'demo_cls_1', 'active'),
+('demo_pr_1_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_4', 'demo_cls_1', 'active'),
+('demo_pr_1_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_5', 'demo_cls_1', 'active'),
+('demo_pr_1_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_6', 'demo_cls_1', 'active'),
+('demo_pr_1_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_7', 'demo_cls_1', 'active'),
+('demo_pr_1_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_1_8', 'demo_cls_1', 'active');
 
 -- Siswi Kelas 2
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
 ('demo_st_2_1', 'Aisyah Az-Zahra', '2501021', 'active'),
-('demo_st_2_2', 'Halimah As-Sa\'diyyah', '2501022', 'active'),
+('demo_st_2_2', 'Halimah As-Sa''diyyah', '2501022', 'active'),
 ('demo_st_2_3', 'Aminah Binti Wahab', '2501023', 'active'),
 ('demo_st_2_4', 'Shafiyyah Binti Huyay', '2501024', 'active'),
 ('demo_st_2_5', 'Zainab Binti Jahsy', '2501025', 'active'),
 ('demo_st_2_6', 'Ummu Salamah Hindun', '2501026', 'active'),
 ('demo_st_2_7', 'Juwayriyah Binti Harits', '2501027', 'active'),
 ('demo_st_2_8', 'Mariyah Al-Qibthiyyah', '2501028', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_2_1', 'demo_st_2_1', 'demo_cls_2', 'active'),
-('demo_pr_2_2', 'demo_st_2_2', 'demo_cls_2', 'active'),
-('demo_pr_2_3', 'demo_st_2_3', 'demo_cls_2', 'active'),
-('demo_pr_2_4', 'demo_st_2_4', 'demo_cls_2', 'active'),
-('demo_pr_2_5', 'demo_st_2_5', 'demo_cls_2', 'active'),
-('demo_pr_2_6', 'demo_st_2_6', 'demo_cls_2', 'active'),
-('demo_pr_2_7', 'demo_st_2_7', 'demo_cls_2', 'active'),
-('demo_pr_2_8', 'demo_st_2_8', 'demo_cls_2', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_2_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_1', 'demo_cls_2', 'active'),
+('demo_pr_2_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_2', 'demo_cls_2', 'active'),
+('demo_pr_2_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_3', 'demo_cls_2', 'active'),
+('demo_pr_2_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_4', 'demo_cls_2', 'active'),
+('demo_pr_2_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_5', 'demo_cls_2', 'active'),
+('demo_pr_2_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_6', 'demo_cls_2', 'active'),
+('demo_pr_2_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_7', 'demo_cls_2', 'active'),
+('demo_pr_2_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_2_8', 'demo_cls_2', 'active');
 
 -- Siswi Kelas 3
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
@@ -128,35 +128,35 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_3_6', 'Fathimah Binti Asad', '2501036', 'active'),
 ('demo_st_3_7', 'Khaulah Binti Az-Azur', '2501037', 'active'),
 ('demo_st_3_8', 'Ummu Haram Binti Milhan', '2501038', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_3_1', 'demo_st_3_1', 'demo_cls_3', 'active'),
-('demo_pr_3_2', 'demo_st_3_2', 'demo_cls_3', 'active'),
-('demo_pr_3_3', 'demo_st_3_3', 'demo_cls_3', 'active'),
-('demo_pr_3_4', 'demo_st_3_4', 'demo_cls_3', 'active'),
-('demo_pr_3_5', 'demo_st_3_5', 'demo_cls_3', 'active'),
-('demo_pr_3_6', 'demo_st_3_6', 'demo_cls_3', 'active'),
-('demo_pr_3_7', 'demo_st_3_7', 'demo_cls_3', 'active'),
-('demo_pr_3_8', 'demo_st_3_8', 'demo_cls_3', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_3_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_1', 'demo_cls_3', 'active'),
+('demo_pr_3_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_2', 'demo_cls_3', 'active'),
+('demo_pr_3_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_3', 'demo_cls_3', 'active'),
+('demo_pr_3_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_4', 'demo_cls_3', 'active'),
+('demo_pr_3_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_5', 'demo_cls_3', 'active'),
+('demo_pr_3_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_6', 'demo_cls_3', 'active'),
+('demo_pr_3_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_7', 'demo_cls_3', 'active'),
+('demo_pr_3_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_3_8', 'demo_cls_3', 'active');
 
 -- Siswi Kelas 4
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
 ('demo_st_4_1', 'Hindun Binti Utbah', '2501041', 'active'),
 ('demo_st_4_2', 'Ramlah Binti Abu Sufyan', '2501042', 'active'),
-('demo_st_4_3', 'Ummu Ma\'bad At-Khuzaiyah', '2501043', 'active'),
-('demo_st_4_4', 'Kabsyah Binti Rafi\'', '2501044', 'active'),
+('demo_st_4_3', 'Ummu Ma''bad At-Khuzaiyah', '2501043', 'active'),
+('demo_st_4_4', 'Kabsyah Binti Rafi''', '2501044', 'active'),
 ('demo_st_4_5', 'Laila Binti Al-Minhal', '2501045', 'active'),
 ('demo_st_4_6', 'Asma Binti Yazid', '2501046', 'active'),
 ('demo_st_4_7', 'Safiyyah Binti Abdul Muthalib', '2501047', 'active'),
 ('demo_st_4_8', 'Atikah Binti Zaid', '2501048', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_4_1', 'demo_st_4_1', 'demo_cls_4', 'active'),
-('demo_pr_4_2', 'demo_st_4_2', 'demo_cls_4', 'active'),
-('demo_pr_4_3', 'demo_st_4_3', 'demo_cls_4', 'active'),
-('demo_pr_4_4', 'demo_st_4_4', 'demo_cls_4', 'active'),
-('demo_pr_4_5', 'demo_st_4_5', 'demo_cls_4', 'active'),
-('demo_pr_4_6', 'demo_st_4_6', 'demo_cls_4', 'active'),
-('demo_pr_4_7', 'demo_st_4_7', 'demo_cls_4', 'active'),
-('demo_pr_4_8', 'demo_st_4_8', 'demo_cls_4', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_4_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_1', 'demo_cls_4', 'active'),
+('demo_pr_4_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_2', 'demo_cls_4', 'active'),
+('demo_pr_4_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_3', 'demo_cls_4', 'active'),
+('demo_pr_4_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_4', 'demo_cls_4', 'active'),
+('demo_pr_4_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_5', 'demo_cls_4', 'active'),
+('demo_pr_4_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_6', 'demo_cls_4', 'active'),
+('demo_pr_4_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_7', 'demo_cls_4', 'active'),
+('demo_pr_4_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_4_8', 'demo_cls_4', 'active');
 
 -- Siswi Kelas 5
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
@@ -168,15 +168,15 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_5_6', 'Atikah Binti Abu Sufyan', '2501056', 'active'),
 ('demo_st_5_7', 'Arwa Binti Kuraiz', '2501057', 'active'),
 ('demo_st_5_8', 'Khansa Binti Amru', '2501058', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_5_1', 'demo_st_5_1', 'demo_cls_5', 'active'),
-('demo_pr_5_2', 'demo_st_5_2', 'demo_cls_5', 'active'),
-('demo_pr_5_3', 'demo_st_5_3', 'demo_cls_5', 'active'),
-('demo_pr_5_4', 'demo_st_5_4', 'demo_cls_5', 'active'),
-('demo_pr_5_5', 'demo_st_5_5', 'demo_cls_5', 'active'),
-('demo_pr_5_6', 'demo_st_5_6', 'demo_cls_5', 'active'),
-('demo_pr_5_7', 'demo_st_5_7', 'demo_cls_5', 'active'),
-('demo_pr_5_8', 'demo_st_5_8', 'demo_cls_5', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_5_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_1', 'demo_cls_5', 'active'),
+('demo_pr_5_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_2', 'demo_cls_5', 'active'),
+('demo_pr_5_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_3', 'demo_cls_5', 'active'),
+('demo_pr_5_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_4', 'demo_cls_5', 'active'),
+('demo_pr_5_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_5', 'demo_cls_5', 'active'),
+('demo_pr_5_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_6', 'demo_cls_5', 'active'),
+('demo_pr_5_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_7', 'demo_cls_5', 'active'),
+('demo_pr_5_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_5_8', 'demo_cls_5', 'active');
 
 -- Siswi Kelas 6
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
@@ -188,15 +188,15 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_6_6', 'Khaulah Binti Tsalabah', '2501066', 'active'),
 ('demo_st_6_7', 'Ummu Kulsum Binti Uqbah', '2501067', 'active'),
 ('demo_st_6_8', 'Sahlah Binti Suhail', '2501068', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_6_1', 'demo_st_6_1', 'demo_cls_6', 'active'),
-('demo_pr_6_2', 'demo_st_6_2', 'demo_cls_6', 'active'),
-('demo_pr_6_3', 'demo_st_6_3', 'demo_cls_6', 'active'),
-('demo_pr_6_4', 'demo_st_6_4', 'demo_cls_6', 'active'),
-('demo_pr_6_5', 'demo_st_6_5', 'demo_cls_6', 'active'),
-('demo_pr_6_6', 'demo_st_6_6', 'demo_cls_6', 'active'),
-('demo_pr_6_7', 'demo_st_6_7', 'demo_cls_6', 'active'),
-('demo_pr_6_8', 'demo_st_6_8', 'demo_cls_6', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_6_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_1', 'demo_cls_6', 'active'),
+('demo_pr_6_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_2', 'demo_cls_6', 'active'),
+('demo_pr_6_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_3', 'demo_cls_6', 'active'),
+('demo_pr_6_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_4', 'demo_cls_6', 'active'),
+('demo_pr_6_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_5', 'demo_cls_6', 'active'),
+('demo_pr_6_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_6', 'demo_cls_6', 'active'),
+('demo_pr_6_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_7', 'demo_cls_6', 'active'),
+('demo_pr_6_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_6_8', 'demo_cls_6', 'active');
 
 -- Siswi Kelas 7
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
@@ -208,15 +208,15 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_7_6', 'Atikah Binti Khalid', '2501076', 'active'),
 ('demo_st_7_7', 'Hamnah Binti Jahsy', '2501077', 'active'),
 ('demo_st_7_8', 'Shafiyyah Binti Abdul Mutalib', '2501078', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_7_1', 'demo_st_7_1', 'demo_cls_7', 'active'),
-('demo_pr_7_2', 'demo_st_7_2', 'demo_cls_7', 'active'),
-('demo_pr_7_3', 'demo_st_7_3', 'demo_cls_7', 'active'),
-('demo_pr_7_4', 'demo_st_7_4', 'demo_cls_7', 'active'),
-('demo_pr_7_5', 'demo_st_7_5', 'demo_cls_7', 'active'),
-('demo_pr_7_6', 'demo_st_7_6', 'demo_cls_7', 'active'),
-('demo_pr_7_7', 'demo_st_7_7', 'demo_cls_7', 'active'),
-('demo_pr_7_8', 'demo_st_7_8', 'demo_cls_7', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_7_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_1', 'demo_cls_7', 'active'),
+('demo_pr_7_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_2', 'demo_cls_7', 'active'),
+('demo_pr_7_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_3', 'demo_cls_7', 'active'),
+('demo_pr_7_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_4', 'demo_cls_7', 'active'),
+('demo_pr_7_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_5', 'demo_cls_7', 'active'),
+('demo_pr_7_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_6', 'demo_cls_7', 'active'),
+('demo_pr_7_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_7', 'demo_cls_7', 'active'),
+('demo_pr_7_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_7_8', 'demo_cls_7', 'active');
 
 -- Siswi Kelas 8
 INSERT OR IGNORE INTO students (id, name, nis, status) VALUES 
@@ -228,15 +228,15 @@ INSERT OR IGNORE INTO students (id, name, nis, status) VALUES
 ('demo_st_8_6', 'Ummu Kultsum Zakiyah', '2501086', 'active'),
 ('demo_st_8_7', 'Shafiyyah Zhafira', '2501087', 'active'),
 ('demo_st_8_8', 'Maria Qibthiyyah', '2501088', 'active');
-INSERT OR IGNORE INTO student_profiles (id, student_id, class_id, status) VALUES 
-('demo_pr_8_1', 'demo_st_8_1', 'demo_cls_8', 'active'),
-('demo_pr_8_2', 'demo_st_8_2', 'demo_cls_8', 'active'),
-('demo_pr_8_3', 'demo_st_8_3', 'demo_cls_8', 'active'),
-('demo_pr_8_4', 'demo_st_8_4', 'demo_cls_8', 'active'),
-('demo_pr_8_5', 'demo_st_8_5', 'demo_cls_8', 'active'),
-('demo_pr_8_6', 'demo_st_8_6', 'demo_cls_8', 'active'),
-('demo_pr_8_7', 'demo_st_8_7', 'demo_cls_8', 'active'),
-('demo_pr_8_8', 'demo_st_8_8', 'demo_cls_8', 'active');
+INSERT OR IGNORE INTO class_students (id, academic_year_id, semester_id, student_id, class_id, status) VALUES 
+('demo_pr_8_1', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_1', 'demo_cls_8', 'active'),
+('demo_pr_8_2', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_2', 'demo_cls_8', 'active'),
+('demo_pr_8_3', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_3', 'demo_cls_8', 'active'),
+('demo_pr_8_4', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_4', 'demo_cls_8', 'active'),
+('demo_pr_8_5', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_5', 'demo_cls_8', 'active'),
+('demo_pr_8_6', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_6', 'demo_cls_8', 'active'),
+('demo_pr_8_7', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_7', 'demo_cls_8', 'active'),
+('demo_pr_8_8', 'demo_ay_2025', 'demo_sem_1', 'demo_st_8_8', 'demo_cls_8', 'active');
 
 -- 8. Sesi Penilaian & Nilai Terhubung (Score Sessions & Scores)
 -- Sesi Penilaian Ganjil untuk 8 Kelas dengan 8 Pelajaran Berbeda
