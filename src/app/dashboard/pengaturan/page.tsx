@@ -36,9 +36,21 @@ function PengaturanPageContent() {
   const router = useRouter();
   const { user, isAdmin, refetch: refetchSession } = useAuthSession();
 
+  const tabItems = [
+    { id: 'umum', label: 'Umum & Lembaga', icon: Building, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+    { id: 'akademik', label: 'Akademik', icon: GraduationCap, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+    { id: 'database', label: 'Basis Data', icon: Database, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+    { id: 'profil', label: 'Profil Saya', icon: User },
+    { id: 'pengaturan', label: 'Keamanan Akun', icon: Key },
+    { id: 'notifikasi', label: 'Kirim Notifikasi', icon: Bell, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+  ].filter((item) => !item.roles || (isAdmin && item.roles.includes(user?.role?.toLowerCase() || '')));
+
   // Get active tab from URL or fallback
   const tabFromUrl = searchParams.get('tab');
-  const activeTab = tabFromUrl || 'umum';
+  const allowedTabIds = tabItems.map(item => item.id);
+  const activeTab = tabFromUrl && allowedTabIds.includes(tabFromUrl) 
+    ? tabFromUrl 
+    : (allowedTabIds.includes('umum') ? 'umum' : 'profil');
 
   // Madrasah Settings State
   const [madrasahName, setMadrasahName] = React.useState('Madrasah Putri Hidayatul Mubtadi\'at');
@@ -250,14 +262,7 @@ function PengaturanPageContent() {
     toast.success('Backup basis data berhasil diunduh (MPHM_backup.sql)');
   };
 
-  const tabItems = [
-    { id: 'umum', label: 'Umum & Lembaga', icon: Building, roles: ['admin', 'super_admin'] },
-    { id: 'akademik', label: 'Akademik', icon: GraduationCap, roles: ['admin', 'super_admin'] },
-    { id: 'database', label: 'Basis Data', icon: Database, roles: ['admin', 'super_admin'] },
-    { id: 'profil', label: 'Profil Saya', icon: User },
-    { id: 'pengaturan', label: 'Keamanan Akun', icon: Key },
-    { id: 'notifikasi', label: 'Kirim Notifikasi', icon: Bell, roles: ['admin', 'super_admin'] },
-  ].filter((item) => !item.roles || (isAdmin && item.roles.includes(user?.role?.toLowerCase() || '')));
+    // tabItems is defined at the top of the function to allow dynamic default values
 
   return (
     <div className="flex flex-col gap-6 p-4 md:p-6 animate-in fade-in duration-300">

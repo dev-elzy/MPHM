@@ -45,7 +45,6 @@ export async function middleware(request: NextRequest) {
   // Role-based route guarding
   const ADMIN_ONLY_PREFIXES = [
     '/dashboard/pengguna',
-    '/dashboard/pengaturan',
     '/dashboard/audit',
     '/dashboard/recycle-bin',
   ];
