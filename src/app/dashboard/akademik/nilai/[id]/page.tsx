@@ -11,6 +11,7 @@ import { useScoreSession, useScoreEntries } from '@/features/scores/queries/useS
 import { useSaveScore, useFinalizeScoreSession } from '@/features/scores/mutations';
 import { ScoreEntryRow } from '@/features/scores/types';
 import { toast } from 'sonner';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 // Debounced auto-save hook
 function useDebounced<T>(value: T, delay: number): T {
@@ -74,8 +75,9 @@ export default function ScoreEntryPage() {
   const { data: entries, isLoading: entriesLoading } = useScoreEntries(id);
   const finalizeMutation = useFinalizeScoreSession();
 
+  const { isMustahiq, isAdmin } = useAuthSession();
   const isLoading = sessionLoading || entriesLoading;
-  const isLocked = session?.status === 'locked';
+  const isLocked = session?.status === 'locked' || !isMustahiq;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -87,19 +89,29 @@ export default function ScoreEntryPage() {
           </Link>
           <div>
             <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-              Input Nilai: {session?.subjectName || '...'}
+              {isMustahiq ? 'Input Nilai: ' : 'Lihat Nilai: '}{session?.subjectName || '...'}
             </h1>
             <p className="text-sm text-zinc-500 mt-0.5">{session?.className} — Status: {session?.status ?? '...'}</p>
           </div>
         </div>
-        {session?.status === 'ready' && (
+        {isMustahiq && session?.status === 'draft' && (
           <Button
             onClick={() => finalizeMutation.mutate(id)}
             disabled={finalizeMutation.isPending}
             className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
           >
             <CheckCircle className="h-4 w-4" />
-            {finalizeMutation.isPending ? 'Memfinalisasi...' : 'Finalisasi Nilai'}
+            {finalizeMutation.isPending ? 'Mengirim...' : 'Kirim Review'}
+          </Button>
+        )}
+        {isAdmin && session?.status === 'ready' && (
+          <Button
+            onClick={() => finalizeMutation.mutate(id)}
+            disabled={finalizeMutation.isPending}
+            className="h-9 text-xs bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
+          >
+            <CheckCircle className="h-4 w-4" />
+            {finalizeMutation.isPending ? 'Memproses...' : 'Approve Nilai'}
           </Button>
         )}
       </div>
@@ -107,7 +119,11 @@ export default function ScoreEntryPage() {
       {isLocked && (
         <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm">
           <AlertTriangle className="h-4 w-4 shrink-0" />
-          Nilai ini sudah dikunci dan tidak dapat diubah.
+          {session?.status === 'locked'
+            ? 'Nilai ini sudah dikunci dan tidak dapat diubah.'
+            : !isMustahiq
+              ? 'Anda dalam mode monitoring (hanya baca). Hanya pengajar kelas ini yang dapat menginput nilai.'
+              : 'Nilai ini sudah difinalisasi.'}
         </div>
       )}
 

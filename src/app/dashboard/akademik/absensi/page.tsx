@@ -11,6 +11,7 @@ import { useAttendanceSummary } from '@/features/scores/queries/useScores';
 import { useSaveBulkAttendance } from '@/features/scores/mutations';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useClasses } from '@/features/classes/queries/useClasses';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 const ATTENDANCE_STATUSES = [
   { value: 'present', label: 'Hadir', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -21,6 +22,9 @@ const ATTENDANCE_STATUSES = [
 ];
 
 export default function AbsensiPage() {
+  const { isMustahiq } = useAuthSession();
+  const isReadOnly = !isMustahiq;
+
   const today = new Date().toISOString().split('T')[0];
   const [selectedYearId, setSelectedYearId] = React.useState('');
   const [selectedSemesterId, setSelectedSemesterId] = React.useState('');
@@ -173,6 +177,12 @@ export default function AbsensiPage() {
         </div>
       </div>
 
+      {isReadOnly && selectedClassId && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm">
+          Anda dalam mode monitoring (hanya baca). Hanya pengajar kelas ini yang dapat mencatat absensi.
+        </div>
+      )}
+
       {selectedClassId && students.length > 0 && (
         <Card className="dark:bg-zinc-950">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -180,15 +190,17 @@ export default function AbsensiPage() {
               <Users className="h-4 w-4 text-zinc-400" />
               {students.length} Siswi — {selectedDate}
             </CardTitle>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={saveMutation.isPending}
-              className="h-8 text-xs bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 gap-1.5"
-            >
-              <Save className="h-3.5 w-3.5" />
-              {saveMutation.isPending ? 'Menyimpan...' : 'Simpan Absensi'}
-            </Button>
+            {!isReadOnly && (
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={saveMutation.isPending}
+                className="h-8 text-xs bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 gap-1.5"
+              >
+                <Save className="h-3.5 w-3.5" />
+                {saveMutation.isPending ? 'Menyimpan...' : 'Simpan Absensi'}
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
@@ -208,11 +220,11 @@ export default function AbsensiPage() {
                     {ATTENDANCE_STATUSES.map((s) => (
                       <button
                         key={s.value}
-                        onClick={() => setAttendanceMap((prev) => ({ ...prev, [student.id]: s.value }))}
+                        onClick={() => !isReadOnly && setAttendanceMap((prev) => ({ ...prev, [student.id]: s.value }))}
                         className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all ${
                           attendanceMap[student.id] === s.value
                             ? s.color + ' font-semibold shadow-sm'
-                            : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-400 hover:border-zinc-300'
+                            : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-400' + (!isReadOnly ? ' hover:border-zinc-300' : '')
                         }`}
                       >
                         {s.label}

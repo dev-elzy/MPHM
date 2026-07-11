@@ -11,6 +11,7 @@ import { useAkhlaq } from '@/features/scores/queries/useScores';
 import { useSaveAkhlaq } from '@/features/scores/mutations';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useClasses } from '@/features/classes/queries/useClasses';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 const AKHLAQ_CATEGORIES = [
   'Disiplin & Kehadiran',
@@ -29,6 +30,9 @@ const GRADES = [
 ];
 
 export default function AkhlaqPage() {
+  const { isMustahiq } = useAuthSession();
+  const isReadOnly = !isMustahiq;
+
   const [selectedYearId, setSelectedYearId] = React.useState('');
   const [selectedSemesterId, setSelectedSemesterId] = React.useState('');
   const [selectedClassId, setSelectedClassId] = React.useState('');
@@ -138,7 +142,7 @@ export default function AkhlaqPage() {
           </Select>
         </div>
 
-        {selectedClassId && students.length > 0 && (
+        {selectedClassId && students.length > 0 && !isReadOnly && (
           <Button
             size="sm"
             onClick={handleSaveAll}
@@ -150,6 +154,12 @@ export default function AkhlaqPage() {
           </Button>
         )}
       </div>
+
+      {isReadOnly && selectedClassId && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm">
+          Anda dalam mode monitoring (hanya baca). Hanya pengajar kelas ini yang dapat mencatat penilaian akhlaq.
+        </div>
+      )}
 
       {selectedClassId && students.length > 0 ? (
         <div className="overflow-x-auto">
@@ -183,6 +193,7 @@ export default function AkhlaqPage() {
                         <Select
                           value={currentGrade || 'none'}
                           onValueChange={(v) => { if (v !== 'none') setGrade(student.id, cat, v as string); }}
+                          disabled={isReadOnly}
                         >
                           <SelectTrigger className={`h-8 text-xs font-semibold w-16 mx-auto ${
                             currentGrade === 'A' ? 'text-emerald-700 border-emerald-300 bg-emerald-50' :

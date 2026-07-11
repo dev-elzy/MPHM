@@ -16,6 +16,7 @@ import { ScoreSession } from '@/features/scores/types';
 import { useRouter } from 'next/navigation';
 
 import { useClasses } from '@/features/classes/queries/useClasses';
+import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 const SESSION_STATUS: Record<string, { label: string; color: string; dot: string }> = {
   draft: { label: 'Draft', color: 'bg-blue-50 text-blue-700 ring-blue-500/20', dot: 'bg-blue-500' },
@@ -26,6 +27,7 @@ const SESSION_STATUS: Record<string, { label: string; color: string; dot: string
 
 export default function NilaiPage() {
   const router = useRouter();
+  const { isMustahiq, isAdmin } = useAuthSession();
   const [selectedYearId, setSelectedYearId] = React.useState('');
   const [selectedSemesterId, setSelectedSemesterId] = React.useState('');
   const [selectedClassId, setSelectedClassId] = React.useState('');
@@ -90,30 +92,50 @@ export default function NilaiPage() {
     {
       id: 'actions',
       header: 'Aksi',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push(`/dashboard/akademik/nilai/${row.original.id}`)}
-            className="h-8 text-xs text-[#C9A050] hover:text-[#B8903E] hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1.5 rounded-lg"
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            Input Nilai
-          </Button>
-          {row.original.status === 'ready' && (
+      cell: ({ row }) => {
+        const s = row.original.status;
+        const canInput = isMustahiq && (s === 'draft' || s === 'ready');
+        
+        return (
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setFinalizeTarget(row.original)}
-              className="h-8 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 gap-1.5 rounded-lg"
+              onClick={() => router.push(`/dashboard/akademik/nilai/${row.original.id}`)}
+              className="h-8 text-xs text-[#C9A050] hover:text-[#B8903E] hover:bg-amber-50 dark:hover:bg-amber-500/10 gap-1.5 rounded-lg"
             >
-              <CheckCircle className="h-3.5 w-3.5" />
-              Finalisasi
+              <BookOpen className="h-3.5 w-3.5" />
+              {canInput ? 'Input Nilai' : 'Lihat Nilai'}
             </Button>
-          )}
-        </div>
-      ),
+            
+            {/* Mustahiq can submit draft session for review */}
+            {isMustahiq && s === 'draft' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFinalizeTarget(row.original)}
+                className="h-8 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 gap-1.5 rounded-lg"
+              >
+                <CheckCircle className="h-3.5 w-3.5" />
+                Kirim Review
+              </Button>
+            )}
+
+            {/* Admin can approve ready session */}
+            {isAdmin && s === 'ready' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFinalizeTarget(row.original)}
+                className="h-8 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 gap-1.5 rounded-lg"
+              >
+                <CheckCircle className="h-3.5 w-3.5" />
+                Approve Nilai
+              </Button>
+            )}
+          </div>
+        );
+      },
     },
   ];
 
@@ -191,14 +213,21 @@ export default function NilaiPage() {
         open={!!finalizeTarget}
         onOpenChange={(open) => !open && setFinalizeTarget(null)}
         variant="warning"
-        title="Finalisasi Nilai?"
+        title={isAdmin && finalizeTarget?.status === 'ready' ? "Approve Nilai Mata Pelajaran?" : "Kirim Review Nilai?"}
         description={
-          <>
-            Nilai untuk mata pelajaran <strong>{finalizeTarget?.subjectName}</strong> akan difinalisasi.
-            Data nilai tidak dapat diubah setelah finalisasi. Pastikan semua nilai sudah benar.
-          </>
+          isAdmin && finalizeTarget?.status === 'ready' ? (
+            <>
+              Nilai untuk mata pelajaran <strong>{finalizeTarget?.subjectName}</strong> akan disetujui (Approved) dan dikunci.
+              Nilai tidak dapat diubah lagi oleh guru/mustahiq.
+            </>
+          ) : (
+            <>
+              Nilai untuk mata pelajaran <strong>{finalizeTarget?.subjectName}</strong> akan dikirim ke administrator untuk direview.
+              Pastikan semua nilai sudah benar sebelum mengirim.
+            </>
+          )
         }
-        confirmLabel={finalizeMutation.isPending ? 'Memfinalisasi...' : 'Ya, Finalisasi'}
+        confirmLabel={finalizeMutation.isPending ? 'Memproses...' : (isAdmin && finalizeTarget?.status === 'ready' ? 'Ya, Approve' : 'Ya, Kirim Review')}
         isLoading={finalizeMutation.isPending}
         onConfirm={handleFinalize}
       />

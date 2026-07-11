@@ -31,11 +31,22 @@ export async function POST(
       return apiError('Sesi nilai sudah dikunci', 400);
     }
 
-    // Finalize: update status to 'final'
+    const userRole = (session.role || '').toLowerCase();
+    const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
+    const isAdmin = ['admin', 'super_admin'].includes(userRole);
+
+    let nextStatus = 'ready';
+    if (isAdmin) {
+      nextStatus = 'final';
+    } else if (!isMustahiq) {
+      return apiError('Hanya pengajar atau administrator yang dapat memproses nilai', 403);
+    }
+
+    // Finalize: update status based on role
     await db
       .update(scoreSessions)
       .set({
-        status: 'final',
+        status: nextStatus,
         finalizedAt: new Date(),
         finalizedBy: session.userId,
         updatedAt: new Date(),
