@@ -112,8 +112,84 @@ export function GuardianDashboardPage() {
     { subject: 'Tauhid / Aqidatul Awam', score: 86, grade: 'B', status: 'Lulus' }
   ];
 
+  const tabMeta = [
+    {
+      id: 'profile',
+      label: 'Data Diri',
+      icon: User,
+      gradient: 'from-emerald-400 to-teal-600',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(16,185,129,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(16,185,129,0.3)]',
+      iconColor: 'text-emerald-500'
+    },
+    {
+      id: 'grades',
+      label: 'Nilai',
+      icon: Award,
+      gradient: 'from-blue-400 to-indigo-600',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(59,130,246,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(59,130,246,0.3)]',
+      iconColor: 'text-blue-500'
+    },
+    {
+      id: 'attendance',
+      label: 'Absensi',
+      icon: Clock,
+      gradient: 'from-amber-400 to-orange-600',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(245,158,11,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(245,158,11,0.3)]',
+      iconColor: 'text-amber-500'
+    },
+    {
+      id: 'violations',
+      label: 'Pelanggaran',
+      icon: ShieldAlert,
+      gradient: 'from-rose-400 to-red-650',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(239,68,68,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(239,68,68,0.3)]',
+      iconColor: 'text-rose-500'
+    },
+    {
+      id: 'report',
+      label: 'Rapor',
+      icon: FileText,
+      gradient: 'from-violet-400 to-purple-600',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(139,92,246,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(139,92,246,0.3)]',
+      iconColor: 'text-purple-500'
+    }
+  ];
+
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
+    <div className="space-y-6 pb-28">
+      {/* 3D Animations CSS injection */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes float3D {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        @keyframes shadowPulse {
+          0%, 100% { box-shadow: 0 15px 30px -5px rgba(0,0,0,0.2); }
+          50% { box-shadow: 0 25px 40px -5px rgba(0,0,0,0.35); }
+        }
+        .animate-3d-float {
+          animation: float3D 3.5s ease-in-out infinite;
+        }
+        .dock-3d-perspective {
+          perspective: 1000px;
+        }
+        .icon-3d-btn {
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          transform-style: preserve-3d;
+        }
+        .icon-3d-btn:hover {
+          transform: translateY(-12px) rotateX(15deg) rotateY(-10deg) scale(1.18);
+        }
+        .icon-3d-btn:active {
+          transform: translateY(-2px) scale(0.95);
+        }
+      `}} />
+
       {/* Read-Only Notice Banner */}
       <div className="p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -188,34 +264,6 @@ export function GuardianDashboardPage() {
             <p className="text-base font-bold text-rose-500 mt-1">{summary.totalViolations}</p>
           </div>
         </div>
-      </div>
-
-      {/* Top Navigation Tabs for Desktop */}
-      <div className="hidden md:flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-semibold">
-        {[
-          { id: 'profile', label: 'Data Diri Anaknya', icon: User },
-          { id: 'grades', label: 'Nilai Anaknya', icon: Award },
-          { id: 'attendance', label: 'Absensi Anaknya', icon: Clock },
-          { id: 'violations', label: 'Catatan Pelanggaran Anaknya', icon: ShieldAlert },
-          { id: 'report', label: 'Rapor Anaknya', icon: FileText },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'profile' | 'grades' | 'attendance' | 'violations' | 'report')}
-              className={`pb-3 flex items-center gap-2 border-b-2 transition cursor-pointer ${
-                isActive
-                  ? 'border-emerald-600 text-emerald-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          );
-        })}
       </div>
 
       {/* Tab Content */}
@@ -409,29 +457,28 @@ export function GuardianDashboardPage() {
         )}
       </div>
 
-      {/* Bottom Navigation Bar for Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 md:hidden flex justify-around items-center py-2 shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
-        {[
-          { id: 'profile', label: 'Data Diri', icon: User },
-          { id: 'grades', label: 'Nilai', icon: Award },
-          { id: 'attendance', label: 'Absensi', icon: Clock },
-          { id: 'violations', label: 'Pelanggaran', icon: ShieldAlert },
-          { id: 'report', label: 'Rapor', icon: FileText },
-        ].map((tab) => {
+      {/* Floating 3D Animated Dock (Centered & Responsive for ALL screen sizes) */}
+      <div className="dock-3d-perspective fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md sm:max-w-lg px-4 py-3 bg-white/70 dark:bg-slate-900/75 backdrop-blur-xl border border-white/20 dark:border-slate-800/40 rounded-[28px] shadow-[0_20px_45px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_45px_-8px_rgba(0,0,0,0.35)] flex justify-around items-center gap-1">
+        {tabMeta.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as 'profile' | 'grades' | 'attendance' | 'violations' | 'report')}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-xl transition-all cursor-pointer ${
+              title={tab.label}
+              className={`icon-3d-btn relative flex items-center justify-center w-12 h-12 rounded-[20px] transition-all cursor-pointer ${
                 isActive
-                  ? 'text-emerald-600 dark:text-emerald-400 font-bold scale-105'
-                  : 'text-slate-400 hover:text-slate-500'
+                  ? `bg-linear-to-br ${tab.gradient} ${tab.activeShadow} text-white animate-3d-float`
+                  : `bg-slate-100/75 dark:bg-slate-800/70 ${tab.hoverGlow} text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200`
               }`}
             >
-              <Icon className={`w-5.5 h-5.5 ${isActive ? 'stroke-[2.5px]' : 'stroke-[2px]'}`} />
-              <span className="text-[9px] tracking-tight">{tab.label}</span>
+              <Icon className={`w-5.5 h-5.5 ${isActive ? 'stroke-[2.2px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]' : 'stroke-[1.8px]'}`} />
+              
+              {/* Subtle indicator dot below active icon */}
+              {isActive && (
+                <span className="absolute -bottom-1 w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+              )}
             </button>
           );
         })}
