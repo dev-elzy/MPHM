@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
+import { GuardianDashboardPage } from '@/features/guardian/components/GuardianDashboardPage';
 
 interface DashboardStats {
   totalStudents: number;
@@ -172,7 +173,7 @@ const STAT_CONFIG = [
 ];
 
 export default function DashboardPage() {
-  const { user, isMustahiq } = useAuthSession();
+  const { user, isMustahiq, isGuardian } = useAuthSession();
   const { data, isLoading } = useAdminDashboard();
 
   const stats = data?.stats;
@@ -188,6 +189,10 @@ export default function DashboardPage() {
 
   if (isMustahiq) {
     return <MustahiqDashboardView userName={user?.name || 'Ustadz/ah'} />;
+  }
+
+  if (isGuardian) {
+    return <GuardianDashboardPage />;
   }
 
   return (
