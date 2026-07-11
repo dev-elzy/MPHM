@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   HeartHandshake,
   User,
@@ -52,10 +53,18 @@ interface ApiResponse<T> {
 }
 
 export function GuardianDashboardPage() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
   const [wards, setWards] = useState<WardData[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'profile' | 'grades' | 'attendance' | 'violations' | 'report'>('profile');
+
+  useEffect(() => {
+    if (tabParam && ['profile', 'grades', 'attendance', 'violations', 'report'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
+  }, [tabParam]);
 
   useEffect(() => {
     let active = true;
