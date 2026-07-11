@@ -45,7 +45,7 @@ export function BottomNav({ isWali, isKeamanan }: BottomNavProps) {
     ];
 
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-around px-4 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-md lg:rounded-2xl lg:border border-zinc-200 dark:border-zinc-800">
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t lg:border border-zinc-200 dark:border-zinc-800/85 flex items-center justify-around px-4 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-md lg:rounded-2xl">
         {items.map((item) => {
           const Icon = item.icon;
           return (
@@ -85,7 +85,7 @@ export function BottomNav({ isWali, isKeamanan }: BottomNavProps) {
     ];
 
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-200 dark:border-zinc-800/80 flex items-center justify-around px-6 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-xs lg:rounded-2xl lg:border border-zinc-200 dark:border-zinc-800">
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t lg:border border-zinc-200 dark:border-zinc-800/85 flex items-center justify-around px-6 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-xs lg:rounded-2xl">
         {items.map((item) => {
           const Icon = item.icon;
           return (
