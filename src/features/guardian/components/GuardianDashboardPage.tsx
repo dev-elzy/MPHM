@@ -7,8 +7,7 @@ import {
   FileText,
   Award,
   Clock,
-  ShieldAlert,
-  Download
+  ShieldAlert
 } from 'lucide-react';
 
 interface WardViolation {
@@ -219,52 +218,54 @@ export function GuardianDashboardPage() {
         )}
       </div>
 
-      {/* Hero Profile Card */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-300 font-bold text-xl shrink-0">
-            {profile.fullName ? profile.fullName.charAt(0) : <User className="w-8 h-8" />}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
-                {profile.fullName || 'Santri MPHM'}
-              </h2>
-              <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-full">
-                {profile.status.toUpperCase()}
-              </span>
+      {/* Hero Profile Card - ONLY shown on 'profile' tab */}
+      {activeTab === 'profile' && (
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-300 font-bold text-xl shrink-0">
+              {profile.fullName ? profile.fullName.charAt(0) : <User className="w-8 h-8" />}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              Angkatan: {profile.entryYear} · Kamar Asrama: {profile.dormitoryRoom || 'Kamar 03 - Blok C'}
-            </p>
-            {currentClass && (
-              <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
-                Kelas Aktif: {currentClass.className}
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                  {profile.fullName || 'Santri MPHM'}
+                </h2>
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 rounded-full">
+                  {profile.status.toUpperCase()}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Angkatan: {profile.entryYear} · Kamar Asrama: {profile.dormitoryRoom || 'Kamar 03 - Blok C'}
               </p>
-            )}
+              {currentClass && (
+                <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
+                  Kelas Aktif: {currentClass.className}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* 4 Quick Stat Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full md:w-auto">
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
-            <p className="text-[10px] font-medium text-slate-400 uppercase">Kehadiran</p>
-            <p className="text-base font-bold text-emerald-600 mt-1">{summary.attendancePercentage}%</p>
-          </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
-            <p className="text-[10px] font-medium text-slate-400 uppercase">Rata-Rata Nilai</p>
-            <p className="text-base font-bold text-slate-800 dark:text-slate-200 mt-1">{summary.academicAverageScore}</p>
-          </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
-            <p className="text-[10px] font-medium text-slate-400 uppercase">Predikat Akhlaq</p>
-            <p className="text-xs font-bold text-emerald-600 mt-2 truncate">{summary.akhlaqPredicate.split(' ')[0]}</p>
-          </div>
-          <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
-            <p className="text-[10px] font-medium text-slate-400 uppercase">Pelanggaran</p>
-            <p className="text-base font-bold text-rose-500 mt-1">{summary.totalViolations}</p>
+          {/* 4 Quick Stat Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full md:w-auto">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+              <p className="text-[10px] font-medium text-slate-400 uppercase">Kehadiran</p>
+              <p className="text-base font-bold text-emerald-600 mt-1">{summary.attendancePercentage}%</p>
+            </div>
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+              <p className="text-[10px] font-medium text-slate-400 uppercase">Rata-Rata Nilai</p>
+              <p className="text-base font-bold text-slate-800 dark:text-slate-200 mt-1">{summary.academicAverageScore}</p>
+            </div>
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+              <p className="text-[10px] font-medium text-slate-400 uppercase">Predikat Akhlaq</p>
+              <p className="text-xs font-bold text-emerald-600 mt-2 truncate">{summary.akhlaqPredicate.split(' ')[0]}</p>
+            </div>
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/70 rounded-xl text-center border border-slate-100 dark:border-slate-800/40">
+              <p className="text-[10px] font-medium text-slate-400 uppercase">Pelanggaran</p>
+              <p className="text-base font-bold text-rose-500 mt-1">{summary.totalViolations}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Tab Content */}
       <div className="transition-all duration-350">
@@ -442,16 +443,6 @@ export function GuardianDashboardPage() {
                 <span className="text-slate-400">Tanggal Pengesahan:</span>
                 <span className="font-semibold text-slate-850 dark:text-slate-300">11 Juli 2026</span>
               </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                onClick={() => alert('Fitur unduh rapor sedang disiapkan oleh Sekretariat')}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                Unduh Rapor Lengkap (PDF)
-              </button>
             </div>
           </div>
         )}
