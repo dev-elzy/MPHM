@@ -33,9 +33,9 @@ export async function GET(request: Request) {
       return apiError('Sesi tidak valid atau telah berakhir', 401);
     }
 
-    // Role Guard: super_admin, admin, mudir
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'mudir', 'operator'];
-    if (!ALLOWED_ROLES.includes(session.role)) {
+    // Role Guard: super_admin, admin, mudir, operator, mustahiq
+    const ALLOWED_ROLES = ['super_admin', 'admin', 'mudir', 'operator', 'mustahiq', 'teacher', 'ustadz'];
+    if (!ALLOWED_ROLES.includes(session.role.toLowerCase())) {
       return apiError('Anda tidak memiliki izin untuk melihat daftar pengguna', 403);
     }
 
