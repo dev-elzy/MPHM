@@ -54,7 +54,7 @@ export function ClassFormDialog({
   const updateMutation = useUpdateClass();
 
   const { data: curriculums, isLoading: isLoadingCurriculums } = useCurriculumLookup();
-  const { data: mustahiqs, isLoading: isLoadingMustahiqs } = useMustahiqLookup();
+  const { data: mustahiqs, isLoading: isLoadingMustahiqs } = useMustahiqLookup(open);
 
   const form = useForm<ClassFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
