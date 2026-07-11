@@ -60,11 +60,13 @@ const routes: SidebarItem[] = [
     label: 'Data Santri',
     icon: Users,
     href: '/dashboard/akademik/siswi',
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish', 'mustahiq'],
   },
   {
     label: 'Penilaian & Absensi',
     icon: ClipboardCheck,
     href: '/dashboard/akademik/nilai',
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mustahiq', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Input Nilai', href: '/dashboard/akademik/nilai' },
       { label: 'Absensi Harian', href: '/dashboard/akademik/absensi' },
