@@ -28,18 +28,30 @@ export function useAuthSession() {
   const user = query.data;
   const role = user?.role?.toLowerCase() || '';
 
-  const isAdmin = role === 'super_admin' || role === 'admin' || role === 'operator';
+  const isSekretariat = role === 'sekretariat' || role === 'super_admin' || role === 'admin' || role === 'operator';
   const isMustahiq = role === 'mustahiq' || role === 'teacher' || role === 'ustadz';
-  const isMudir = role === 'mudir';
-  const isMufatish = role === 'mufatish' || role === 'pengawas';
-  const isGuardian = role === 'guardian' || role === 'parent' || role === 'wali' || role === 'wali_santri';
+  const isMufattisy = role === 'mufattisy' || role === 'mufatish' || role === 'pengawas';
+  const isPimpinan = role === 'pimpinan' || role === 'mundzir' || role === 'mudir';
+  const isKeamanan = role === 'petugas_keamanan' || role === 'security' || role === 'keamanan';
+  const isWali = role === 'wali_santri' || role === 'guardian' || role === 'parent' || role === 'wali';
+
+  // Backward compatibility with legacy role checks
+  const isAdmin = isSekretariat;
+  const isMudir = isPimpinan;
+  const isMufatish = isMufattisy;
+  const isGuardian = isWali;
 
   return {
     ...query,
     user,
     role,
-    isAdmin,
+    isSekretariat,
     isMustahiq,
+    isMufattisy,
+    isPimpinan,
+    isKeamanan,
+    isWali,
+    isAdmin,
     isMudir,
     isMufatish,
     isGuardian,

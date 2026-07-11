@@ -105,7 +105,7 @@ interface SidebarContentProps {
 
 function SidebarContent({ onNavigate }: SidebarContentProps) {
   const pathname = usePathname();
-  const { user, role } = useAuthSession();
+  const { user, role, isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali } = useAuthSession();
   
   // Track which submenus are expanded
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({
@@ -126,20 +126,40 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
     if (!role) return routes.filter((r) => !r.allowedRoles);
     return routes.filter((route) => {
       if (!route.allowedRoles) return true;
-      return route.allowedRoles.includes(role);
+      return route.allowedRoles.some((allowedRole) => {
+        const ar = allowedRole.toLowerCase();
+        if (['super_admin', 'admin', 'operator', 'sekretariat'].includes(ar)) {
+          return isSekretariat;
+        }
+        if (['mustahiq', 'teacher', 'ustadz'].includes(ar)) {
+          return isMustahiq;
+        }
+        if (['mufatish', 'mufattisy', 'pengawas'].includes(ar)) {
+          return isMufattisy;
+        }
+        if (['mudir', 'pimpinan', 'mundzir'].includes(ar)) {
+          return isPimpinan;
+        }
+        if (['security', 'keamanan', 'petugas_keamanan'].includes(ar)) {
+          return isKeamanan;
+        }
+        if (['guardian', 'parent', 'wali', 'wali_santri'].includes(ar)) {
+          return isWali;
+        }
+        return false;
+      });
     });
-  }, [role]);
+  }, [role, isSekretariat, isMustahiq, isMufattisy, isPimpinan, isKeamanan, isWali]);
 
   const getRoleBadgeLabel = (r: string) => {
-    switch (r) {
-      case 'super_admin': return 'Super Admin';
-      case 'admin': return 'Administrator';
-      case 'operator': return 'Operator Akademik';
-      case 'mustahiq': return 'Staff Pengajar';
-      case 'mudir': return 'Mudir (Pimpinan)';
-      case 'mufatish': return 'Mufatish (Pengawas Akademik)';
-      default: return r || 'Pengguna';
-    }
+    const roleLower = (r || '').toLowerCase();
+    if (['sekretariat', 'super_admin', 'admin', 'operator'].includes(roleLower)) return 'Sekretariat';
+    if (['mustahiq', 'teacher', 'ustadz'].includes(roleLower)) return 'Mustahiq (Wali Kelas)';
+    if (['mufattisy', 'mufatish', 'pengawas'].includes(roleLower)) return 'Mufattisy (Pimpinan Tingkatan)';
+    if (['pimpinan', 'mundzir', 'mudir'].includes(roleLower)) return 'Pimpinan / Mundzir';
+    if (['petugas_keamanan', 'security', 'keamanan'].includes(roleLower)) return 'Petugas Keamanan';
+    if (['wali_santri', 'guardian', 'parent', 'wali'].includes(roleLower)) return 'Wali Santri';
+    return r || 'Pengguna';
   };
 
   return (

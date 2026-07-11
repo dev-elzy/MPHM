@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 import { GuardianDashboardPage } from '@/features/guardian/components/GuardianDashboardPage';
+import { SecurityDashboard } from '@/features/dashboard/components/SecurityDashboard';
 
 interface DashboardStats {
   totalStudents: number;
@@ -173,7 +174,7 @@ const STAT_CONFIG = [
 ];
 
 export default function DashboardPage() {
-  const { user, isMustahiq, isGuardian } = useAuthSession();
+  const { user, isMustahiq, isWali, isKeamanan, isSekretariat } = useAuthSession();
   const { data, isLoading } = useAdminDashboard();
 
   const stats = data?.stats;
@@ -191,8 +192,12 @@ export default function DashboardPage() {
     return <MustahiqDashboardView userName={user?.name || 'Ustadz/ah'} />;
   }
 
-  if (isGuardian) {
+  if (isWali) {
     return <GuardianDashboardPage />;
+  }
+
+  if (isKeamanan) {
+    return <SecurityDashboard />;
   }
 
   return (
@@ -290,42 +295,44 @@ export default function DashboardPage() {
         </Card>
 
         {/* Quick Links */}
-        <Card className="glass-panel shadow-premium-3d rounded-2xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
-              <Activity className="h-4 w-4 text-zinc-400" />
-              Akses Cepat
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Input Nilai', href: '/dashboard/akademik/nilai', icon: BookOpen, color: 'text-[#C9A050]', bg: 'bg-amber-50 dark:bg-amber-500/10' },
-                { label: 'Absensi', href: '/dashboard/akademik/absensi', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
-                { label: 'Data Siswi', href: '/dashboard/akademik/siswi', icon: GraduationCap, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
-                { label: 'Pengguna', href: '/dashboard/pengguna', icon: Users, color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-500/10' },
-                { label: 'Penilaian Akhlaq', href: '/dashboard/akademik/akhlaq', icon: TrendingUp, color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-500/10' },
-                { label: 'Kelas Rombel', href: '/dashboard/akademik/kelas', icon: School, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
-              ].map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="flex items-center gap-2.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-all group"
-                  >
-                    <div className={`p-1.5 rounded-lg ${link.bg}`}>
-                      <Icon className={`h-4 w-4 ${link.color}`} />
-                    </div>
-                    <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
-                      {link.label}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        {isSekretariat && (
+          <Card className="glass-panel shadow-premium-3d rounded-2xl">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
+                <Activity className="h-4 w-4 text-zinc-400" />
+                Akses Cepat
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Input Nilai', href: '/dashboard/akademik/nilai', icon: BookOpen, color: 'text-[#C9A050]', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+                  { label: 'Absensi', href: '/dashboard/akademik/absensi', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+                  { label: 'Data Siswi', href: '/dashboard/akademik/siswi', icon: GraduationCap, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-500/10' },
+                  { label: 'Pengguna', href: '/dashboard/pengguna', icon: Users, color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-500/10' },
+                  { label: 'Penilaian Akhlaq', href: '/dashboard/akademik/akhlaq', icon: TrendingUp, color: 'text-rose-600', bg: 'bg-rose-50 dark:bg-rose-500/10' },
+                  { label: 'Kelas Rombel', href: '/dashboard/akademik/kelas', icon: School, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
+                ].map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="flex items-center gap-2.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-all group"
+                    >
+                      <div className={`p-1.5 rounded-lg ${link.bg}`}>
+                        <Icon className={`h-4 w-4 ${link.color}`} />
+                      </div>
+                      <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+                        {link.label}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

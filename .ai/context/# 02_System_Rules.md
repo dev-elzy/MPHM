@@ -1,379 +1,110 @@
-# 02_System_Rules.md
+BAGIAN 1: KEBUTUHAN PRIMER (Aturan Inti, Keamanan, & Tata Kelola Sistem)
 
-> Project : MPHM (Madrasah Putri Hidayatul Mubtadi'at)
->
-> Document : System Rules Specification (SRS)
->
-> Version : 1.0
->
-> Status : APPROVED
+## 1. Arsitektur, Otentikasi, & Otorisasi Sistem
 
----
+- **Arsitektur Berlapis (Layered Architecture):**
+  `Client` -> `Presentation Layer` -> `Application Layer` -> `Business Layer` -> `Repository Layer` -> `Database`.
+- _Business Logic_ hanya boleh berada pada **Business Layer**.
 
-# 1. Tujuan
+- **Authentication:** Menggunakan _Session Authentication_ dengan karakteristik _HttpOnly Cookie_, _Secure Cookie_, _Session Rotation_, dan _Middleware Protection_.
+- **Authorization:** Menggunakan _Role Based Access Control_ (RBAC) dan _Data Scope Authorization_. Seluruh endpoint wajib melakukan validasi Role. Daftar lengkap Role pada sistem hanya terdiri dari:
 
-Dokumen ini mendefinisikan seluruh aturan teknis sistem yang wajib diikuti selama proses pengembangan.
+1. Sekretariat (Mencakup seluruh fungsi pengelolaan administratif sebelumnya)
+2. Mustahiq (Wali Kelas)
+3. Mufattisy (Pimpinan Tingkatan)
+4. Pimpinan / Mundzir
+5. Petugas Keamanan
+6. Wali Santri
 
-Seluruh implementasi Frontend, Backend, Database, API, dan UI harus mengikuti dokumen ini.
+- **Aturan Visibilitas Data Secara Global:** Semua user **selain** Sekretariat dan Pimpinan/Mundzir **wajib hanya melihat data di setiap kinerjanya/lingkup kerjanya masing-masing**.
+- **Pusat Data (Data Center):** Seluruh dashboard wajib mengambil data secara tersentralisasi (_Single Source of Truth_), bersifat _real-time_, serta responsif/optimal untuk PWA (_Desktop, Tablet, dan Mobile_).
 
----
+## 2. Aturan Pembagian Tanggung Jawab (Frontend vs Backend)
 
-# 2. Arsitektur Sistem
+- **Frontend Rules:** Hanya bertanggung jawab terhadap UI, UX, validasi ringan, navigasi, cache, _Optimistic Update_, _Loading State_, dan _Error State_. **Dilarang keras:** Menghitung nilai akademik, melakukan finalisasi, mengubah aturan bisnis, dan mengakses database secara langsung.
+- **Backend Rules:** Bertanggung jawab terhadap validasi data, validasi hak akses, _Business Logic_, perhitungan akademik, finalisasi, _Audit Log_, _Soft Delete_, _Recycle Bin_, dan integritas database. Seluruh validasi wajib dilakukan di Backend.
 
-Aplikasi menggunakan arsitektur berlapis (Layered Architecture).
+## 3. Kebijakan Data, Log, Keamanan & Kinerja
 
-```text
-Client
-
-↓
-
-Presentation Layer
-
-↓
-
-Application Layer
-
-↓
-
-Business Layer
-
-↓
-
-Repository Layer
-
-↓
-
-Database
-```
-
-Business Logic hanya boleh berada pada Business Layer.
+- **Tahun Ajaran Aktif:** Dalam satu waktu hanya boleh terdapat satu Tahun Ajaran aktif. Seluruh query sistem otomatis menggunakan Tahun Ajaran aktif. Pengguna tidak memilih Tahun Ajaran secara manual.
+- **Form Input (Auto Save):** Seluruh Form Input menggunakan mekanisme _Auto Save_ dengan alur: `Input` -> `Debounce` -> `Validation` -> `Save` -> `Toast` (✓ Tersimpan). Tidak terdapat tombol Save pada Form Input Nilai.
+- **Data Lifecycle:** Seluruh data mengikuti alur siklus: `Draft` -> `Published` -> `Active` -> `Locked` -> `Archived` -> `Trash` -> `Deleted` (menyesuaikan jenis data).
+- **Recycle Bin & Soft Delete:** Data tidak dihapus permanen. Penghapusan minimal mencatat `deleted_at` dan `deleted_by`. Data penting masuk ke _Recycle Bin_ dengan retensi **24 Jam** yang akan dihapus otomatis oleh _Cloudflare Cron Worker_.
+- **Audit Log:** Seluruh aktivitas penting dan aktivitas dashboard wajib dicatat secara permanen, bersifat _immutable_ (tidak dapat diubah oleh pengguna).
+- **Security Standard:** Wajib menerapkan _CSRF Protection_, _XSS Protection_, _SQL Injection Protection_, _Rate Limiting_, _Secure Headers_, _Input Validation_, dan _Output Escaping_.
+- **Performance Minimum:** Wajib menggunakan _Server Components_, _Code Splitting_, _Lazy Loading_, _Streaming_, _Optimistic Update_, _Server Side Pagination_, _Server Side Filtering_, _Server Side Sorting_, _Cache_, dan _Edge Rendering_.
 
 ---
 
-# 3. Frontend Rules
+# BAGIAN 2: KEBUTUHAN SEKUNDER (Spesifikasi Peran, Menu, & Operasional)
 
-Frontend hanya bertanggung jawab terhadap:
+## 1. Spesifikasi Detail Dashboard Berdasarkan Role
 
-- UI
-- UX
-- Validasi ringan
-- Navigasi
-- Cache
-- Optimistic Update
-- Loading State
-- Error State
+Setiap pengguna memiliki Dashboard yang berbeda sesuai tugas, tanggung jawab, dan hak aksesnya (_Role Based Dashboard_). Pengguna tidak dapat mengakses Dashboard milik role lain.
 
-Frontend dilarang:
+### A. Dashboard Sekretariat
 
-- Menghitung nilai akademik.
-- Melakukan finalisasi.
-- Mengubah aturan bisnis.
-- Mengakses database secara langsung.
+- **Fungsi:** Dashboard utama untuk mengelola seluruh administrasi MPHM dengan akses penuh terhadap seluruh modul sesuai kewenangan (telah mencakup hak akses yang sebelumnya dipisah sebagai Admin/Operator).
+- **Ringkasan Dashboard (Widget/Statistik):** Total Santri Aktif, Total Alumni, Total Pengajar, Total Pengurus, Tahun Ajaran Aktif, Semester Aktif, Jumlah Kelas, Jumlah Wali Santri, Statistik Kehadiran, Statistik Pelanggaran, Statistik Kelulusan.
+- **Struktur Menu:**
+- Dashboard
+- Pusat Data (Santri, Alumni, Pengajar, Pengurus, Wali Santri, Pencarian Database)
+- Akademik (Tahun Ajaran, Semester, Jenjang, Tingkat, Mata Pelajaran, Kelas, Penempatan Santri, Nilai, Absensi, Akhlaq, Pelanggaran, Rapor, Promosi)
+- Pengguna (Role, Hak Akses, Akun)
+- Master Data (Jenis Pelanggaran, Tingkat Pelanggaran, Dynamic Field)
+- Laporan (Akademik, Kehadiran, Pelanggaran, Alumni)
+- Pengaturan Sistem (Audit Log, Backup, Konfigurasi)
 
----
+- **Quick Actions:** Tambah Santri, Tambah Pengajar, Tambah Pengurus, Tambah Tahun Ajaran, Buat Kelas, Jalankan Promosi, Cetak Rapor.
 
-# 4. Backend Rules
+### B. Dashboard Mustahiq (Wali Kelas)
 
-Backend bertanggung jawab terhadap:
+- **Fungsi:** Mengelola aktivitas akademik kelas yang diampunya. **Wajib hanya melihat data dari 1 kelas yang diampunya.** Sistem otomatis menentukan Tahun Ajaran, Kelas, dan Hak Akses setelah login, tanpa perlu memilih secara manual.
+- **Ringkasan Dashboard (Widget/Statistik):** Jumlah Santri, Kehadiran Hari Ini, Nilai Belum Diisi, Akhlaq Belum Diisi, Pelanggaran Kelas, Pengumuman.
+- **Struktur Menu:** Dashboard, Data Santri Kelas, Absensi, Nilai, Akhlaq, Pelanggaran, Rapor, Profil Santri.
+- **Quick Actions:** Input Absensi, Input Nilai, Input Akhlaq, Lihat Profil Santri, Cetak Rekap Nilai.
 
-- Validasi Data
-- Validasi Hak Akses
-- Business Logic
-- Perhitungan Akademik
-- Finalisasi
-- Audit Log
-- Soft Delete
-- Recycle Bin
-- Integritas Database
+### C. Dashboard Mufattisy (Pimpinan Tingkatan)
 
----
+- **Fungsi:** Melakukan monitoring seluruh kelas pada tingkatan yang menjadi tanggung jawabnya. **Wajib hanya melihat data pada Tingkat yang dinaunginya.** Mufattisy **tidak menginput** nilai maupun absensi.
+- **Ringkasan Dashboard (Widget/Statistik):** Jumlah Kelas, Jumlah Santri, Persentase Kehadiran, Persentase Pengisian Nilai, Persentase Pengisian Akhlaq, Statistik Pelanggaran, Grafik Perkembangan.
+- **Struktur Menu:** Dashboard, Monitoring Kelas, Monitoring Nilai, Monitoring Absensi, Monitoring Akhlaq, Monitoring Pelanggaran, Laporan Tingkatan.
+- **Quick Actions:** Lihat Profil Santri, Lihat Rekap Nilai, Lihat Rekap Absensi, Cetak Laporan.
 
-# 5. Authentication
+### D. Dashboard Pimpinan / Mundzir
 
-Menggunakan Session Authentication.
+- **Fungsi:** Monitoring seluruh aktivitas MPHM secara menyeluruh tanpa batas visibilitas (seperti Sekretariat). Tidak digunakan untuk pekerjaan administrasi harian.
+- **Ringkasan Dashboard (Widget/Statistik):** Total Santri, Total Alumni, Total Pengajar, Total Pengurus, Statistik Akademik, Statistik Kelulusan, Statistik Kehadiran, Statistik Pelanggaran, Grafik Perkembangan Tahunan.
+- **Struktur Menu:** Dashboard, Monitoring Akademik, Monitoring Pusat Data, Monitoring Pelanggaran, Monitoring Alumni, Laporan, Statistik.
+- **Quick Actions:** Lihat Statistik, Cetak Laporan, Lihat Profil Santri, Lihat Profil Pengajar.
 
-Karakteristik:
+### E. Dashboard Petugas Keamanan
 
-- HttpOnly Cookie
-- Secure Cookie
-- Session Rotation
-- Middleware Protection
+- **Fungsi & Hak Akses khusus:** Melakukan pencatatan dan pemantauan pelanggaran santri berdasarkan kejadian (_Incident-Based Recording_) yang terpisah dari penilaian akhlaq semesteran.
+- **Aturan Visibilitas & Alur Kerja:** Hanya bisa melihat data yang dicari saja (tidak menampilkan semua data secara bawaan). Jika data hasil pencarian tidak diklik, maka tidak akan menampilkan informasi detail/lengkapnya.
+- **Alur Input Pelanggaran Wajib:** `Mencari Data` -> `Mengeklik Data Santri` -> `Input Pelanggaran` -> `Simpan`.
+- **Dilarang keras:** Mengakses, melihat, atau mengubah data akademik (Nilai, Absensi, Akhlaq, Raport).
 
----
+- **Ringkasan Dashboard (Widget/Statistik):** Pelanggaran Hari Ini, Pelanggaran Minggu Ini, Pelanggaran Bulan Ini, Santri Terbanyak Melanggar, Jenis Pelanggaran Terbanyak, Status Penanganan.
+- **Struktur Menu:** Dashboard, Cari Santri, Laporan Pelanggaran, Riwayat Pelanggaran, Statistik Pelanggaran.
+- **Quick Actions:** Cari Santri, Tambah Pelanggaran, Upload Bukti, Selesaikan Laporan.
 
-# 6. Authorization
+### F. Dashboard Wali Santri
 
-Menggunakan Role Based Access Control (RBAC).
+- **Fungsi:** Memantau perkembangan anak yang terhubung langsung dengan akun wali. **Wajib hanya dapat melihat data anaknya saja & hanya data monitoring terkait anaknya saja.** Tidak dapat melihat data santri lain.
+- **Ringkasan Dashboard (Widget/Statistik):** Biodata Anak, Kelas Saat Ini, Persentase Kehadiran, Nilai Terbaru, Akhlaq, Pelanggaran, Pengumuman.
+- **Struktur Menu:** Dashboard, Profil Anak, Nilai, Absensi, Akhlaq, Pelanggaran, Rapor, Kalender Akademik, Pengumuman.
+- **Quick Actions:** Lihat Rapor, Unduh Rapor, Lihat Absensi, Lihat Nilai, Lihat Pengumuman.
 
-Role:
+## 2. Aturan Pengelolaan Tabel & Data Massal
 
-- Super Admin
-- Admin
-- Operator
-- Mustahiq
-- Mufattisy
-- Pimpinan
-- Petugas Keamanan
-- Wali Santri
+- **Universal Data Grid Standard:** Seluruh halaman tabel wajib mengikuti satu standar komponen dokumen _Universal Data Grid Standard_. Tidak diperbolehkan membuat implementasi Data Table yang berbeda antar modul.
+- **Import & Export:** Seluruh modul yang memiliki proses input data wajib menyediakan fitur: _Import_, _Export_, _Download Template_, dan _Import History_. Format template wajib patuh pada _Universal Data Grid Standard_.
+- **Master Jenis Pelanggaran:** Bersifat dinamis dan dikelola secara sentral oleh Administrator melalui Dashboard Sekretariat.
 
-Seluruh endpoint wajib melakukan validasi Role.
+## 3. Prinsip Pengembangan Sistem (Development Principles)
 
----
-
-# 7. Tahun Ajaran Aktif
-
-Dalam satu waktu hanya boleh terdapat satu Tahun Ajaran aktif.
-
-Seluruh query sistem otomatis menggunakan Tahun Ajaran aktif.
-
-Pengguna tidak memilih Tahun Ajaran secara manual.
-
----
-
-# 8. Mustahiq
-
-Satu Mustahiq hanya memiliki satu kelas.
-
-Setelah login.
-
-Sistem otomatis menentukan:
-
-- Tahun Ajaran
-- Kelas
-- Hak Akses
-
-Mustahiq tidak pernah memilih kelas.
-
----
-
-# 9. Auto Save
-
-Seluruh Form Input menggunakan Auto Save.
-
-Alur:
-
-```text
-Input
-
-↓
-
-Debounce
-
-↓
-
-Validation
-
-↓
-
-Save
-
-↓
-
-Toast
-
-✓ Tersimpan
-```
-
-Tidak terdapat tombol Save pada Form Input Nilai.
-
----
-
-# 10. Dashboard
-
-Dashboard bersifat Role Based.
-
-Setiap Role memiliki Dashboard yang berbeda.
-
-Dashboard wajib menampilkan data secara realtime.
-
----
-
-# 11. Monitoring
-
-Admin dapat memonitor seluruh aktivitas akademik.
-
-Meliputi:
-
-- Progress Kelas
-- Progress Mata Pelajaran
-- Progress Finalisasi
-- Aktivitas Pengguna
-- Statistik
-- Notifikasi
-
----
-
-# 12. Data Lifecycle
-
-Seluruh data memiliki Lifecycle.
-
-Contoh:
-
-```text
-Draft
-
-↓
-
-Published
-
-↓
-
-Active
-
-↓
-
-Locked
-
-↓
-
-Archived
-
-↓
-
-Trash
-
-↓
-
-Deleted
-```
-
-Lifecycle menyesuaikan jenis data.
-
----
-
-# 13. Recycle Bin
-
-Seluruh data penting menggunakan Recycle Bin.
-
-Retensi:
-
-24 Jam
-
-Cloudflare Cron Worker bertugas menghapus data yang telah melewati masa retensi.
-
----
-
-# 14. Soft Delete
-
-Data tidak dihapus secara permanen.
-
-Minimal menggunakan:
-
-- deleted_at
-- deleted_by
-
----
-
-# 15. Audit Log
-
-Seluruh aktivitas penting wajib dicatat.
-
-Audit Log tidak dapat diubah oleh pengguna.
-
----
-
-# 16. Universal Data Grid
-
-Seluruh halaman tabel wajib mengikuti dokumen:
-
-**Universal Data Grid Standard**
-
-Tidak diperbolehkan membuat implementasi Data Table yang berbeda antar modul.
-
----
-
-# 17. Import & Export
-
-Seluruh modul yang memiliki proses input data wajib menyediakan:
-
-- Import
-- Export
-- Download Template
-- Import History
-
-Template wajib mengikuti standar yang telah ditentukan pada Universal Data Grid Standard.
-
----
-
-# 18. Error Handling
-
-Seluruh Error harus:
-
-- Mudah dipahami.
-- Informatif.
-- Tidak menampilkan Error Internal.
-- Menyediakan solusi atau tindakan berikutnya.
-
----
-
-# 19. Performance
-
-Standar minimum:
-
-- Server Components
-- Code Splitting
-- Lazy Loading
-- Streaming
-- Optimistic Update
-- Server Side Pagination
-- Server Side Filtering
-- Server Side Sorting
-- Cache
-- Edge Rendering
-
----
-
-# 20. Security
-
-Standar keamanan:
-
-- CSRF Protection
-- XSS Protection
-- SQL Injection Protection
-- Rate Limiting
-- Secure Headers
-- Input Validation
-- Output Escaping
-
-Seluruh validasi dilakukan di Backend.
-
----
-
-# 21. Development Principles
-
-Seluruh kode wajib memenuhi prinsip:
-
-- SOLID
-- DRY (Don't Repeat Yourself)
-- KISS (Keep It Simple)
-- Clean Architecture
-- Feature-Based Architecture
-- Type Safety
-- Reusable Components
-- Modular Design
-
----
-
-# 22. Konsistensi Sistem
-
-Seluruh fitur baru yang dikembangkan wajib:
-
-- Mengikuti Business Requirements.
-- Mengikuti System Rules.
-- Menggunakan komponen yang sudah ada.
-- Tidak membuat implementasi baru jika komponen reusable telah tersedia.
-
-Konsistensi arsitektur lebih diutamakan daripada kecepatan implementasi.
-
----
-
-# 23. Aturan Modul Pelanggaran Santri & Petugas Keamanan
-
-1. **Master Jenis Pelanggaran**: Bersifat dinamis dan dikelola secara sentral oleh Administrator melalui Dashboard Admin.
-2. **Incident-Based Recording**: Pelanggaran santri dicatat berdasarkan kejadian dan terpisah dari penilaian Akhlaq semesteran.
-3. **Hak Akses Petugas Keamanan**:
-   - Dapat melakukan pencarian biodata dasar santri, kelas, dan kamar untuk keperluan verifikasi identitas.
-   - Dapat membuat laporan pelanggaran santri dan mengunggah bukti pelanggaran.
-   - Dilarang mengakses, melihat, atau mengubah data akademik (Nilai, Absensi, Akhlaq, Raport).
-4. **Immutability Log**: Setiap pencatatan pelanggaran tercatat secara permanen pada riwayat santri dan Audit Log sistem.
-
+- Setiap kode, modul, dan fitur baru wajib memenuhi prinsip: **SOLID**, **DRY** (_Don't Repeat Yourself_), **KISS** (_Keep It Simple_), _Clean Architecture_, _Feature-Based Architecture_, _Type Safety_, _Reusable Components_, dan _Modular Design_.
+- Wajib mengutamakan konsistensi arsitektur dan pemanfaatan komponen _reusable_ yang sudah ada daripada kecepatan implementasi fitur baru.
+- **Error Handling:** Seluruh pesan error wajib mudah dipahami, informatif, tidak menampilkan isi teknis internal sistem, serta menyediakan solusi/tindakan berikutnya bagi pengguna.
+- **Filosofi Desain Utama:** _Role Based Dashboard_, _Data Scope Authorization_, _Person-Centric Architecture_, _Single Source of Truth_, _Enterprise Information System_, _Mobile First PWA_, _Real-Time Monitoring_, serta _Simple, Fast, dan Mudah Digunakan_.

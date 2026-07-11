@@ -50,8 +50,8 @@ export async function middleware(request: NextRequest) {
     '/dashboard/recycle-bin',
   ];
 
-  const isMustahiqOrTeacher = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
-  if (isMustahiqOrTeacher && ADMIN_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+  const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+  if (!isSekretariat && ADMIN_ONLY_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
