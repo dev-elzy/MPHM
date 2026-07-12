@@ -23,7 +23,8 @@ interface NotificationItem {
 }
 
 export function Header() {
-  const { isWali } = useAuthSession();
+  const { isWali, isKeamanan, isMustahiq } = useAuthSession();
+  const isAppStyle = isWali || isKeamanan || isMustahiq;
   const queryClient = useQueryClient();
 
   // Fetch real notifications from database
@@ -59,7 +60,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 w-full h-16 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-md border-b border-zinc-200/40 dark:border-zinc-800/40 flex items-center justify-between px-4 lg:px-8 transition-all">
       <div className="flex items-center gap-3 min-w-0">
-        {!isWali && <MobileSidebar />}
+        {!isAppStyle && <MobileSidebar />}
         <div className="flex items-center gap-2 lg:hidden">
           <Image src="/logo.png" alt="Logo MPHM" width={32} height={32} className="h-8 w-8 object-contain" priority unoptimized />
           <span className="font-extrabold text-sm tracking-tight text-zinc-900 dark:text-zinc-100 truncate">MPHM Portal</span>
@@ -70,7 +71,7 @@ export function Header() {
 
       <div className="flex items-center gap-3">
         {/* Global Command Palette search bar inside Header - hidden for Wali Santri and on mobile/tablet for others */}
-        {!isWali && (
+        {!isAppStyle && (
           <div className="hidden md:block w-64 lg:w-96">
             <GlobalCommandPalette />
           </div>
