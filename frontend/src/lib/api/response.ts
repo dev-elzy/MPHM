@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-
 export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
@@ -8,7 +6,7 @@ export interface ApiResponse<T = unknown> {
 }
 
 export function apiSuccess<T>(data: T, message = 'Success', status = 200) {
-  return NextResponse.json(
+  return Response.json(
     {
       success: true,
       message,
@@ -22,7 +20,7 @@ export function apiValidationError(
   errors: Record<string, string[]>,
   message = 'Validation Failed'
 ) {
-  return NextResponse.json(
+  return Response.json(
     {
       success: false,
       message,
@@ -33,7 +31,7 @@ export function apiValidationError(
 }
 
 export function apiError(message = 'Internal Server Error', status = 500) {
-  return NextResponse.json(
+  return Response.json(
     {
       success: false,
       message,

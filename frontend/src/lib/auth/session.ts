@@ -1,5 +1,3 @@
-import { cookies } from 'next/headers';
-
 export interface UserSession {
   userId: string;
   email: string;
@@ -93,6 +91,7 @@ export async function verifySessionToken(token: string): Promise<UserSession | n
   }
 }
 
+
 // Custom resolver hook for pure Worker/Hono context
 let honoSessionResolver: (() => Promise<UserSession | null>) | null = null;
 
@@ -108,6 +107,7 @@ export async function getSession(): Promise<UserSession | null> {
     return honoSessionResolver();
   }
   try {
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     const cookie = cookieStore.get(COOKIE_NAME);
     if (!cookie?.value) return null;
@@ -122,6 +122,7 @@ export async function getSession(): Promise<UserSession | null> {
  */
 export async function setSessionCookie(session: UserSession) {
   const token = await createSessionToken(session);
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
   cookieStore.set({
     name: COOKIE_NAME,
@@ -139,12 +140,14 @@ export async function setSessionCookie(session: UserSession) {
  * Clears the session cookie on logout.
  */
 export async function clearSessionCookie() {
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
   cookieStore.delete(COOKIE_NAME);
 }
 
 // Backwards compatibility functions matching old exports
 export async function createSession(token: string) {
+  const { cookies } = await import('next/headers');
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
