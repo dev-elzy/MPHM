@@ -9,7 +9,7 @@ import {
 } from '@/db/schema';
 import { getSession } from '@/lib/auth/session';
 import { apiSuccess, apiError } from '@/lib/api/response';
-import { like, or, eq, isNull } from 'drizzle-orm';
+import { like, or, eq, isNull, inArray, ne, and } from 'drizzle-orm';
 
 export async function GET(request: Request) {
   try {
@@ -20,18 +20,11 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const query = (searchParams.get('q') || '').trim();
-
-    if (!query) {
-      return apiSuccess({
-        query: '',
-        count: 0,
-        results: [],
-      });
-    }
+    const roleFilter = (searchParams.get('role') || '').trim();
 
     const db = getDb();
 
-    // Query core people matching fullName, nik, phone, or address
+    // Query core people matching query & role filter
     const conditions = [isNull(people.deletedAt)];
     if (query) {
       conditions.push(
@@ -41,6 +34,51 @@ export async function GET(request: Request) {
           like(people.phone, `%${query}%`),
           like(people.address, `%${query}%`)
         )!
+      );
+    }
+
+    // Apply backend role filtering using native IN subqueries
+    if (roleFilter === 'student') {
+      conditions.push(
+        inArray(
+          people.id,
+          db.select({ personId: studentProfiles.personId })
+            .from(studentProfiles)
+            .where(and(isNull(studentProfiles.deletedAt), ne(studentProfiles.status, 'alumni')))
+        )
+      );
+    } else if (roleFilter === 'alumni') {
+      conditions.push(
+        inArray(
+          people.id,
+          db.select({ personId: studentProfiles.personId })
+            .from(studentProfiles)
+            .where(and(isNull(studentProfiles.deletedAt), eq(studentProfiles.status, 'alumni')))
+        )
+      );
+    } else if (roleFilter === 'teacher') {
+      conditions.push(
+        inArray(
+          people.id,
+          db.select({ personId: teacherProfiles.personId })
+            .from(teacherProfiles)
+        )
+      );
+    } else if (roleFilter === 'organization') {
+      conditions.push(
+        inArray(
+          people.id,
+          db.select({ personId: organizationMemberships.personId })
+            .from(organizationMemberships)
+        )
+      );
+    } else if (roleFilter === 'guardian') {
+      conditions.push(
+        inArray(
+          people.id,
+          db.select({ personId: guardianProfiles.personId })
+            .from(guardianProfiles)
+        )
       );
     }
 

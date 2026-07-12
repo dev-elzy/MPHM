@@ -48,7 +48,7 @@ function DataCenterContent() {
       // Always fetch to allow browsing/filtering
       setLoading(true);
       try {
-        const url = `/api/v1/data-center/search?q=${encodeURIComponent(query)}`;
+        const url = `/api/v1/data-center/search?q=${encodeURIComponent(query)}&role=${activeFilter}`;
         const res = await fetch(url);
         const json = await res.json() as { success: boolean; data?: { results?: Person[] } };
         if (json.success && json.data?.results) {
@@ -64,7 +64,7 @@ function DataCenterContent() {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+  }, [query, activeFilter]);
 
   // Filter local results based on active tab
   const filteredResults = results.filter((person) => {
