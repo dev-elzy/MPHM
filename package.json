@@ -6,7 +6,7 @@
     "dev:frontend": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
     "build:frontend": "npm run build --prefix frontend",
-    "build:worker": "npm run build:worker --prefix frontend && node -e \"const fs = require('fs'); if (!fs.existsSync('.open-next')) fs.symlinkSync('frontend/.open-next', '.open-next', 'junction')\"",
+    "build:worker": "npm install --prefix frontend && npm run build:worker --prefix frontend && node -e \"const fs = require('fs'); if (!fs.existsSync('.open-next')) fs.symlinkSync('frontend/.open-next', '.open-next', 'junction')\"",
     "deploy:frontend": "npm run deploy --prefix frontend",
     "deploy:backend": "npm run deploy --prefix backend"
   }
