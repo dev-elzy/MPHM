@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, GraduationCap, Briefcase, ShieldAlert, User, ArrowRight, Database, Users } from 'lucide-react';
+import { Search, GraduationCap, Briefcase, ShieldAlert, User, ArrowRight, Database } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
