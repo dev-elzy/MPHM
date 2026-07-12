@@ -18,3 +18,5 @@ export * from './people';
 export * from './person-profiles';
 export * from './violations';
 export * from './academic';
+export * from './achievements';
+

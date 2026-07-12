@@ -50,7 +50,7 @@ export const scores = sqliteTable('scores', {
   id: text('id').primaryKey(),
   scoreSessionId: text('score_session_id').notNull().references(() => scoreSessions.id, { onDelete: 'cascade' }),
   studentId: text('student_id').notNull().references(() => students.id, { onDelete: 'restrict' }),
-  scoreType: text('score_type').notNull(), // 'tamrin' | 'ujian'
+  scoreType: text('score_type').notNull(), // 'tamrin' | 'uts' | 'uas'
   score: integer('score'),
   notes: text('notes'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(strftime('%s', 'now'))`),

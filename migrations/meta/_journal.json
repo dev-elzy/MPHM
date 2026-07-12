@@ -15,6 +15,20 @@
       "when": 1783761470962,
       "tag": "0001_amused_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1783815014987,
+      "tag": "0002_keen_enchantress",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1783815023675,
+      "tag": "0003_lethal_jackpot",
+      "breakpoints": true
     }
   ]
 }

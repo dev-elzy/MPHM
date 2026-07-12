@@ -112,9 +112,21 @@ class ScoresService {
     academicYearId: string;
     semesterId: string;
     classId: string;
-    date?: string;
+    hijriMonth?: number | null;
+    hijriYear?: number | null;
   }): Promise<AttendanceRecord[]> {
-    const sp = new URLSearchParams(params as Record<string, string>);
+    const qp: Record<string, string> = {
+      academicYearId: params.academicYearId,
+      semesterId: params.semesterId,
+      classId: params.classId,
+    };
+    if (params.hijriMonth !== undefined && params.hijriMonth !== null) {
+      qp.hijriMonth = params.hijriMonth.toString();
+    }
+    if (params.hijriYear !== undefined && params.hijriYear !== null) {
+      qp.hijriYear = params.hijriYear.toString();
+    }
+    const sp = new URLSearchParams(qp);
     const res = await fetch(`/api/v1/attendance?${sp.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({ message: 'Gagal mengambil data absensi' }))) as { message?: string };
@@ -143,8 +155,9 @@ class ScoresService {
     academicYearId: string;
     semesterId: string;
     classId: string;
-    date: string;
-    records: { studentId: string; status: string; notes?: string }[];
+    hijriMonth: number;
+    hijriYear: number;
+    records: { studentId: string; sickCount: number; permissionCount: number; absentCount: number; notes?: string | null }[];
   }): Promise<void> {
     const res = await fetch('/api/v1/attendance', {
       method: 'POST',

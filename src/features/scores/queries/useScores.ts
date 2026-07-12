@@ -43,7 +43,8 @@ export function useAttendance(params: {
   academicYearId?: string;
   semesterId?: string;
   classId?: string;
-  date?: string;
+  hijriMonth?: number | null;
+  hijriYear?: number | null;
 }) {
   return useQuery({
     queryKey: [ATTENDANCE_KEY, params],
@@ -52,9 +53,10 @@ export function useAttendance(params: {
         academicYearId: params.academicYearId!,
         semesterId: params.semesterId!,
         classId: params.classId!,
-        date: params.date,
+        hijriMonth: params.hijriMonth,
+        hijriYear: params.hijriYear,
       }),
-    enabled: !!(params.academicYearId && params.semesterId && params.classId),
+    enabled: !!(params.academicYearId && params.semesterId && params.classId && params.hijriMonth && params.hijriYear),
   });
 }
 

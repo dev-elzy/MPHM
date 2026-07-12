@@ -62,8 +62,9 @@ export function useSaveBulkAttendance() {
       academicYearId: string;
       semesterId: string;
       classId: string;
-      date: string;
-      records: { studentId: string; status: string; notes?: string }[];
+      hijriMonth: number;
+      hijriYear: number;
+      records: { studentId: string; sickCount: number; permissionCount: number; absentCount: number; notes?: string | null }[];
     }) => scoresService.saveBulkAttendance(payload),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: [ATTENDANCE_KEY] });

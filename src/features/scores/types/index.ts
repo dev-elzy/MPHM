@@ -69,15 +69,14 @@ export interface ScoreEntryRow {
 }
 
 export interface AttendanceRecord {
-  id: string;
-  academicYearId: string;
-  semesterId: string;
-  classId: string;
+  id: string | null;
   studentId: string;
-  date: string;
-  status: 'present' | 'absent' | 'sick' | 'permission' | 'late';
+  hijriMonth: number;
+  hijriYear: number;
+  sickCount: number;
+  permissionCount: number;
+  absentCount: number;
   notes?: string | null;
-  createdAt?: string;
 
   // Joined
   studentName?: string;
@@ -88,12 +87,9 @@ export interface AttendanceSummary {
   studentId: string;
   studentName: string;
   studentNis: string | null;
-  present: number;
-  absent: number;
   sick: number;
   permission: number;
-  late: number;
-  total: number;
+  absent: number;
 }
 
 export interface AkhlaqRecord {
