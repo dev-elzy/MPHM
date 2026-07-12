@@ -289,7 +289,7 @@ export default function NilaiPage() {
                 </p>
               </Card>
             ) : (
-              <Card className="dark:bg-zinc-950 border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl shadow-sm">
+              <Card className="border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-xl shadow-sm">
                 <CardHeader className="pb-3 border-b border-zinc-100 dark:border-zinc-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <CardTitle className="text-base font-extrabold text-zinc-900 dark:text-zinc-50">
