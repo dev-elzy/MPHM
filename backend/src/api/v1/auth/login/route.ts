@@ -4,7 +4,7 @@ import { getDb } from '@/db/client';
 import { users } from '@/db/schema/users';
 import { roles } from '@/db/schema/roles';
 import { verifyPassword } from '@/lib/auth/password';
-import { setSessionCookie, UserSession } from '@/lib/auth/session';
+import { createSessionCookieHeader, UserSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';
 import { logActivity } from '@/lib/audit';
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       createdAt: Date.now(),
     };
 
-    await setSessionCookie(sessionData);
+    const cookieHeader = await createSessionCookieHeader(sessionData);
 
     // 7. Update last login timestamp in database
     await db
@@ -101,13 +101,17 @@ export async function POST(request: Request) {
     }
 
     // 9. Return success
-    return apiSuccess({
+    const res = apiSuccess({
       id: user.id,
       name: user.name,
       email: user.email,
       role: resolvedRole,
       institutionId: user.institutionId,
     }, 'Login berhasil');
+    
+    // Set the cookie natively using the standard Web API Headers object
+    res.headers.set('Set-Cookie', cookieHeader);
+    return res;
 
   } catch (error) {
     console.error('Login API error:', error);

@@ -1,7 +1,6 @@
-import { clearSessionCookie, getSession } from '@/lib/auth/session';
+import { createClearSessionCookieHeader, getSession } from '@/lib/auth/session';
 import { apiSuccess, apiError } from '@/lib/api/response';
 import { logActivity } from '@/lib/audit';
-
 
 export async function POST() {
   try {
@@ -21,9 +20,10 @@ export async function POST() {
       });
     }
 
-    await clearSessionCookie();
+    const res = apiSuccess(null, 'Logout berhasil');
+    res.headers.set('Set-Cookie', createClearSessionCookieHeader());
 
-    return apiSuccess(null, 'Logout berhasil');
+    return res;
   } catch (error) {
     console.error('Logout API error:', error);
     const message = error instanceof Error ? error.message : 'Internal Server Error';

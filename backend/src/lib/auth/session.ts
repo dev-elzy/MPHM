@@ -106,58 +106,41 @@ export async function getSession(): Promise<UserSession | null> {
   if (honoSessionResolver) {
     return honoSessionResolver();
   }
-  try {
-    const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get(COOKIE_NAME);
-    if (!cookie?.value) return null;
-    return verifySessionToken(cookie.value);
-  } catch {
-    return null;
-  }
+  // Di backend (Hono), kita wajib mendaftarkan honoSessionResolver melalui middleware.
+  // Tidak ada next/headers di sini.
+  return null;
 }
 
 /**
- * Sets a session cookie for login.
+ * Helper to generate raw Set-Cookie header string for login
  */
-export async function setSessionCookie(session: UserSession) {
+export async function createSessionCookieHeader(session: UserSession): Promise<string> {
   const token = await createSessionToken(session);
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  cookieStore.set({
-    name: COOKIE_NAME,
-    value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    domain: process.env.NODE_ENV === 'production' ? '.m.p3hm.my.id' : undefined,
-    maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
-  });
+  const isProd = process.env.NODE_ENV === 'production';
+  return `${COOKIE_NAME}=${token}; HttpOnly; ${isProd ? 'Secure; ' : ''}SameSite=Lax; Path=/; ${isProd ? 'Domain=.m.p3hm.my.id; ' : ''}Max-Age=604800`;
 }
 
 /**
- * Clears the session cookie on logout.
+ * Helper to generate raw Set-Cookie header string for logout
  */
-export async function clearSessionCookie() {
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+export function createClearSessionCookieHeader(): string {
+  const isProd = process.env.NODE_ENV === 'production';
+  return `${COOKIE_NAME}=; HttpOnly; ${isProd ? 'Secure; ' : ''}SameSite=Lax; Path=/; ${isProd ? 'Domain=.m.p3hm.my.id; ' : ''}Max-Age=0`;
 }
 
 // Backwards compatibility functions matching old exports
+export async function setSessionCookie(session: UserSession) {
+  throw new Error('setSessionCookie is not supported in the backend. Use createSessionCookieHeader instead.');
+}
+
+export async function clearSessionCookie() {
+  throw new Error('clearSessionCookie is not supported in the backend. Use createClearSessionCookieHeader instead.');
+}
+
 export async function createSession(token: string) {
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  throw new Error('createSession is not supported in the backend.');
 }
 
 export async function clearSession() {
-  await clearSessionCookie();
+  throw new Error('clearSession is not supported in the backend.');
 }
