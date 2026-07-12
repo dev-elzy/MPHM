@@ -18,6 +18,7 @@ import {
   Activity,
   UsersRound,
   Calendar,
+  Database,
 } from 'lucide-react';
 import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
@@ -34,6 +35,20 @@ const routes: SidebarItem[] = [
     label: 'Ringkasan',
     icon: LayoutDashboard,
     href: '/dashboard',
+  },
+  {
+    label: 'Pusat Data',
+    icon: Database,
+    href: '/dashboard/data-center',
+    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
+    subItems: [
+      { label: 'Pencarian Database', href: '/dashboard/data-center' },
+      { label: 'Data Santri', href: '/dashboard/akademik/siswi' },
+      { label: 'Data Alumni', href: '/dashboard/data-center?filter=alumni' },
+      { label: 'Mustahiq & Pengajar', href: '/dashboard/data-center?filter=teacher' },
+      { label: 'Data Pengurus', href: '/dashboard/data-center?filter=organization' },
+      { label: 'Wali Santri', href: '/dashboard/data-center?filter=guardian' },
+    ],
   },
   {
     label: 'Manajemen Akademik',
@@ -57,10 +72,10 @@ const routes: SidebarItem[] = [
     allowedRoles: ['mustahiq', 'teacher', 'ustadz'],
   },
   {
-    label: 'Data Santri',
+    label: 'Data Santri Kelas',
     icon: Users,
     href: '/dashboard/akademik/siswi',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish', 'mustahiq'],
+    allowedRoles: ['mustahiq'],
   },
   {
     label: 'Penilaian & Absensi',
@@ -114,6 +129,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
     if (isSekretariat) {
       if (href === '/dashboard') return '/dashboard/sekretariat';
       if (href.startsWith('/dashboard/akademik/siswi')) return '/dashboard/sekretariat/siswi';
+      if (href.startsWith('/dashboard/data-center')) return href.replace('/dashboard/data-center', '/dashboard/sekretariat/data-center');
       if (href.startsWith('/dashboard/akademik')) return href.replace('/dashboard/akademik', '/dashboard/sekretariat/akademik');
       if (href.startsWith('/dashboard/audit')) return '/dashboard/sekretariat/audit';
       if (href.startsWith('/dashboard/recycle-bin')) return '/dashboard/sekretariat/recycle-bin';
@@ -142,7 +158,8 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
 
   // Track which submenus are expanded
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({
-    'Manajemen Akademik': pathname.includes('/akademik') && !pathname.endsWith('/siswi'),
+    'Pusat Data': pathname.includes('/data-center') || pathname.endsWith('/siswi'),
+    'Manajemen Akademik': pathname.includes('/akademik') && !pathname.endsWith('/siswi') && !pathname.includes('/jadwal'),
     'Penilaian & Absensi': pathname.includes('/nilai') || pathname.includes('/absensi') || pathname.includes('/akhlaq'),
     'Monitoring & Audit': pathname.includes('/audit') || pathname.includes('/recycle-bin'),
     'Manajemen Pengguna': pathname.includes('/pengguna'),
@@ -206,10 +223,10 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
   };
 
   return (
-    <div className="flex h-full flex-col bg-linear-to-b from-slate-900 via-emerald-950 to-slate-950 rounded-3xl border border-emerald-500/30 shadow-[0_20px_50px_-10px_rgba(16,185,129,0.25)] text-left overflow-hidden backdrop-blur-xl">
-      <div className="flex h-20 shrink-0 items-center px-5 border-b border-emerald-500/20 bg-emerald-950/40">
+    <div className="flex h-full flex-col bg-linear-to-b from-slate-900 via-slate-950 to-slate-950 rounded-3xl border border-zinc-800/80 shadow-[0_20px_50px_-10px_rgba(201,160,80,0.12)] text-left overflow-hidden backdrop-blur-xl">
+      <div className="flex h-20 shrink-0 items-center px-5 border-b border-zinc-800/80 bg-slate-950/40">
         <div className="flex items-center gap-3.5">
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-slate-900/90 p-1.5 border border-emerald-500/40 shadow-md">
+          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl overflow-hidden bg-slate-900/90 p-1.5 border border-[#C9A050]/30 shadow-md">
             <Image
               src="/logo.png"
               alt="Logo Madrasah Putri Hidayatul Mubtadi'at"
@@ -224,7 +241,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
             <span className="font-extrabold text-white tracking-tight text-sm leading-tight truncate">
               MPHM Portal
             </span>
-            <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider truncate">
+            <span className="text-[10px] text-[#C9A050] font-bold uppercase tracking-wider truncate">
               Hidayatul Mubtadi&apos;at
             </span>
           </div>
@@ -251,17 +268,17 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                     type="button"
                     onClick={() => toggleExpand(route.label)}
                     className={cn(
-                      'group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
+                      'group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
                       isActive
-                        ? 'bg-linear-to-r from-emerald-600/35 to-emerald-500/10 text-emerald-200 border-l-4 border-emerald-400 font-bold shadow-sm shadow-emerald-500/10'
-                        : 'text-slate-300 hover:bg-emerald-500/15 hover:text-white'
+                        ? 'bg-linear-to-r from-[#C9A050]/20 to-[#C9A050]/5 text-amber-100 border-l-4 border-[#C9A050] shadow-sm shadow-[#C9A050]/5'
+                        : 'text-slate-350 hover:bg-slate-800/60 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <route.icon
                         className={cn(
                           'h-4 w-4 shrink-0 transition-colors',
-                          isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-300'
+                          isActive ? 'text-[#C9A050]' : 'text-slate-400 group-hover:text-[#DFB566]'
                         )}
                       />
                       {route.label}
@@ -279,16 +296,16 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                     href={route.href}
                     onClick={onNavigate}
                     className={cn(
-                      'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
+                      'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98]',
                       isActive
-                        ? 'bg-linear-to-r from-emerald-600/35 to-emerald-500/10 text-emerald-200 border-l-4 border-emerald-400 font-bold shadow-sm shadow-emerald-500/10'
-                        : 'text-slate-300 hover:bg-emerald-500/15 hover:text-white'
+                        ? 'bg-linear-to-r from-[#C9A050]/20 to-[#C9A050]/5 text-amber-100 border-l-4 border-[#C9A050] shadow-sm shadow-[#C9A050]/5'
+                        : 'text-slate-350 hover:bg-slate-800/60 hover:text-white'
                     )}
                   >
                     <route.icon
                       className={cn(
                         'h-4 w-4 shrink-0 transition-colors',
-                        isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-emerald-300'
+                        isActive ? 'text-[#C9A050]' : 'text-slate-400 group-hover:text-[#DFB566]'
                       )}
                     />
                     {route.label}
@@ -297,7 +314,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
 
                 {/* Sub-menu Items */}
                 {hasSubItems && isExpanded && (
-                  <div className="ml-4 flex flex-col gap-1 border-l border-emerald-500/30 pl-3 mt-0.5 mb-1.5 animate-in slide-in-from-top-1 duration-150">
+                  <div className="ml-4 flex flex-col gap-1 border-l border-zinc-800/80 pl-3 mt-0.5 mb-1.5 animate-in slide-in-from-top-1 duration-150">
                     {route.subItems?.map((sub) => {
                       const isSubActive = pathname === sub.href;
                       return (
@@ -306,10 +323,10 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                           href={sub.href}
                           onClick={onNavigate}
                           className={cn(
-                            'block rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200',
+                            'block rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200',
                             isSubActive
-                              ? 'bg-emerald-500/25 text-emerald-300 font-bold border-l-2 border-emerald-400 pl-2 rounded-l-none'
-                              : 'text-slate-400 hover:bg-emerald-500/10 hover:text-slate-200'
+                              ? 'bg-[#C9A050]/15 text-[#DFB566] font-bold border-l-2 border-[#C9A050] pl-2 rounded-l-none'
+                              : 'text-slate-400 hover:bg-slate-800/40 hover:text-slate-200'
                           )}
                         >
                           {sub.label}
@@ -325,16 +342,16 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       </div>
 
       {/* AdminHMD-style User Profile Card & System Status Footer */}
-      <div className="p-3.5 border-t border-emerald-500/20 bg-slate-950/60 flex flex-col gap-2.5">
-        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-900/90 border border-emerald-500/30 shadow-md transition-all hover:border-emerald-400/50">
-          <div className="h-9 w-9 rounded-full bg-emerald-600/30 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-xs shrink-0 shadow-inner">
+      <div className="p-3.5 border-t border-zinc-800/80 bg-slate-950/60 flex flex-col gap-2.5">
+        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-900/90 border border-zinc-800 shadow-md transition-all hover:border-[#C9A050]/35">
+          <div className="h-9 w-9 rounded-full bg-[#C9A050]/10 border border-[#C9A050]/30 flex items-center justify-center text-[#DFB566] font-bold text-xs shrink-0 shadow-inner">
             {user?.name ? user.name.slice(0, 2).toUpperCase() : 'AV'}
           </div>
           <div className="flex flex-col min-w-0 flex-1">
             <span className="text-xs font-bold text-white truncate">
               {user?.name || 'Admin Hasan'}
             </span>
-            <span className="text-[10px] text-emerald-400 font-semibold truncate">
+            <span className="text-[10px] text-[#C9A050] font-bold truncate">
               {user ? getRoleBadgeLabel(role) : 'Active Workspace'}
             </span>
           </div>
@@ -343,10 +360,10 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
         {/* System running smoothly status line */}
         <div className="flex items-center gap-2 px-1.5 py-0.5">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-[11px] font-medium text-slate-300 tracking-tight">
+          <span className="text-[11px] font-semibold text-slate-350 tracking-tight">
             System running smoothly
           </span>
         </div>
@@ -380,7 +397,7 @@ export function MobileSidebar() {
         <Menu className="h-5 w-5" />
         <span className="sr-only">Toggle Menu</span>
       </Button>
-      <SheetContent side="left" className="p-0 w-72 bg-slate-950 border-r border-emerald-500/30">
+      <SheetContent side="left" className="p-0 w-72 bg-slate-950 border-r border-zinc-800">
         <SheetTitle className="sr-only">Navigasi Utama</SheetTitle>
         <div className="h-full p-3 bg-slate-950">
           <SidebarContent onNavigate={() => setOpen(false)} />

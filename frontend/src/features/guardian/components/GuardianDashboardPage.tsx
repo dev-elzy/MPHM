@@ -58,10 +58,10 @@ export function GuardianDashboardPage() {
   const [wards, setWards] = useState<WardData[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'profile' | 'grades' | 'attendance' | 'violations' | 'report'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'grades' | 'attendance' | 'akhlaq' | 'violations' | 'report'>('profile');
 
   useEffect(() => {
-    if (tabParam && ['profile', 'grades', 'attendance', 'violations', 'report'].includes(tabParam)) {
+    if (tabParam && ['profile', 'grades', 'attendance', 'akhlaq', 'violations', 'report'].includes(tabParam)) {
       setActiveTab(tabParam as any);
     }
   }, [tabParam]);
@@ -147,6 +147,15 @@ export function GuardianDashboardPage() {
       activeShadow: 'shadow-[0_15px_30px_-5px_rgba(245,158,11,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
       hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(245,158,11,0.3)]',
       iconColor: 'text-amber-500'
+    },
+    {
+      id: 'akhlaq',
+      label: 'Akhlaq',
+      icon: HeartHandshake,
+      gradient: 'from-emerald-450 to-emerald-650',
+      activeShadow: 'shadow-[0_15px_30px_-5px_rgba(16,185,129,0.5),_inset_0_-4px_8px_rgba(0,0,0,0.2),_inset_0_4px_8px_rgba(255,255,255,0.4)]',
+      hoverGlow: 'hover:shadow-[0_8px_20px_-3px_rgba(16,185,129,0.3)]',
+      iconColor: 'text-emerald-500'
     },
     {
       id: 'violations',
@@ -384,6 +393,51 @@ export function GuardianDashboardPage() {
                       <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
                     </div>
                     <span className="font-bold text-slate-800 dark:text-white">{item.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'akhlaq' && (
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center gap-2 border-b border-slate-100 dark:border-slate-850 pb-2">
+              <HeartHandshake className="w-4 h-4 text-emerald-600" />
+              Penilaian Akhlaq & Budi Pekerti Santri
+            </h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Left Column: Predicate Summary */}
+              <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center">
+                <div className="w-24 h-24 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 flex flex-col items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Predikat</span>
+                  <span className="text-2xl font-extrabold">{summary.akhlaqPredicate.split(' ')[0]}</span>
+                </div>
+                <p className="text-xs font-semibold text-slate-500 mt-4">Penilaian Deskriptif</p>
+                <p className="text-xs text-slate-650 dark:text-slate-400 mt-1 font-medium italic">
+                  &ldquo;{summary.akhlaqPredicate}&rdquo;
+                </p>
+              </div>
+
+              {/* Right Column: Skill details */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide">Rincian Penilaian Sikap</h4>
+                {[
+                  { label: 'Ketaatan Beribadah & Jamaah', val: 'Sangat Baik', score: 'A' },
+                  { label: 'Adab Kepada Guru & Mustahiq', val: 'Sangat Baik', score: 'A' },
+                  { label: 'Kerukunan & Solidaritas Sesama Santri', val: 'Baik', score: 'B' },
+                  { label: 'Kedisiplinan & Kerapian Diri', val: 'Baik', score: 'B' },
+                  { label: 'Keaktifan Kegiatan Pesantren', val: 'Sangat Baik', score: 'A' },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between text-xs sm:text-sm py-1.5 border-b border-slate-100 dark:border-slate-800/40">
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">{item.label}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500">{item.val}</span>
+                      <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 rounded">
+                        {item.score}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

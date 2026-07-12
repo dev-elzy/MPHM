@@ -22,10 +22,13 @@ interface NotificationItem {
   createdAt: string | number | Date;
 }
 
+import { usePathname } from 'next/navigation';
+
 export function Header() {
   const { isWali, isKeamanan, isMustahiq } = useAuthSession();
   const isAppStyle = isWali || isKeamanan || isMustahiq;
   const queryClient = useQueryClient();
+  const pathname = usePathname();
 
   // Fetch real notifications from database
   const { data: notificationsList = [] } = useQuery<NotificationItem[]>({
@@ -57,13 +60,37 @@ export function Header() {
 
   const unreadCount = notificationsList.length;
 
+  const getMobileTitle = (path: string) => {
+    if (path.includes('/data-center/profile/')) return 'Profil 360°';
+    if (path.includes('/data-center')) return 'Pusat Data';
+    if (path.includes('/siswi')) return 'Data Santri';
+    if (path.includes('/nilai')) return 'Input Nilai';
+    if (path.includes('/absensi')) return 'Absensi';
+    if (path.includes('/akhlaq')) return 'Akhlaq';
+    if (path.includes('/violations') || path.includes('/pelanggaran')) return 'Pelanggaran';
+    if (path.includes('/audit')) return 'Audit Log';
+    if (path.includes('/recycle-bin')) return 'Recycle Bin';
+    if (path.includes('/pengguna')) return 'Pengguna';
+    if (path.includes('/pengaturan')) return 'Pengaturan';
+    if (path.includes('/akademik/tahun-ajaran')) return 'Tahun Ajaran';
+    if (path.includes('/akademik/semester')) return 'Semester';
+    if (path.includes('/akademik/kelas')) return 'Kelas';
+    if (path.includes('/akademik/kurikulum')) return 'Kurikulum';
+    if (path.includes('/akademik/mata-pelajaran')) return 'Mata Pelajaran';
+    if (path.includes('/akademik/jadwal')) return 'Jadwal';
+    if (path.includes('/akademik/promosi')) return 'Promosi';
+    return 'MPHM Portal';
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full h-16 bg-white/60 dark:bg-zinc-950/60 backdrop-blur-md border-b border-zinc-200/40 dark:border-zinc-800/40 flex items-center justify-between px-4 lg:px-8 transition-all">
       <div className="flex items-center gap-3 min-w-0">
         {!isAppStyle && <MobileSidebar />}
-        <div className="flex items-center gap-2 lg:hidden">
-          <Image src="/logo.png" alt="Logo MPHM" width={32} height={32} className="h-8 w-8 object-contain" priority unoptimized />
-          <span className="font-extrabold text-sm tracking-tight text-zinc-900 dark:text-zinc-100 truncate">MPHM Portal</span>
+        <div className="flex items-center gap-2 lg:hidden min-w-0">
+          <Image src="/logo.png" alt="Logo MPHM" width={28} height={28} className="h-7 w-7 object-contain shrink-0" priority unoptimized />
+          <span className="font-extrabold text-xs tracking-tight text-zinc-900 dark:text-zinc-100 shrink-0">MPHM</span>
+          <span className="text-zinc-300 dark:text-zinc-700 text-xs shrink-0">/</span>
+          <span className="font-bold text-xs text-[#C9A050] truncate">{getMobileTitle(pathname)}</span>
         </div>
         {/* Dynamic Indonesia-translated Breadcrumb */}
         <Breadcrumb className="hidden lg:flex" />

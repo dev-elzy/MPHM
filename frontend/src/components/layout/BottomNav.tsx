@@ -38,6 +38,12 @@ export function BottomNav({ isWali, isKeamanan, isMustahiq }: BottomNavProps) {
         active: pathname === '/dashboard/parent' && activeTabParam === 'attendance',
       },
       {
+        label: 'Akhlaq',
+        icon: Heart,
+        href: '/dashboard/parent?tab=akhlaq',
+        active: pathname === '/dashboard/parent' && activeTabParam === 'akhlaq',
+      },
+      {
         label: 'Pelanggaran',
         icon: AlertTriangle,
         href: '/dashboard/parent?tab=violations',
@@ -46,7 +52,7 @@ export function BottomNav({ isWali, isKeamanan, isMustahiq }: BottomNavProps) {
     ];
 
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t lg:border border-zinc-200 dark:border-zinc-800/85 flex items-center justify-around px-4 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-md lg:rounded-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t lg:border border-zinc-200 dark:border-zinc-800/85 flex items-center justify-around px-4 shadow-lg lg:bottom-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-full lg:max-w-lg lg:rounded-2xl">
         {items.map((item) => {
           const Icon = item.icon;
           return (
