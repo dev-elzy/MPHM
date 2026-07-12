@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mphm-backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "APP_ENV": "production"
+  },
+  "routes": [
+    {
+      "pattern": "api.m.p3hm.my.id",
+      "custom_domain": true
+    }
+  ],
+  "triggers": {
+    "crons": ["0 0 * * *"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mphm-db",
+      "database_id": "4de95851-2166-49e2-b047-e36f2d2f6d3f",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
