@@ -28,6 +28,13 @@ export default function AbsensiPage() {
   const { data: classesData } = useClasses(selectedYearId, selectedSemesterId);
   const classesList = classesData || [];
 
+  // Auto-select class for Mustahiq when classesList changes
+  React.useEffect(() => {
+    if (classesList.length > 0 && !selectedClassId) {
+      setSelectedClassId(classesList[0].id);
+    }
+  }, [classesList, selectedClassId]);
+
   const [attendanceMap, setAttendanceMap] = React.useState<
     Record<string, { sickCount: number; permissionCount: number; absentCount: number; notes: string }>
   >({});
@@ -170,16 +177,9 @@ export default function AbsensiPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className="text-xs font-semibold text-zinc-500 mb-1.5 block">Kelas Rombel</label>
-          <Select value={selectedClassId} onValueChange={(v) => setSelectedClassId(v || '')}>
-            <SelectTrigger className="h-9 text-sm dark:bg-zinc-950">
-              <SelectValue placeholder="Pilih Kelas" />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-zinc-950">
-              {classesList.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="h-9 flex items-center px-3 text-sm font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 min-w-[150px]">
+            {classesList.find((c) => c.id === selectedClassId)?.name || 'Memuat Kelas...'}
+          </div>
         </div>
 
         <div>

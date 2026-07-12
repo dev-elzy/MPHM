@@ -67,6 +67,13 @@ export default function SiswiPage() {
   const { data: classesData } = useClasses(selectedYearId, selectedSemesterId);
   const classesList = classesData || [];
 
+  // Auto-select class for Mustahiq when classesList changes
+  React.useEffect(() => {
+    if (classesList.length > 0 && selectedClassId === 'all') {
+      setSelectedClassId(classesList[0].id);
+    }
+  }, [classesList, selectedClassId]);
+
   const handleCreate = () => {
     setEditingItem(undefined);
     setIsFormOpen(true);
@@ -365,20 +372,8 @@ export default function SiswiPage() {
               <Filter className="h-3.5 w-3.5 text-zinc-400" /> Filter
             </div>
             
-            <div className="w-[180px]">
-              <Select onValueChange={(val) => setSelectedClassId(val || 'all')} value={selectedClassId}>
-                <SelectTrigger className="h-8.5 text-xs dark:bg-zinc-950">
-                  <SelectValue placeholder="Semua Kelas" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-zinc-950">
-                  <SelectItem value="all">Semua Rombel Kelas</SelectItem>
-                  {classesList.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="h-8.5 flex items-center px-3 text-xs font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200 min-w-[150px]">
+              {classesList.find((c) => c.id === selectedClassId)?.name || 'Memuat Kelas...'}
             </div>
 
             <div className="w-[150px]">

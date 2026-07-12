@@ -39,6 +39,13 @@ export default function NilaiPage() {
   const { data: classesData } = useClasses(selectedYearId, selectedSemesterId);
   const classesList = classesData || [];
 
+  // Auto-select class for Mustahiq when classesList changes
+  React.useEffect(() => {
+    if (classesList.length > 0 && !selectedClassId) {
+      setSelectedClassId(classesList[0].id);
+    }
+  }, [classesList, selectedClassId]);
+
   const { data: sessionsData, isLoading } = useScoreSessions({
     academicYearId: selectedYearId,
     semesterId: selectedSemesterId,
@@ -158,32 +165,13 @@ export default function NilaiPage() {
         }
       />
 
-      {/* Class filter */}
-      {classesList.length > 0 && (
-        <div className="flex items-center gap-3 flex-wrap">
-          <button
-            onClick={() => setSelectedClassId('')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-              !selectedClassId
-                ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-white dark:text-zinc-900'
-                : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400'
-            }`}
-          >
-            Semua Kelas
-          </button>
-          {classesList.map((cls) => (
-            <button
-              key={cls.id}
-              onClick={() => setSelectedClassId(cls.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                selectedClassId === cls.id
-                  ? 'bg-[#C9A050] text-white border-[#C9A050]'
-                  : 'bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400'
-              }`}
-            >
-              {cls.name}
-            </button>
-          ))}
+      {/* Class info */}
+      {selectedClassId && classesList.length > 0 && (
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-zinc-500 font-medium">Kelas Rombel:</span>
+          <div className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-200">
+            {classesList.find((c) => c.id === selectedClassId)?.name || 'Memuat Kelas...'}
+          </div>
         </div>
       )}
 
