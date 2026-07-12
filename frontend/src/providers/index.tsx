@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
+import { ThemeProvider } from './ThemeProvider';
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
@@ -21,9 +23,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        {children}
-      </TooltipProvider>
+      <ThemeProvider defaultTheme="system" storageKey="mphm-theme">
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
+      </ThemeProvider>
       <Toaster />
     </QueryClientProvider>
   );
