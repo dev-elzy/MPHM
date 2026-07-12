@@ -2,15 +2,12 @@
 
 import * as React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus, Edit2, Trash2, Upload, Download, Filter, Phone, Trophy } from 'lucide-react';
+import { Filter, Phone, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PageHeader } from '@/components/ui-custom/PageHeader';
-import { ConfirmDialog } from '@/components/ui-custom/ConfirmDialog';
 import { DataGrid } from '@/components/ui-custom/DataGrid';
-import { ImportDialog, ValidationError } from '@/components/ui-custom/ImportDialog';
-import { ExportDialog } from '@/components/ui-custom/ExportDialog';
 
 import { YearSelector } from '@/features/academic-years/components/YearSelector';
 import { SemesterSelector } from '@/features/academic-years/components/SemesterSelector';
@@ -18,13 +15,9 @@ import { useAcademicYears } from '@/features/academic-years/queries/useAcademicY
 
 import { Student } from '@/features/students/types';
 import { useStudents } from '@/features/students/queries/useStudents';
-import { useDeleteStudent } from '@/features/students/mutations';
-import { StudentFormDialog } from '@/features/students/components/StudentFormDialog';
 import { StudentAchievementsDialog } from '@/features/students/components/StudentAchievementsDialog';
-import { studentsService } from '@/features/students/services/students.service';
 import { useClasses } from '@/features/classes/queries/useClasses';
-import { parseExcelFile } from '@/lib/excel/builder';
-import { downloadExcelTemplate, SISWI_TEMPLATE_COLUMNS } from '@/lib/excel/templates';
+import { cn } from '@/lib/utils';
 
 export default function SiswiPage() {
   const [selectedYearId, setSelectedYearId] = React.useState<string>('');
@@ -49,19 +42,7 @@ export default function SiswiPage() {
     limit: itemsPerPage,
   });
 
-  const deleteMutation = useDeleteStudent();
-
-  const [isFormOpen, setIsFormOpen] = React.useState(false);
-  const [editingItem, setEditingItem] = React.useState<Student | undefined>(undefined);
-  const [deleteConfirmItem, setDeleteConfirmItem] = React.useState<Student | null>(null);
   const [achievementsStudent, setAchievementsStudent] = React.useState<Student | null>(null);
-
-  // Import states
-  const [isImportOpen, setIsImportOpen] = React.useState(false);
-  const [importedRows, setImportedRows] = React.useState<Omit<Student, 'id' | 'status'>[]>([]);
-
-  // Export states
-  const [isExportOpen, setIsExportOpen] = React.useState(false);
 
   // Fetch classes for dropdown filter via standard query hook
   const { data: classesData } = useClasses(selectedYearId, selectedSemesterId);
@@ -73,129 +54,6 @@ export default function SiswiPage() {
       setSelectedClassId(classesList[0].id);
     }
   }, [classesList, selectedClassId]);
-
-  const handleCreate = () => {
-    setEditingItem(undefined);
-    setIsFormOpen(true);
-  };
-
-  const handleEdit = (item: Student) => {
-    setEditingItem(item);
-    setIsFormOpen(true);
-  };
-
-  const handleDelete = async () => {
-    if (!deleteConfirmItem) return;
-    await deleteMutation.mutateAsync(deleteConfirmItem.id);
-    setDeleteConfirmItem(null);
-  };
-
-  // Bulk Import Callbacks
-  const handleUploadFile = async (file: File) => {
-    const keys = SISWI_TEMPLATE_COLUMNS.map((c) => c.key);
-    const rawRows = await parseExcelFile(file, keys);
-    if (rawRows.length === 0) {
-      throw new Error('File Excel kosong atau format header tidak sesuai template.');
-    }
-
-    const rows: Omit<Student, 'id' | 'status'>[] = rawRows.map((r) => {
-      const g = r.gender?.toLowerCase() || '';
-      const gender: 'male' | 'female' = (g === 'laki-laki' || g === 'l' || g === 'male') ? 'male' : 'female';
-      return {
-        name: r.name || '',
-        nis: r.nis || null,
-        nisn: r.nisn || null,
-        gender,
-        birthPlace: r.birthPlace || null,
-        birthDate: r.birthDate || null,
-        phone: r.phone || null,
-        parentName: r.parentName || null,
-        parentPhone: r.parentPhone || null,
-        address: r.address || null,
-        entryYear: r.entryYear || null,
-        entryJenjang: r.entryJenjang || null,
-        notes: r.notes || null,
-      };
-    });
-
-    setImportedRows(rows);
-
-    // Call server to preview & validate rows
-    const preview = await studentsService.importPreview(
-      rows,
-      selectedClassId === 'all' ? null : selectedClassId,
-      selectedYearId || null,
-      selectedSemesterId || null
-    );
-
-    // Map ImportPreviewResult to ImportPreviewData
-    const errorsList: ValidationError[] = [];
-    let duplicatesCount = 0;
-
-    preview.items.forEach((item) => {
-      if (item.status === 'error') {
-        item.errors.forEach((err) => {
-          if (err.includes('Duplikat') || err.includes('sudah terdaftar')) {
-            duplicatesCount++;
-          }
-          errorsList.push({
-            row: item.rowNumber,
-            column: 'Data',
-            value: item.nis || item.name,
-            message: err,
-          });
-        });
-      }
-    });
-
-    return {
-      total: preview.total,
-      valid: preview.valid,
-      errorsCount: preview.failed,
-      duplicatesCount,
-      previewRows: preview.items.map((item) => ({
-        'No Baris': item.rowNumber,
-        'Nama Lengkap': item.name,
-        'NIS': item.nis,
-        'Status': item.status === 'valid' ? 'Valid' : 'Error',
-        'Keterangan': item.errors.join(', ') || 'Valid',
-      })),
-      errorsList,
-    };
-  };
-
-  const handleExecuteImport = async () => {
-    if (importedRows.length === 0) return;
-    await studentsService.importConfirm(
-      importedRows,
-      selectedClassId === 'all' ? null : selectedClassId,
-      selectedYearId || null,
-      selectedSemesterId || null
-    );
-    setImportedRows([]);
-  };
-
-  // Bulk Export Handler
-  const handleExecuteExport = (format: 'excel' | 'csv' | 'pdf') => {
-    const dataList = studentsData?.items || [];
-    console.log('Executing export in format:', format);
-    let csvContent = 'Nama,NIS,NISN,Gender,HP,Kelas\n';
-    dataList.forEach((s) => {
-      csvContent += `"${s.name}","${s.nis || ''}","${s.nisn || ''}","${s.gender}","${s.phone || ''}","${s.className || ''}"\n`;
-    });
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `data_siswi_export.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    setIsExportOpen(false);
-  };
 
   const columns: ColumnDef<Student>[] = [
     {
@@ -286,22 +144,6 @@ export default function SiswiPage() {
           >
             <Trophy className="h-3.5 w-3.5" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleEdit(row.original)}
-            className="h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 rounded-lg cursor-pointer"
-          >
-            <Edit2 className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setDeleteConfirmItem(row.original)}
-            className="h-8 w-8 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
         </div>
       ),
     },
@@ -318,15 +160,9 @@ export default function SiswiPage() {
           title="Manajemen Siswi"
           description="Pendaftaran dan penugasan kelas rombel siswi pesantren."
         />
-        <ConfirmDialog
-          open={true}
-          onOpenChange={() => {}}
-          variant="info"
-          title="Tahun Ajaran Kosong"
-          description="Buat Tahun Ajaran terlebih dahulu untuk mengelola database data siswi."
-          confirmLabel="Buat Tahun Ajaran"
-          onConfirm={() => window.location.assign('/dashboard/mustahiq/tahun-ajaran')}
-        />
+        <div className="flex items-center justify-center py-20 bg-zinc-50 dark:bg-zinc-900 border border-dashed rounded-2xl text-center text-sm font-semibold text-zinc-500">
+          Belum ada tahun ajaran dikonfigurasi.
+        </div>
       </div>
     );
   }
@@ -351,14 +187,6 @@ export default function SiswiPage() {
                 value={selectedSemesterId}
                 onChange={(val) => { setSelectedSemesterId(val || ''); setSelectedClassId('all'); }}
               />
-            )}
-            {selectedYearId && selectedSemesterId && (
-              <Button
-                onClick={handleCreate}
-                className="bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 rounded-lg shadow-sm transition-all h-9.5 text-xs font-semibold"
-              >
-                <Plus className="mr-2 h-4 w-4" /> Tambah Siswi
-              </Button>
             )}
           </div>
         }
@@ -391,25 +219,6 @@ export default function SiswiPage() {
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="ml-auto flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsImportOpen(true)}
-                className="h-8.5 text-xs border-zinc-200 hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900 cursor-pointer"
-              >
-                <Upload className="mr-1.5 h-3.5 w-3.5 text-zinc-400" /> Impor Excel/CSV
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsExportOpen(true)}
-                className="h-8.5 text-xs border-zinc-200 hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-900 cursor-pointer"
-              >
-                <Download className="mr-1.5 h-3.5 w-3.5 text-zinc-400" /> Ekspor
-              </Button>
-            </div>
           </div>
         )}
 
@@ -432,53 +241,12 @@ export default function SiswiPage() {
             emptyTitle="Data Siswi Kosong"
             emptyDescription={
               selectedYearId && selectedSemesterId
-                ? 'Tidak ada siswi terdaftar yang cocok dengan filter aktif. Daftarkan siswi pertama Anda menggunakan tombol di atas.'
+                ? 'Tidak ada siswi terdaftar yang cocok dengan filter aktif.'
                 : 'Pilih Tahun Ajaran dan Semester terlebih dahulu untuk membuka database siswi.'
             }
           />
         </Card>
       </div>
-
-      <StudentFormDialog
-        open={isFormOpen}
-        onOpenChange={setIsFormOpen}
-        initialData={editingItem}
-        academicYearId={selectedYearId}
-        semesterId={selectedSemesterId}
-      />
-
-      <ConfirmDialog
-        open={!!deleteConfirmItem}
-        onOpenChange={(open) => !open && setDeleteConfirmItem(null)}
-        variant="danger"
-        title="Hapus Profil Siswi?"
-        description={
-          <>
-            Profil siswi <strong>{deleteConfirmItem?.name}</strong> akan dipindahkan ke Recycle Bin.
-            Riwayat pendaftaran kelas dan nilai raport yang terkait akan diarsipkan sementara.
-          </>
-        }
-        confirmLabel={deleteMutation.isPending ? 'Menghapus...' : 'Ya, Hapus'}
-        isLoading={deleteMutation.isPending}
-        onConfirm={handleDelete}
-      />
-
-      <ImportDialog
-        isOpen={isImportOpen}
-        onClose={() => setIsImportOpen(false)}
-        title="Impor Massal Siswi"
-        moduleName="Siswi"
-        onDownloadTemplate={() => downloadExcelTemplate('siswi')}
-        onUploadFile={handleUploadFile}
-        onExecuteImport={handleExecuteImport}
-      />
-
-      <ExportDialog
-        isOpen={isExportOpen}
-        onClose={() => setIsExportOpen(false)}
-        title="Ekspor Data Siswi"
-        onExport={handleExecuteExport}
-      />
 
       <StudentAchievementsDialog
         open={achievementsStudent !== null}
