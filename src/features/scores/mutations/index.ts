@@ -30,8 +30,9 @@ export function useFinalizeScoreSession() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => scoresService.finalizeSession(id),
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       qc.invalidateQueries({ queryKey: [SCORE_SESSIONS_KEY] });
+      qc.invalidateQueries({ queryKey: [SCORE_ENTRIES_KEY, id] });
       toast.success('Nilai berhasil difinalisasi');
     },
     onError: (err: Error) => toast.error(err.message),
