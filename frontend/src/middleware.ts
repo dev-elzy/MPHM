@@ -44,6 +44,12 @@ export async function middleware(request: NextRequest) {
     return response;
   }
   
+  // Rewrite virtual settings path to the physical page
+  if (pathname === '/dashboard/pengaturan') {
+    const url = new URL('/dashboard/sekretariat/pengaturan' + request.nextUrl.search, request.url);
+    return NextResponse.rewrite(url);
+  }
+
   const sessionCookie = request.cookies.get('mphm_session');
   let isValidSession = false;
   let userRole = '';
@@ -87,7 +93,7 @@ export async function middleware(request: NextRequest) {
   const isKeamanan = ['petugas_keamanan', 'security', 'keamanan'].includes(userRole);
   const isWali = ['wali_santri', 'guardian', 'parent', 'wali'].includes(userRole);
 
-  if (pathname.startsWith('/dashboard/sekretariat') && !isSekretariat) {
+  if (pathname.startsWith('/dashboard/sekretariat') && pathname !== '/dashboard/sekretariat/pengaturan' && !isSekretariat) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   if (pathname.startsWith('/dashboard/mustahiq') && !isMustahiq) {
