@@ -25,7 +25,7 @@ export interface Score {
   id: string;
   scoreSessionId: string;
   studentId: string;
-  scoreType: 'tamrin' | 'ujian';
+  scoreType: 'tamrin' | 'uts' | 'uas';
   score: number | null;
   notes?: string | null;
   updatedAt?: string;
@@ -59,7 +59,8 @@ export interface ScoreEntryRow {
   studentName: string;
   studentNis: string | null;
   tamrinScore: number | null;
-  ujianScore: number | null;
+  utsScore: number | null;
+  uasScore: number | null;
   khosScore: number | null;
   amScore: number | null;
   finalScore: number | null;
@@ -93,13 +94,13 @@ export interface AttendanceSummary {
 }
 
 export interface AkhlaqRecord {
-  id: string;
-  academicYearId: string;
-  semesterId: string;
-  classId: string;
+  id: string | null;
+  academicYearId?: string;
+  semesterId?: string;
+  classId?: string;
   studentId: string;
-  category: string;
-  grade: string;
+  category: string | null;
+  grade: string | null;
   description?: string | null;
   notes?: string | null;
   createdAt?: string;
@@ -107,6 +108,10 @@ export interface AkhlaqRecord {
   // Joined
   studentName?: string;
   studentNis?: string | null;
+
+  // Calculated recommendation fields
+  violationPoints?: number;
+  recommendedGrade?: string;
 }
 
 export interface Report {

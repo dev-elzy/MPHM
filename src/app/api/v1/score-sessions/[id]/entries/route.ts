@@ -66,8 +66,11 @@ export async function GET(
       const tamrin = sessionScores.find(
         (sc) => sc.studentId === s.studentId && sc.scoreType === 'tamrin'
       );
-      const ujian = sessionScores.find(
-        (sc) => sc.studentId === s.studentId && sc.scoreType === 'ujian'
+      const uts = sessionScores.find(
+        (sc) => sc.studentId === s.studentId && sc.scoreType === 'uts'
+      );
+      const uas = sessionScores.find(
+        (sc) => sc.studentId === s.studentId && sc.scoreType === 'uas'
       );
       const result = results.find((r) => r.studentId === s.studentId);
 
@@ -76,7 +79,8 @@ export async function GET(
         studentName: s.studentName,
         studentNis: s.studentNis,
         tamrinScore: tamrin?.score ?? null,
-        ujianScore: ujian?.score ?? null,
+        utsScore: uts?.score ?? null,
+        uasScore: uas?.score ?? null,
         khosScore: result?.khosScore ?? null,
         amScore: result?.amScore ?? null,
         finalScore: result?.finalScore ?? null,

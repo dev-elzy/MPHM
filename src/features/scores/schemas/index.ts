@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const scoreEntrySchema = z.object({
   studentId: z.string().uuid(),
   tamrinScore: z.coerce.number().min(0).max(100).nullable().optional(),
-  ujianScore: z.coerce.number().min(0).max(100).nullable().optional(),
+  utsScore: z.coerce.number().min(0).max(100).nullable().optional(),
+  uasScore: z.coerce.number().min(0).max(100).nullable().optional(),
   notes: z.string().optional(),
 });
 

@@ -1,15 +1,16 @@
 import { z } from 'zod';
-import { eq, and, SQL } from 'drizzle-orm';
+import { eq, and, SQL, sql } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { akhlaq } from '@/db/schema/akhlaq';
 import { academicYears } from '@/db/schema/academic-years';
-import { students } from '@/db/schema/students';
+import { students, classStudents } from '@/db/schema/students';
+import { studentProfiles } from '@/db/schema/person-profiles';
+import { studentViolations, violationTypes } from '@/db/schema/violations';
 import { classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
 import { apiSuccess, apiError } from '@/lib/api/response';
 import { logActivity } from '@/lib/audit';
-
 
 const bulkAkhlaqSchema = z.object({
   academicYearId: z.string().min(1),
@@ -19,8 +20,8 @@ const bulkAkhlaqSchema = z.object({
     studentId: z.string().min(1),
     category: z.string().min(1),
     grade: z.enum(['A', 'B', 'C', 'D']),
-    description: z.string().optional(),
-    notes: z.string().optional(),
+    description: z.string().optional().nullable(),
+    notes: z.string().optional().nullable(),
   })),
 });
 
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
 
     const db = getDb();
 
-    // Multi-tenant isolation: verify academicYear belongs to user's institution
+    // Multi-tenant check
     const yearCheck = await db
       .select({ id: academicYears.id })
       .from(academicYears)
@@ -71,15 +72,33 @@ export async function GET(request: Request) {
       }
     }
 
+    // Get list of active enrolled students in the class
+    const enrolled = await db
+      .select({
+        id: students.id,
+        name: students.name,
+        nis: students.nis,
+      })
+      .from(classStudents)
+      .innerJoin(students, eq(classStudents.studentId, students.id))
+      .where(
+        and(
+          eq(classStudents.academicYearId, academicYearId),
+          eq(classStudents.semesterId, semesterId),
+          eq(classStudents.classId, classId),
+          eq(classStudents.status, 'active')
+        )
+      );
+
+    // Get all existing akhlaq records for this session
     const conditions: SQL[] = [
       eq(akhlaq.academicYearId, academicYearId),
       eq(akhlaq.semesterId, semesterId),
       eq(akhlaq.classId, classId),
     ];
-
     if (studentId) conditions.push(eq(akhlaq.studentId, studentId));
 
-    const rows = await db
+    const existingRows = await db
       .select({
         id: akhlaq.id,
         academicYearId: akhlaq.academicYearId,
@@ -98,7 +117,81 @@ export async function GET(request: Request) {
       .leftJoin(students, eq(akhlaq.studentId, students.id))
       .where(and(...conditions));
 
-    return apiSuccess(rows);
+    // Get student profiles to link NIS to violation data
+    const profiles = await db
+      .select({
+        id: studentProfiles.id,
+        nis: studentProfiles.nis,
+      })
+      .from(studentProfiles);
+
+    // Get violations in the current academic year
+    const allViolations = await db
+      .select({
+        studentProfileId: studentViolations.studentProfileId,
+        points: violationTypes.defaultPoints,
+      })
+      .from(studentViolations)
+      .innerJoin(violationTypes, eq(studentViolations.violationTypeId, violationTypes.id))
+      .where(
+        and(
+          eq(studentViolations.academicYearId, academicYearId),
+          sql`${studentViolations.status} != 'Dibatalkan'`
+        )
+      );
+
+    // Compute violation points and recommended grades per student
+    const studentInfoMap = new Map<string, { points: number; rec: string }>();
+    for (const student of enrolled) {
+      const studentProfile = profiles.find((p) => p.nis === student.nis);
+      let points = 0;
+      if (studentProfile) {
+        points = allViolations
+          .filter((v) => v.studentProfileId === studentProfile.id)
+          .reduce((sum, v) => sum + (v.points ?? 0), 0);
+      }
+
+      // Rules:
+      // - 0 points: A
+      // - 1-20 points: B
+      // - 21-50 points: C
+      // - >50 points: D
+      let rec = 'A';
+      if (points > 50) rec = 'D';
+      else if (points > 20) rec = 'C';
+      else if (points > 0) rec = 'B';
+
+      studentInfoMap.set(student.id!, { points, rec });
+    }
+
+    const result: any[] = [];
+    for (const student of enrolled) {
+      const info = studentInfoMap.get(student.id!) || { points: 0, rec: 'A' };
+      const studentRecords = existingRows.filter((r) => r.studentId === student.id!);
+
+      if (studentRecords.length > 0) {
+        studentRecords.forEach((r) => {
+          result.push({
+            ...r,
+            violationPoints: info.points,
+            recommendedGrade: info.rec,
+          });
+        });
+      } else {
+        result.push({
+          id: null,
+          studentId: student.id,
+          studentName: student.name,
+          studentNis: student.nis,
+          category: null,
+          grade: null,
+          violationPoints: info.points,
+          recommendedGrade: info.rec,
+        });
+      }
+    }
+
+    return apiSuccess(result);
   } catch (err) {
     console.error('[akhlaq GET]', err);
     return apiError('Gagal mengambil data akhlaq', 500);
@@ -117,7 +210,7 @@ export async function POST(request: Request) {
     const db = getDb();
     const d1 = (process.env.DB || (globalThis as Record<string, unknown>).DB) as D1Database;
 
-    // Multi-tenant isolation: verify academicYear belongs to user's institution
+    // Multi-tenant check
     const yearCheck = await db
       .select({ id: academicYears.id })
       .from(academicYears)
@@ -175,7 +268,8 @@ export async function POST(request: Request) {
             grade: record.grade,
             description: record.description || null,
             notes: record.notes || null,
-            updatedBy: session.userId
+            updatedBy: session.userId,
+            updatedAt: new Date(),
           })
           .where(eq(akhlaq.id, existing[0].id));
       } else {

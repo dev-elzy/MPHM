@@ -26,7 +26,7 @@ function useDebounced<T>(value: T, delay: number): T {
 interface ScoreCellProps {
   sessionId: string;
   studentId: string;
-  scoreType: 'tamrin' | 'ujian';
+  scoreType: 'tamrin' | 'uts' | 'uas';
   initialValue: number | null;
   locked: boolean;
 }
@@ -150,7 +150,8 @@ export default function ScoreEntryPage() {
                     <th className="text-left py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">No</th>
                     <th className="text-left py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Siswi</th>
                     <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Tamrin</th>
-                    <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Ujian</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">UTS</th>
+                    <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">UAS</th>
                     <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Khos</th>
                     <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">AM</th>
                     <th className="text-center py-3 px-4 text-xs font-semibold text-zinc-500 uppercase tracking-wide">Final</th>
@@ -185,8 +186,17 @@ export default function ScoreEntryPage() {
                         <ScoreCell
                           sessionId={id}
                           studentId={row.studentId}
-                          scoreType="ujian"
-                          initialValue={row.ujianScore}
+                          scoreType="uts"
+                          initialValue={row.utsScore}
+                          locked={isLocked}
+                        />
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <ScoreCell
+                          sessionId={id}
+                          studentId={row.studentId}
+                          scoreType="uas"
+                          initialValue={row.uasScore}
                           locked={isLocked}
                         />
                       </td>

@@ -44,7 +44,7 @@ export function useSaveScore() {
     mutationFn: (payload: {
       scoreSessionId: string;
       studentId: string;
-      scoreType: 'tamrin' | 'ujian';
+      scoreType: 'tamrin' | 'uts' | 'uas';
       score: number | null;
       notes?: string;
     }) => scoresService.saveScore(payload),

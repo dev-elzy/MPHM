@@ -156,7 +156,7 @@ export default function AbsensiPage() {
             { label: 'Total Izin Semester Ini', value: summaryStats.permission, color: 'text-amber-500' },
             { label: 'Total Alpha Semester Ini', value: summaryStats.absent, color: 'text-red-500' },
           ].map((stat) => (
-            <Card key={stat.label} className="dark:bg-zinc-950 border-zinc-200/60 dark:border-zinc-800/60 bg-white/40 dark:bg-zinc-950/40">
+            <Card key={stat.label} className="border-zinc-200/60 dark:border-zinc-800/60 bg-white/40 dark:bg-zinc-950/40">
               <CardContent className="py-4 px-5">
                 <p className="text-xs text-zinc-500 mb-1">{stat.label}</p>
                 <p className={`text-2xl font-bold ${stat.color}`}>{stat.value} Hari</p>
@@ -184,7 +184,7 @@ export default function AbsensiPage() {
 
         <div>
           <label className="text-xs font-semibold text-zinc-500 mb-1.5 block">Bulan Hijriyah</label>
-          <Select value={selectedMonth.toString()} onValueChange={(v) => v && setSelectedMonth(parseInt(v, 10))}>
+          <Select value={selectedMonth ? selectedMonth.toString() : ''} onValueChange={(v) => { if (v) setSelectedMonth(parseInt(v, 10)); }}>
             <SelectTrigger className="h-9 text-sm dark:bg-zinc-950">
               <SelectValue placeholder="Pilih Bulan" />
             </SelectTrigger>
@@ -237,7 +237,7 @@ export default function AbsensiPage() {
       )}
 
       {selectedClassId && students.length > 0 && (
-        <Card className="dark:bg-zinc-950 border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md">
+        <Card className="border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-950/50 backdrop-blur-md">
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <CardTitle className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
               <Users className="h-4 w-4 text-zinc-400" />
