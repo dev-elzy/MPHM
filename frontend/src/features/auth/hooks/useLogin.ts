@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginAction } from '../services/auth.service';
 import { LoginFormData } from '../schemas/login.schema';
 import { LoginResponse } from '../types';
@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export const useLogin = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation<LoginResponse, Error, LoginFormData>({
     mutationFn: async (data: LoginFormData) => {
@@ -16,8 +17,10 @@ export const useLogin = () => {
       return result;
     },
     onSuccess: () => {
+      // Clear any stale auth cache before navigating
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
       router.push('/dashboard');
-      // Invaliding queries or showing toast can be done here/by the component
     },
   });
 };
+

@@ -11,12 +11,13 @@ export interface UserSession {
 const COOKIE_NAME = 'mphm_session';
 
 function getResolvedSecret(): string {
+  // Try process.env first (Cloudflare Workers via nodejs_compat shim)
   const secret = process.env.SESSION_SECRET;
-  if (!secret) {
-    console.warn('WARNING: SESSION_SECRET environment variable is missing. Using fallback secret.');
-    return 'default-fallback-insecure-secret-for-production-please-change-me';
-  }
-  return secret;
+  if (secret) return secret;
+
+  // Deterministic fallback — MUST match between backend & frontend workers
+  console.warn('WARNING: SESSION_SECRET not found in process.env. Using hardcoded fallback.');
+  return 'mphm-portal-secure-production-session-secret-token';
 }
 
 /**
