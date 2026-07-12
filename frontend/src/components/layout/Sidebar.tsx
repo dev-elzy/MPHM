@@ -271,7 +271,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                       'group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer w-full text-left active:scale-[0.98]',
                       isActive
                         ? 'bg-linear-to-r from-[#C9A050]/20 to-[#C9A050]/5 text-amber-100 border-l-4 border-[#C9A050] shadow-sm shadow-[#C9A050]/5'
-                        : 'text-slate-350 hover:bg-slate-800/60 hover:text-white'
+                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
                       'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 active:scale-[0.98]',
                       isActive
                         ? 'bg-linear-to-r from-[#C9A050]/20 to-[#C9A050]/5 text-amber-100 border-l-4 border-[#C9A050] shadow-sm shadow-[#C9A050]/5'
-                        : 'text-slate-350 hover:bg-slate-800/60 hover:text-white'
+                        : 'text-slate-300 hover:bg-slate-800/60 hover:text-white'
                     )}
                   >
                     <route.icon
@@ -363,7 +363,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-[11px] font-semibold text-slate-350 tracking-tight">
+          <span className="text-[11px] font-semibold text-slate-300 tracking-tight">
             System running smoothly
           </span>
         </div>
