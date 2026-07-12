@@ -15,15 +15,20 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "vars": {
-    "APP_URL": "https://m.p3hm.my.id",
-    "APP_ENV": "production",
-    "SESSION_SECRET": "mphm-portal-secure-production-session-secret-token",
-    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "riwomz8g",
-    "CLOUDINARY_UPLOAD_PRESET": "mphm_portal_preset"
-  },
   "observability": {
-    "enabled": true
+    "enabled": false,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false,
+      "persist": true,
+      "head_sampling_rate": 1
+    }
   },
   "routes": [
     {
