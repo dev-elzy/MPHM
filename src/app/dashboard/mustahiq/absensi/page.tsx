@@ -142,7 +142,7 @@ export default function AbsensiPage() {
         title="Rekap Absensi Hijriyah"
         description="Mencatat rekapitulasi ketidakhadiran siswi bulanan berdasarkan Kalender Hijriyah."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
             <YearSelector value={selectedYearId} onChange={(v) => { setSelectedYearId(v || ''); setSelectedClassId(''); }} />
             {selectedYearId && (
               <SemesterSelector

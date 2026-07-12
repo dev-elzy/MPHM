@@ -164,7 +164,7 @@ export default function NilaiPage() {
         title="Input Nilai"
         description="Kelola sesi penilaian per mata pelajaran, input nilai tamrin dan ujian secara langsung."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
             <YearSelector value={selectedYearId} onChange={(v) => { setSelectedYearId(v || ''); setSelectedSemesterId(''); setSelectedClassId(''); }} />
           </div>
         }

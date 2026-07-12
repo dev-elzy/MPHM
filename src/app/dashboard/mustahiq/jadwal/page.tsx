@@ -80,7 +80,7 @@ export default function SchedulePage() {
         title="Jadwal Akademik"
         description="Atur jadwal pelajaran dan kegiatan akademik berdasarkan tingkat dan kelas."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
             <YearSelector value={selectedYearId} onChange={(v) => setSelectedYearId(v || '')} />
             {selectedYearId && (
               <SemesterSelector

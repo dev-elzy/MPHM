@@ -137,7 +137,7 @@ export default function AkhlaqPage() {
         title="Penilaian Akhlaq & Adab"
         description="Penilaian karakter dan adab santri dengan integrasi otomatis poin pelanggaran keamanan."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
             <YearSelector value={selectedYearId} onChange={(v) => { setSelectedYearId(v || ''); setSelectedClassId(''); }} />
             {selectedYearId && (
               <SemesterSelector

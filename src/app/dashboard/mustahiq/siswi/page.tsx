@@ -343,7 +343,7 @@ export default function SiswiPage() {
         title="Database Siswi"
         description="Pengelolaan profil lengkap santriwati pesantren, wali, dan pengelompokan kelas rombel."
         actions={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
             <YearSelector value={selectedYearId} onChange={(val) => { setSelectedYearId(val || ''); setSelectedClassId('all'); }} />
             {selectedYearId && (
               <SemesterSelector
