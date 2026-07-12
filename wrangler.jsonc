@@ -15,6 +15,12 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "vars": {
+    "BACKEND_URL": "https://api.m.p3hm.my.id",
+    "SESSION_SECRET": "mphm-portal-secure-production-session-secret-token",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "riwomz8g",
+    "CLOUDINARY_UPLOAD_PRESET": "mphm_portal_preset"
+  },
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,

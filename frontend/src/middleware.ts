@@ -4,8 +4,15 @@ import { verifySessionToken } from '@/lib/auth/session';
 
 const PUBLIC_ROUTES = ['/login'];
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Proxy API requests to backend
+  if (pathname.startsWith('/api/v1/')) {
+    const backendUrl = process.env.BACKEND_URL || 'https://api.m.p3hm.my.id';
+    const newUrl = new URL(pathname + request.nextUrl.search, backendUrl);
+    return NextResponse.rewrite(newUrl);
+  }
   
   const sessionCookie = request.cookies.get('mphm_session');
   let isValidSession = false;
@@ -73,5 +80,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

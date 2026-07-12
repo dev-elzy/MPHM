@@ -1,6 +1,3 @@
-'use server';
-
-import { cookies } from 'next/headers';
 import { LoginFormData } from '../schemas/login.schema';
 import { LoginResponse } from '../types';
 
@@ -8,11 +5,9 @@ export async function loginAction(data: LoginFormData): Promise<LoginResponse> {
   try {
     const { email, password } = data;
 
-    const backendUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://api.m.p3hm.my.id' 
-      : 'http://localhost:8787';
-
-    const res = await fetch(`${backendUrl}/api/v1/auth/login`, {
+    // Panggil melalui Edge Proxy kita yang akan meroute ke backend secara otomatis.
+    // Karena dipanggil dari client, browser akan otomatis memproses header `Set-Cookie`.
+    const res = await fetch(`/api/v1/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,31 +22,12 @@ export async function loginAction(data: LoginFormData): Promise<LoginResponse> {
 
     const json = (await res.json()) as any;
     
-    // Extract token from Hono's set-cookie header and set it in Next.js cookie store
-    const cookieHeader = res.headers.get('set-cookie');
-    if (cookieHeader) {
-      const cookieStore = await cookies();
-      const match = cookieHeader.match(/mphm_session=([^;]+)/);
-      if (match) {
-        cookieStore.set({
-          name: 'mphm_session',
-          value: match[1],
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          path: '/',
-          domain: process.env.NODE_ENV === 'production' ? '.m.p3hm.my.id' : undefined,
-          maxAge: 7 * 24 * 60 * 60,
-        });
-      }
-    }
-
     return {
       success: true,
       user: json.data,
     };
   } catch (error) {
-    console.error('Server action login error:', error);
+    console.error('Client login error:', error);
     return {
       success: false,
       message: 'Koneksi ke server gagal',
@@ -61,18 +37,13 @@ export async function loginAction(data: LoginFormData): Promise<LoginResponse> {
 
 export async function logoutAction() {
   try {
-    const cookieStore = await cookies();
-    cookieStore.delete('mphm_session');
-
-    const backendUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://api.m.p3hm.my.id' 
-      : 'http://localhost:8787';
-
-    await fetch(`${backendUrl}/api/v1/auth/logout`, { 
+    await fetch(`/api/v1/auth/logout`, { 
       method: 'POST' 
     }).catch(console.error);
+    
+    // Opsional: kita bisa memaksa menghapus cookie dari sisi client jika memungkinkan,
+    // namun endpoint logout di backend seharusnya sudah mengirim 'Set-Cookie: ... Max-Age=0'
   } catch (error) {
-    console.error('Server action logout error:', error);
+    console.error('Client logout error:', error);
   }
 }
-
