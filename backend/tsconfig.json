@@ -10,8 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "@/app/api/*": ["./src/api/*"],
-      "@/db/*": ["./src/db/*"],
-      "@/*": ["../frontend/src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"]
