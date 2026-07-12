@@ -7,7 +7,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuthSession } from '@/features/auth/hooks/useAuthSession';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { isWali, isKeamanan, isLoading } = useAuthSession();
+  const { isWali, isKeamanan, isMustahiq, isLoading } = useAuthSession();
 
   if (isLoading) {
     return (
@@ -18,8 +18,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     );
   }
 
-  // Wali Santri (isWali) and Keamanan (isKeamanan) are app-style (no sidebar)
-  const isAppStyle = isWali || isKeamanan;
+  // Wali Santri (isWali), Keamanan (isKeamanan), and Mustahiq (isMustahiq) are app-style (no sidebar)
+  const isAppStyle = isWali || isKeamanan || isMustahiq;
 
   return (
     <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {children}
           </div>
         </main>
-        {isAppStyle && <BottomNav isWali={isWali} isKeamanan={isKeamanan} />}
+        {isAppStyle && <BottomNav isWali={isWali} isKeamanan={isKeamanan} isMustahiq={isMustahiq} />}
       </div>
     </div>
   );
