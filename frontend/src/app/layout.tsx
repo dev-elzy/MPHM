@@ -32,7 +32,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.__name = window.__name || function(f, n) { Object.defineProperty(f, 'name', { value: n, configurable: true }); return f; };`,
+            __html: `window.e = window.e || function() {}; window.__name = window.__name || function(f, n) { Object.defineProperty(f, 'name', { value: n, configurable: true }); return f; };`,
           }}
         />
       </head>
