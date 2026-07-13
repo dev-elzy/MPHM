@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const file = formData.get('file');
 
-    if (!file || !(file instanceof Blob)) {
+    if (!file || typeof file !== 'object' || !('name' in file)) {
       return apiError('File tidak ditemukan atau format tidak valid', 400);
     }
 

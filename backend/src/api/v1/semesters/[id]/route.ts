@@ -30,7 +30,7 @@ export async function PATCH(
     }
 
     // Role Guard: Only super_admin, admin, and operator can edit semesters
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk mengubah data semester', 403);
     }

@@ -3,8 +3,7 @@ import { eq, and, SQL, sql } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { akhlaq } from '@/db/schema/akhlaq';
 import { academicYears } from '@/db/schema/academic-years';
-import { students, classStudents } from '@/db/schema/students';
-import { studentProfiles } from '@/db/schema/person-profiles';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { studentViolations, violationTypes } from '@/db/schema/violations';
 import { classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
@@ -75,12 +74,12 @@ export async function GET(request: Request) {
     // Get list of active enrolled students in the class
     const enrolled = await db
       .select({
-        id: students.id,
-        name: students.name,
-        nis: students.nis,
+        id: studentProfiles.id,
+        name: people.fullName,
+        nis: studentProfiles.nis,
       })
       .from(classStudents)
-      .innerJoin(students, eq(classStudents.studentId, students.id))
+      .innerJoin(studentProfiles, eq(classStudents.studentProfileId, studentProfiles.id)).innerJoin(people, eq(studentProfiles.personId, people.id))
       .where(
         and(
           eq(classStudents.academicYearId, academicYearId),
@@ -110,11 +109,12 @@ export async function GET(request: Request) {
         description: akhlaq.description,
         notes: akhlaq.notes,
         createdAt: akhlaq.createdAt,
-        studentName: students.name,
-        studentNis: students.nis,
+        studentName: people.fullName,
+        studentNis: studentProfiles.nis,
       })
       .from(akhlaq)
-      .leftJoin(students, eq(akhlaq.studentId, students.id))
+      .leftJoin(studentProfiles, eq(akhlaq.studentId, studentProfiles.id))
+      .leftJoin(people, eq(studentProfiles.personId, people.id))
       .where(and(...conditions));
 
     // Get student profiles to link NIS to violation data
@@ -222,7 +222,7 @@ export async function POST(request: Request) {
 
     const userRole = (session.role || '').toLowerCase();
     const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
 
     if (!isMustahiq && !isSekretariat) {
       return apiError('Anda tidak memiliki izin untuk mengedit adab & akhlaq', 403);

@@ -1,8 +1,7 @@
 import { eq, and } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { scores, scoreSessions, scoreResults } from '@/db/schema/scores';
-import { classStudents } from '@/db/schema/students';
-import { students } from '@/db/schema/students';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { getSession } from '@/lib/auth/session';
 import { apiSuccess, apiError } from '@/lib/api/response';
 
@@ -36,12 +35,12 @@ export async function GET(
     // 2. Fetch all students enrolled in this class/semester
     const enrolledStudents = await db
       .select({
-        studentId: students.id,
-        studentName: students.name,
-        studentNis: students.nis,
+        studentId: studentProfiles.id,
+        studentName: people.fullName,
+        studentNis: studentProfiles.nis,
       })
       .from(classStudents)
-      .leftJoin(students, eq(classStudents.studentId, students.id))
+      .leftJoin(studentProfiles, eq(classStudents.studentProfileId, studentProfiles.id)).leftJoin(people, eq(studentProfiles.personId, people.id))
       .where(
         and(
           eq(classStudents.classId, classId),

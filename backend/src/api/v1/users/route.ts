@@ -15,7 +15,7 @@ const createUserSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   name: z.string().min(3, 'Nama minimal 3 karakter'),
   password: z.string().min(6, 'Password minimal 6 karakter'),
-  role: z.enum(['super_admin', 'admin', 'operator', 'mustahiq', 'mudir', 'mufatish', 'security']),
+  role: z.enum(['sekretariat', 'mustahiq', 'mudir', 'mufatish', 'security']),
   status: z.enum(['active', 'inactive']).default('active'),
   phone: z.string().optional().nullable(),
 });
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
     }
 
     // Role Guard: super_admin, admin, mudir, operator, mustahiq
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'mudir', 'operator', 'mustahiq', 'teacher', 'ustadz'];
+    const ALLOWED_ROLES = ['sekretariat', 'mudir', 'mustahiq', 'teacher', 'ustadz'];
     if (!ALLOWED_ROLES.includes(session.role.toLowerCase())) {
       return apiError('Anda tidak memiliki izin untuk melihat daftar pengguna', 403);
     }
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
     }
 
     // Role Guard: Only super_admin and admin can create users
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk membuat pengguna baru', 403);
     }

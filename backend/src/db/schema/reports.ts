@@ -3,7 +3,7 @@ import { sql } from 'drizzle-orm';
 import { academicYears } from './academic-years';
 import { semesters } from './semesters';
 import { classes } from './classes';
-import { students } from './students';
+import { studentProfiles as students } from './person-profiles';
 
 // ============================================================
 // Reports — Generated during finalization

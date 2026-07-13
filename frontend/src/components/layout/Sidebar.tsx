@@ -40,7 +40,7 @@ const routes: SidebarItem[] = [
     label: 'Pusat Data',
     icon: Database,
     href: '/dashboard/data-center',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
+    allowedRoles: ['sekretariat', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Pencarian Database', href: '/dashboard/data-center' },
       { label: 'Data Santri', href: '/dashboard/akademik/siswi' },
@@ -54,7 +54,7 @@ const routes: SidebarItem[] = [
     label: 'Manajemen Akademik',
     icon: GraduationCap,
     href: '/dashboard/akademik',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
+    allowedRoles: ['sekretariat', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Tahun Ajaran', href: '/dashboard/akademik/tahun-ajaran' },
       { label: 'Semester', href: '/dashboard/akademik/semester' },
@@ -81,7 +81,7 @@ const routes: SidebarItem[] = [
     label: 'Penilaian & Absensi',
     icon: ClipboardCheck,
     href: '/dashboard/akademik/nilai',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mustahiq', 'mudir', 'mufatish'],
+    allowedRoles: ['sekretariat', 'mustahiq', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Input Nilai', href: '/dashboard/akademik/nilai' },
       { label: 'Absensi Harian', href: '/dashboard/akademik/absensi' },
@@ -92,7 +92,7 @@ const routes: SidebarItem[] = [
     label: 'Monitoring & Audit',
     icon: Activity,
     href: '/dashboard/audit',
-    allowedRoles: ['super_admin', 'admin', 'operator', 'mudir', 'mufatish'],
+    allowedRoles: ['sekretariat', 'mudir', 'mufatish'],
     subItems: [
       { label: 'Audit System Log', href: '/dashboard/audit' },
       { label: 'Recycle Bin', href: '/dashboard/recycle-bin' },
@@ -102,7 +102,7 @@ const routes: SidebarItem[] = [
     label: 'Manajemen Pengguna',
     icon: UsersRound,
     href: '/dashboard/pengguna',
-    allowedRoles: ['super_admin', 'admin', 'operator'],
+    allowedRoles: ['sekretariat'],
     subItems: [
       { label: 'Daftar Staff', href: '/dashboard/pengguna' },
       { label: 'Hak Akses & Role', href: '/dashboard/pengguna/roles' },
@@ -112,7 +112,7 @@ const routes: SidebarItem[] = [
     label: 'Pengaturan Sistem',
     icon: Settings,
     href: '/dashboard/pengaturan',
-    allowedRoles: ['super_admin', 'admin'],
+    allowedRoles: ['sekretariat'],
   },
 ];
 
@@ -178,7 +178,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
       if (!route.allowedRoles) return true;
       return route.allowedRoles.some((allowedRole) => {
         const ar = allowedRole.toLowerCase();
-        if (['super_admin', 'admin', 'operator', 'sekretariat'].includes(ar)) {
+        if (['sekretariat'].includes(ar)) {
           return isSekretariat;
         }
         if (['mustahiq', 'teacher', 'ustadz'].includes(ar)) {
@@ -213,7 +213,7 @@ function SidebarContent({ onNavigate }: SidebarContentProps) {
 
   const getRoleBadgeLabel = (r: string) => {
     const roleLower = (r || '').toLowerCase();
-    if (['sekretariat', 'super_admin', 'admin', 'operator'].includes(roleLower)) return 'Sekretariat';
+    if (['sekretariat'].includes(roleLower)) return 'Sekretariat';
     if (['mustahiq', 'teacher', 'ustadz'].includes(roleLower)) return 'Mustahiq (Wali Kelas)';
     if (['mufattisy', 'mufatish', 'pengawas'].includes(roleLower)) return 'Mufattisy (Pimpinan Tingkatan)';
     if (['pimpinan', 'mundzir', 'mudir'].includes(roleLower)) return 'Pimpinan / Mundzir';

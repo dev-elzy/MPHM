@@ -2,7 +2,7 @@ import { eq, and } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { scoreSessions, scores, scoreResults } from '@/db/schema/scores';
 import { curriculumSubjects, subjects } from '@/db/schema/curriculums';
-import { classStudents } from '@/db/schema/students';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { getSession } from '@/lib/auth/session';
 import { apiSuccess, apiError } from '@/lib/api/response';
 
@@ -45,7 +45,7 @@ export async function POST(
 
     const userRole = (session.role || '').toLowerCase();
     const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
 
     let nextStatus = 'ready';
     if (isSekretariat) {
@@ -58,7 +58,7 @@ export async function POST(
 
     // Get list of active students in class
     const enrolledStudents = await db
-      .select({ studentId: classStudents.studentId })
+      .select({ studentId: classStudents.studentProfileId })
       .from(classStudents)
       .where(
         and(

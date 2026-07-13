@@ -14,7 +14,7 @@ const updateUserSchema = z.object({
   email: z.string().email('Format email tidak valid').optional(),
   name: z.string().min(3, 'Nama minimal 3 karakter').optional(),
   password: z.string().min(6, 'Password minimal 6 karakter').optional().nullable(),
-  role: z.enum(['super_admin', 'admin', 'operator', 'mustahiq', 'mudir', 'mufatish', 'security']).optional(),
+  role: z.enum(['sekretariat', 'mustahiq', 'mudir', 'mufatish', 'security']).optional(),
   status: z.enum(['active', 'inactive']).optional(),
   phone: z.string().optional().nullable(),
 });
@@ -79,7 +79,7 @@ export async function PATCH(
     }
 
     // Role Guard: Only admin and super_admin can modify other users
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk mengubah data pengguna', 403);
     }
@@ -189,7 +189,7 @@ export async function DELETE(
     }
 
     // Role Guard: super_admin, admin
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk menghapus pengguna', 403);
     }

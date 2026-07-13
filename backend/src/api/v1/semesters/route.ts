@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       return apiError('Sesi tidak valid atau telah berakhir', 401);
     }
 
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk membuat data semester', 403);
     }

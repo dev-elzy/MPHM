@@ -86,7 +86,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Role-based route guarding
-  const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+  const isSekretariat = ['sekretariat'].includes(userRole);
   const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
   const isMufattisy = ['mufattisy', 'mufatish', 'pengawas'].includes(userRole);
   const isPimpinan = ['pimpinan', 'mundzir', 'mudir'].includes(userRole);

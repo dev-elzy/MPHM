@@ -115,7 +115,7 @@ export async function POST(request: Request) {
     }
 
     // Role Guard: super_admin, admin, and operator can create subjects
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk membuat mata pelajaran', 403);
     }

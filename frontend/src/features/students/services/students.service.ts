@@ -22,7 +22,7 @@ class StudentsService {
     if (params.page) searchParams.append('page', String(params.page));
     if (params.limit) searchParams.append('limit', String(params.limit));
 
-    const res = await fetch(`/api/v1/students?${searchParams.toString()}`);
+    const res = await fetch(`/api/v1/data-center/students?${searchParams.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({ message: 'Gagal mengambil data siswi' }))) as { message?: string };
       throw new Error(err.message || 'Gagal mengambil data siswi');
@@ -40,7 +40,7 @@ class StudentsService {
     if (academicYearId) params.append('academicYearId', academicYearId);
     if (semesterId) params.append('semesterId', semesterId);
 
-    const res = await fetch(`/api/v1/students/${id}?${params.toString()}`);
+    const res = await fetch(`/api/v1/data-center/students/${id}?${params.toString()}`);
     if (!res.ok) {
       if (res.status === 404) return undefined;
       const err = (await res.json().catch(() => ({ message: 'Gagal mengambil detail siswi' }))) as { message?: string };
@@ -56,7 +56,7 @@ class StudentsService {
     academicYearId?: string | null,
     semesterId?: string | null
   ): Promise<Student> {
-    const res = await fetch('/api/v1/students', {
+    const res = await fetch('/api/v1/data-center/students', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -83,7 +83,7 @@ class StudentsService {
     academicYearId?: string | null,
     semesterId?: string | null
   ): Promise<Student> {
-    const res = await fetch(`/api/v1/students/${id}`, {
+    const res = await fetch(`/api/v1/data-center/students/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -104,7 +104,7 @@ class StudentsService {
   }
 
   async delete(id: string): Promise<void> {
-    const res = await fetch(`/api/v1/students/${id}`, {
+    const res = await fetch(`/api/v1/data-center/students/${id}`, {
       method: 'DELETE',
     });
 

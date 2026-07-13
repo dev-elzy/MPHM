@@ -19,8 +19,9 @@ import { useAcademicYears } from '@/features/academic-years/queries/useAcademicY
 import { Class } from '@/features/classes/types';
 import { useClasses } from '@/features/classes/queries/useClasses';
 import { useDeleteClass } from '@/features/classes/mutations/useClassMutations';
-import { ClassTable } from '@/features/classes/components/ClassTable';
+import { ClassGrid } from '@/features/classes/components/ClassGrid';
 import { ClassFormDialog } from '@/features/classes/components/ClassFormDialog';
+import { ClassDetailDialog } from '@/features/classes/components/ClassDetailDialog';
 import { parseExcelFile } from '@/lib/excel/builder';
 import { downloadExcelTemplate, KELAS_TEMPLATE_COLUMNS } from '@/lib/excel/templates';
 import { classesService } from '@/features/classes/services/classes.service';
@@ -36,6 +37,7 @@ export default function ClassPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [editingClass, setEditingClass] = React.useState<Class | undefined>();
   const [deleteItem, setDeleteItem] = React.useState<Class | null>(null);
+  const [viewDetailsItem, setViewDetailsItem] = React.useState<Class | null>(null);
 
   // Excel Import/Export states
   const qc = useQueryClient();
@@ -237,10 +239,11 @@ export default function ClassPage() {
             }
           />
         ) : (
-          <ClassTable
+          <ClassGrid
             data={classes}
             onEdit={handleEdit}
             onDelete={setDeleteItem}
+            onViewDetails={setViewDetailsItem}
           />
         )}
       </Card>
@@ -255,6 +258,13 @@ export default function ClassPage() {
           initialData={editingClass}
         />
       )}
+
+      {/* Detail Dialog */}
+      <ClassDetailDialog
+        open={!!viewDetailsItem}
+        onOpenChange={(open) => !open && setViewDetailsItem(null)}
+        cls={viewDetailsItem}
+      />
 
       {/* Delete Confirmation */}
       <ConfirmDialog

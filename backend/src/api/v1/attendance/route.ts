@@ -3,7 +3,7 @@ import { eq, and, SQL } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { attendance } from '@/db/schema/attendance';
 import { academicYears } from '@/db/schema/academic-years';
-import { students, classStudents } from '@/db/schema/students';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { classAssignments } from '@/db/schema/classes';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
@@ -78,12 +78,12 @@ export async function GET(request: Request) {
     // Get list of enrolled students in the class
     const enrolled = await db
       .select({
-        studentId: students.id,
-        studentName: students.name,
-        studentNis: students.nis,
+        studentId: studentProfiles.id,
+        studentName: people.fullName,
+        studentNis: studentProfiles.nis,
       })
       .from(classStudents)
-      .leftJoin(students, eq(classStudents.studentId, students.id))
+      .leftJoin(studentProfiles, eq(classStudents.studentProfileId, studentProfiles.id)).leftJoin(people, eq(studentProfiles.personId, people.id))
       .where(
         and(
           eq(classStudents.academicYearId, academicYearId),
@@ -135,11 +135,12 @@ export async function GET(request: Request) {
         permissionCount: attendance.permissionCount,
         absentCount: attendance.absentCount,
         notes: attendance.notes,
-        studentName: students.name,
-        studentNis: students.nis,
+        studentName: people.fullName,
+        studentNis: studentProfiles.nis,
       })
       .from(attendance)
-      .leftJoin(students, eq(attendance.studentId, students.id))
+      .leftJoin(studentProfiles, eq(attendance.studentId, studentProfiles.id))
+      .leftJoin(people, eq(studentProfiles.personId, people.id))
       .where(
         and(
           eq(attendance.academicYearId, academicYearId),
@@ -198,7 +199,7 @@ export async function POST(request: Request) {
 
     const userRole = (session.role || '').toLowerCase();
     const isMustahiq = ['mustahiq', 'teacher', 'ustadz'].includes(userRole);
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
 
     if (!isMustahiq && !isSekretariat) {
       return apiError('Anda tidak memiliki izin untuk mengedit absensi', 403);

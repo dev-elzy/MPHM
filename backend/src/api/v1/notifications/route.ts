@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     if (!session) return apiError('Unauthorized', 401);
 
     // Only Admin can create custom notifications
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role.toLowerCase())) {
       return apiError('Forbidden', 403);
     }
@@ -93,7 +93,7 @@ export async function DELETE(request: Request) {
     const current = currentResult[0];
     if (!current) return apiError('Not found', 404);
 
-    const isAdmin = ['super_admin', 'admin'].includes(session.role.toLowerCase());
+    const isAdmin = ['sekretariat'].includes(session.role.toLowerCase());
     if (current.userId !== session.userId && !isAdmin) {
       return apiError('Forbidden', 403);
     }

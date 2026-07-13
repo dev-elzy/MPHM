@@ -4,7 +4,6 @@ export * from './academic-years';
 export * from './semesters';
 export * from './curriculums';
 export * from './classes';
-export * from './students';
 export * from './scores';
 export * from './attendance';
 export * from './akhlaq';
@@ -18,5 +17,4 @@ export * from './people';
 export * from './person-profiles';
 export * from './violations';
 export * from './academic';
-export * from './achievements';
-
+export * from './enrollments';

@@ -11,7 +11,7 @@ export async function GET() {
     if (!session) return apiError('Unauthorized', 401);
 
     // Only Admin can see sent notifications list
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role.toLowerCase())) {
       return apiError('Forbidden', 403);
     }

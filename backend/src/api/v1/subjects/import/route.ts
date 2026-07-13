@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     if (!session) return apiError('Unauthorized', 401);
 
     // RBAC: super_admin, admin, and operator can import subjects
-    const rbac = checkRole(session, ['super_admin', 'admin', 'operator']);
+    const rbac = checkRole(session, ['sekretariat']);
     if (!rbac.authorized) return rbac.response!;
 
     const body = await validateBody(request, importSubjectSchema);

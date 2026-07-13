@@ -7,7 +7,14 @@ export const studentSchema = z.object({
   birthDate: z.string().optional(),
   birthPlace: z.string().optional(),
   gender: z.enum(['male', 'female']).default('female'),
+  // Address fields
+  province: z.string().optional(),
+  city: z.string().optional(),
+  district: z.string().optional(),
+  subDistrict: z.string().optional(),
+  postalCode: z.string().optional(),
   address: z.string().optional(),
+  
   parentName: z.string().optional(),
   parentPhone: z.string().optional(),
   phone: z.string().optional(),
@@ -17,6 +24,8 @@ export const studentSchema = z.object({
   notes: z.string().optional(),
   // Class binding fields
   classId: z.string().optional().or(z.literal('')),
+  // Photo
+  photo: z.any().optional(),
 });
 
 export type StudentFormData = z.infer<typeof studentSchema>;

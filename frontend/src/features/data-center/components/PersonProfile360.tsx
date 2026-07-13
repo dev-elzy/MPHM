@@ -4,14 +4,16 @@ import React, { useState, useEffect } from 'react';
 import {
   User,
   GraduationCap,
+  Calendar,
+  Award,
   Briefcase,
   CheckCircle2,
   FileText,
   History,
   AlertTriangle,
-  Calendar,
-  Award,
 } from 'lucide-react';
+
+import { formatHijriMasehi } from '@/lib/utils/date';
 
 interface AlumniRecord {
   id: string;
@@ -141,7 +143,7 @@ export function PersonProfile360({ personId }: { personId: string }) {
             <div>
               <h1 className="text-2xl font-bold tracking-tight">{person.fullName}</h1>
               <p className="text-sm text-slate-300 mt-1">
-                {person.birthPlace || 'Pusat Data'}, {person.birthDate || ''} | {person.phone || 'Nomor HP -'}
+                {person.birthPlace || 'Pusat Data'}, {person.birthDate ? formatHijriMasehi(person.birthDate) : ''} | {person.phone || 'Nomor HP -'}
               </p>
               <p className="text-xs text-slate-400 mt-0.5">{person.address || 'Alamat pondok/rumah'}</p>
             </div>
@@ -207,7 +209,7 @@ export function PersonProfile360({ personId }: { personId: string }) {
                 <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
                   <dt className="text-slate-500">Tempat, Tanggal Lahir</dt>
                   <dd className="font-semibold text-slate-800 dark:text-slate-200">
-                    {person.birthPlace || '-'}, {person.birthDate || '-'}
+                    {person.birthPlace || '-'}, {person.birthDate ? formatHijriMasehi(person.birthDate) : '-'}
                   </dd>
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
@@ -250,7 +252,7 @@ export function PersonProfile360({ personId }: { personId: string }) {
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-400">{v.description}</p>
                       <div className="flex items-center gap-4 text-xs text-slate-400">
-                        <span>Tanggal: {v.incidentDate} {v.incidentTime}</span>
+                        <span>Tanggal: {v.incidentDate ? formatHijriMasehi(v.incidentDate) : ''} {v.incidentTime}</span>
                         <span>Lokasi: {v.location || 'Area Madrasah'}</span>
                       </div>
                     </div>
@@ -297,7 +299,7 @@ export function PersonProfile360({ personId }: { personId: string }) {
               {auditTimeline.map((item, idx) => (
                 <div key={idx} className="relative">
                   <div className="absolute left-[-31px] top-1 w-4 h-4 rounded-full bg-blue-600 border-4 border-white dark:border-slate-900" />
-                  <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">{item.date}</div>
+                  <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">{formatHijriMasehi(item.date)}</div>
                   <div className="font-semibold text-slate-800 dark:text-slate-100 mt-0.5">{item.title}</div>
                   <div className="text-sm text-slate-500 mt-0.5">{item.description}</div>
                 </div>

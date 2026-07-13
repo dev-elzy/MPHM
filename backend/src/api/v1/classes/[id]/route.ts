@@ -3,7 +3,7 @@ import { eq, and, ne, sql } from 'drizzle-orm';
 import { getDb } from '@/db/client';
 import { classes, classAssignments } from '@/db/schema/classes';
 import { academicYears } from '@/db/schema/academic-years';
-import { classStudents } from '@/db/schema/students';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { users } from '@/db/schema/users';
 import { getSession } from '@/lib/auth/session';
 import { validateBody } from '@/lib/api/validation';
@@ -99,7 +99,7 @@ export async function PATCH(
     }
 
     // Role Guard: super_admin, admin, operator
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk mengubah data kelas', 403);
     }
@@ -300,7 +300,7 @@ export async function DELETE(
     }
 
     // Role Guard: Only super_admin and admin can delete
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk menghapus kelas', 403);
     }

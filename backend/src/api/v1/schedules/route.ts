@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       return Response.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
     }
     const userRole = (session.role || '').toLowerCase();
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
     if (!isSekretariat) {
       return Response.json({ success: false, message: 'Forbidden' }, { status: 403 });
     }
@@ -96,7 +96,7 @@ export async function PATCH(req: Request) {
       return Response.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
     }
     const userRole = (session.role || '').toLowerCase();
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
     if (!isSekretariat) {
       return Response.json({ success: false, message: 'Forbidden' }, { status: 403 });
     }
@@ -124,7 +124,7 @@ export async function DELETE(req: Request) {
       return Response.json({ success: false, message: 'Sesi tidak valid' }, { status: 401 });
     }
     const userRole = (session.role || '').toLowerCase();
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
     if (!isSekretariat) {
       return Response.json({ success: false, message: 'Forbidden' }, { status: 403 });
     }

@@ -37,12 +37,12 @@ function PengaturanPageContent() {
   const { user, isAdmin, refetch: refetchSession } = useAuthSession();
 
   const tabItems = [
-    { id: 'umum', label: 'Umum & Lembaga', icon: Building, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
-    { id: 'akademik', label: 'Akademik', icon: GraduationCap, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
-    { id: 'database', label: 'Basis Data', icon: Database, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+    { id: 'umum', label: 'Umum & Lembaga', icon: Building, roles: ['sekretariat'] },
+    { id: 'akademik', label: 'Akademik', icon: GraduationCap, roles: ['sekretariat'] },
+    { id: 'database', label: 'Basis Data', icon: Database, roles: ['sekretariat'] },
     { id: 'profil', label: 'Profil Saya', icon: User },
     { id: 'pengaturan', label: 'Keamanan Akun', icon: Key },
-    { id: 'notifikasi', label: 'Kirim Notifikasi', icon: Bell, roles: ['admin', 'super_admin', 'operator', 'sekretariat'] },
+    { id: 'notifikasi', label: 'Kirim Notifikasi', icon: Bell, roles: ['sekretariat'] },
   ].filter((item) => !item.roles || (isAdmin && item.roles.includes(user?.role?.toLowerCase() || '')));
 
   // Get active tab from URL or fallback

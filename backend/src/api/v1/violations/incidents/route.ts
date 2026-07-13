@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     }
 
     const userRole = (session.role || '').toLowerCase();
-    const isSekretariat = ['sekretariat', 'super_admin', 'admin', 'operator'].includes(userRole);
+    const isSekretariat = ['sekretariat'].includes(userRole);
     const isKeamanan = ['petugas_keamanan', 'security', 'keamanan'].includes(userRole);
 
     if (!isSekretariat && !isKeamanan) {

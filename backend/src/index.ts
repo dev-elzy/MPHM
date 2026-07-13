@@ -17,11 +17,9 @@ import * as classes from '@/app/api/v1/classes/route';
 import * as classesId from '@/app/api/v1/classes/[id]/route';
 import * as classesImport from '@/app/api/v1/classes/import/route';
 
-import * as students from '@/app/api/v1/students/route';
-import * as studentsId from '@/app/api/v1/students/[id]/route';
-import * as studentsImport from '@/app/api/v1/students/import/route';
-import * as studentsAchievements from '@/app/api/v1/students/achievements/route';
-import * as studentsAchievementsId from '@/app/api/v1/students/achievements/[id]/route';
+import * as dataCenterStudents from '@/app/api/v1/data-center/students/route';
+import * as dataCenterStudentsId from '@/app/api/v1/data-center/students/[id]/route';
+import * as dataCenterStudentsMutate from '@/app/api/v1/data-center/students/[id]/mutate/route';
 
 import * as subjects from '@/app/api/v1/subjects/route';
 import * as subjectsId from '@/app/api/v1/subjects/[id]/route';
@@ -157,11 +155,9 @@ app.all('/api/v1/classes', (c) => route(c, classes));
 app.all('/api/v1/classes/import', (c) => route(c, classesImport));
 app.all('/api/v1/classes/:id', (c) => routeWithParams(c, classesId, ['id']));
 
-app.all('/api/v1/students', (c) => route(c, students));
-app.all('/api/v1/students/import', (c) => route(c, studentsImport));
-app.all('/api/v1/students/achievements', (c) => route(c, studentsAchievements));
-app.all('/api/v1/students/achievements/:id', (c) => routeWithParams(c, studentsAchievementsId, ['id']));
-app.all('/api/v1/students/:id', (c) => routeWithParams(c, studentsId, ['id']));
+app.all('/api/v1/data-center/students', (c) => route(c, dataCenterStudents));
+app.all('/api/v1/data-center/students/:id', (c) => routeWithParams(c, dataCenterStudentsId, ['id']));
+app.all('/api/v1/data-center/students/:id/mutate', (c) => routeWithParams(c, dataCenterStudentsMutate, ['id']));
 
 app.all('/api/v1/subjects', (c) => route(c, subjects));
 app.all('/api/v1/subjects/import', (c) => route(c, subjectsImport));

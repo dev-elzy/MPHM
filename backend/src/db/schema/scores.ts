@@ -4,7 +4,7 @@ import { academicYears } from './academic-years';
 import { semesters } from './semesters';
 import { classes } from './classes';
 import { curriculumSubjects } from './curriculums';
-import { students } from './students';
+import { studentProfiles as students } from './person-profiles';
 
 // ============================================================
 // Score Sessions — Container for scores per subject per class

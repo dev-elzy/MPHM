@@ -17,7 +17,16 @@ export const people = sqliteTable('people', {
   birthPlace: text('birth_place'),
   birthDate: text('birth_date'), // YYYY-MM-DD
   phone: text('phone'),
-  address: text('address'),
+  address: text('address'), // Fallback / Full text
+  province: text('province'),
+  provinceId: text('province_id'),
+  regency: text('regency'),
+  regencyId: text('regency_id'),
+  district: text('district'),
+  districtId: text('district_id'),
+  village: text('village'),
+  villageId: text('village_id'),
+  addressDetail: text('address_detail'), // RT/RW, Jalan
   email: text('email'),
   photoUrl: text('photo_url'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(strftime('%s', 'now'))`),
@@ -26,6 +35,7 @@ export const people = sqliteTable('people', {
   updatedBy: text('updated_by'),
   deletedAt: integer('deleted_at', { mode: 'timestamp' }), // Soft delete abadi
   deletedBy: text('deleted_by'),
+
 }, (table) => [
   index('idx_people_full_name').on(table.fullName),
   index('idx_people_nik').on(table.nik),

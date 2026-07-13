@@ -4,7 +4,7 @@ export interface AuthUser {
   userId: string;
   email: string;
   name: string;
-  role: 'super_admin' | 'admin' | 'operator' | 'mustahiq' | 'mudir' | string;
+  role: 'sekretariat' | 'mustahiq' | 'mudir' | string;
   roleId: string | null;
   institutionId: string;
   avatarUrl?: string;
@@ -28,7 +28,7 @@ export function useAuthSession() {
   const user = query.data;
   const role = user?.role?.toLowerCase() || '';
 
-  const isSekretariat = role === 'sekretariat' || role === 'super_admin' || role === 'admin' || role === 'operator';
+  const isSekretariat = role === 'sekretariat';
   const isMustahiq = role === 'mustahiq' || role === 'teacher' || role === 'ustadz';
   const isMufattisy = role === 'mufattisy' || role === 'mufatish' || role === 'pengawas';
   const isPimpinan = role === 'pimpinan' || role === 'mundzir' || role === 'mudir';

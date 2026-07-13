@@ -154,9 +154,9 @@ export type UserStatus =
 // ============================================================
 
 export const SYSTEM_ROLES = {
-  SUPER_ADMIN: 'super_admin',
-  ADMIN: 'admin',
-  OPERATOR: 'operator',
+  
+  
+  SEKRETARIAT: 'sekretariat',
   MUSTAHIQ: 'mustahiq',
   MUDIR: 'mudir',
 } as const;

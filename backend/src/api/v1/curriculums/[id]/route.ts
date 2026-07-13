@@ -78,7 +78,7 @@ export async function PATCH(
     }
 
     // Role Guard: super_admin, admin, and operator can edit
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk mengubah kurikulum', 403);
     }
@@ -183,7 +183,7 @@ export async function DELETE(
     }
 
     // Role Guard: Only super_admin and admin can delete
-    const ALLOWED_ROLES = ['super_admin', 'admin'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk menghapus kurikulum', 403);
     }

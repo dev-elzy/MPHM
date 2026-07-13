@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import { Plus, Edit2, Trash2, Upload, Download, Filter, Phone, Trophy } from 'lucide-react';
+import { Plus, Edit2, Upload, Download, Filter, Phone, Eye, ArrowRightLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -20,7 +20,7 @@ import { Student } from '@/features/students/types';
 import { useStudents } from '@/features/students/queries/useStudents';
 import { useDeleteStudent } from '@/features/students/mutations';
 import { StudentFormDialog } from '@/features/students/components/StudentFormDialog';
-import { StudentAchievementsDialog } from '@/features/students/components/StudentAchievementsDialog';
+import { MutasiDialog } from '@/features/students/components/MutasiDialog';
 import { studentsService } from '@/features/students/services/students.service';
 import { useClasses } from '@/features/classes/queries/useClasses';
 import { parseExcelFile } from '@/lib/excel/builder';
@@ -54,7 +54,7 @@ export default function SiswiPage() {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<Student | undefined>(undefined);
   const [deleteConfirmItem, setDeleteConfirmItem] = React.useState<Student | null>(null);
-  const [achievementsStudent, setAchievementsStudent] = React.useState<Student | null>(null);
+  const [mutasiStudent, setMutasiStudent] = React.useState<Student | null>(null);
 
   // Import states
   const [isImportOpen, setIsImportOpen] = React.useState(false);
@@ -273,16 +273,17 @@ export default function SiswiPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setAchievementsStudent(row.original)}
-            title="Prestasi Santri"
-            className="h-8 w-8 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20 rounded-lg cursor-pointer"
+            onClick={() => window.location.assign(`/dashboard/sekretariat/data-center/profile/${row.original.id}`)}
+            title="Lihat Profil"
+            className="h-8 w-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20 rounded-lg cursor-pointer"
           >
-            <Trophy className="h-3.5 w-3.5" />
+            <Eye className="h-3.5 w-3.5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => handleEdit(row.original)}
+            title="Edit Data"
             className="h-8 w-8 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-50 rounded-lg cursor-pointer"
           >
             <Edit2 className="h-3.5 w-3.5" />
@@ -290,10 +291,11 @@ export default function SiswiPage() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setDeleteConfirmItem(row.original)}
-            className="h-8 w-8 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer"
+            onClick={() => setMutasiStudent(row.original)}
+            title="Mutasi Santriwati"
+            className="h-8 w-8 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/20 rounded-lg cursor-pointer"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <ArrowRightLeft className="h-3.5 w-3.5" />
           </Button>
         </div>
       ),
@@ -485,11 +487,10 @@ export default function SiswiPage() {
         onExport={handleExecuteExport}
       />
 
-      <StudentAchievementsDialog
-        open={achievementsStudent !== null}
-        onOpenChange={(open) => !open && setAchievementsStudent(null)}
-        studentId={achievementsStudent?.id || ''}
-        studentName={achievementsStudent?.name || ''}
+      <MutasiDialog
+        open={mutasiStudent !== null}
+        onOpenChange={(open: boolean) => !open && setMutasiStudent(null)}
+        student={mutasiStudent}
       />
     </div>
   );

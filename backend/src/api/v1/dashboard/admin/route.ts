@@ -1,6 +1,6 @@
 import { eq, and, count } from 'drizzle-orm';
 import { getDb } from '@/db/client';
-import { students } from '@/db/schema/students';
+import { people, studentProfiles } from '@/db/schema';
 import { classes } from '@/db/schema/classes';
 import { scoreSessions } from '@/db/schema/scores';
 import { academicYears } from '@/db/schema/academic-years';
@@ -27,8 +27,8 @@ export async function GET() {
     ] = await Promise.all([
       db
         .select({ count: count() })
-        .from(students)
-        .where(and(notDeleted(students), eq(students.status, 'active'))),
+        .from(studentProfiles)
+        .where(and(notDeleted(studentProfiles), eq(studentProfiles.status, 'active'))),
       db
         .select({ count: count() })
         .from(classes)

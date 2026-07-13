@@ -28,6 +28,8 @@ import { Student } from '../types';
 import { studentSchema, type StudentFormData } from '../schemas';
 import { useCreateStudent, useUpdateStudent } from '../mutations';
 import { useClasses } from '@/features/classes/queries/useClasses';
+import { AddressSelector } from './AddressSelector';
+import { PhotoUpload } from './PhotoUpload';
 
 interface StudentFormDialogProps {
   open: boolean;
@@ -63,12 +65,18 @@ export function StudentFormDialog({
       phone: '',
       parentName: '',
       parentPhone: '',
+      province: '',
+      city: '',
+      district: '',
+      subDistrict: '',
+      postalCode: '',
       address: '',
       entryYear: '',
       entryJenjang: '',
       status: 'active',
       notes: '',
       classId: '',
+      photo: null,
     },
   });
 
@@ -84,12 +92,18 @@ export function StudentFormDialog({
         phone: initialData?.phone || '',
         parentName: initialData?.parentName || '',
         parentPhone: initialData?.parentPhone || '',
+        province: (initialData as any)?.province || '',
+        city: (initialData as any)?.city || '',
+        district: (initialData as any)?.district || '',
+        subDistrict: (initialData as any)?.subDistrict || '',
+        postalCode: (initialData as any)?.postalCode || '',
         address: initialData?.address || '',
         entryYear: initialData?.entryYear || '',
         entryJenjang: initialData?.entryJenjang || '',
         status: initialData?.status || 'active',
         notes: initialData?.notes || '',
         classId: initialData?.classId || '',
+        photo: null,
       });
     }
   }, [open, initialData, form]);
@@ -110,6 +124,11 @@ export function StudentFormDialog({
 
   const isPending = createMutation.isPending || updateMutation.isPending;
 
+  const watchProvince = form.watch('province');
+  const watchCity = form.watch('city');
+  const watchDistrict = form.watch('district');
+  const watchSubDistrict = form.watch('subDistrict');
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[620px] max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl">
@@ -126,15 +145,34 @@ export function StudentFormDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
-            {/* Row 1: Nama & Gender */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div className="flex justify-center mb-6">
+              <FormField
+                control={form.control}
+                name="photo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <PhotoUpload 
+                        value={field.value} 
+                        onChange={field.onChange} 
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs text-center mt-2" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Row 1: Nama */}
+            <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
-                      Nama Lengkap <span className="text-red-500">*</span>
+                      Nama Lengkap Siswi <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -143,28 +181,6 @@ export function StudentFormDialog({
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-xs" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Jenis Kelamin</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="h-9.5 text-sm dark:bg-zinc-900">
-                          <SelectValue placeholder="Pilih jenis kelamin" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-white dark:bg-zinc-950">
-                        <SelectItem value="female">Perempuan (Santriwati)</SelectItem>
-                        <SelectItem value="male">Laki-laki (Santri)</SelectItem>
-                      </SelectContent>
-                    </Select>
                     <FormMessage className="text-xs" />
                   </FormItem>
                 )}
@@ -349,24 +365,63 @@ export function StudentFormDialog({
             </div>
 
             {/* Address */}
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Alamat Lengkap</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Masukkan alamat tinggal/asal siswi"
-                      className="min-h-[60px] text-sm dark:bg-zinc-900"
-                      {...field}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs" />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-3 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500">Informasi Alamat (Emsifa)</h4>
+              
+              <AddressSelector
+                provinceVal={watchProvince || ''}
+                cityVal={watchCity || ''}
+                districtVal={watchDistrict || ''}
+                subDistrictVal={watchSubDistrict || ''}
+                onProvinceChange={(id) => { form.setValue('province', id); form.setValue('city', ''); form.setValue('district', ''); form.setValue('subDistrict', ''); }}
+                onCityChange={(id) => { form.setValue('city', id); form.setValue('district', ''); form.setValue('subDistrict', ''); }}
+                onDistrictChange={(id) => { form.setValue('district', id); form.setValue('subDistrict', ''); }}
+                onSubDistrictChange={(id) => form.setValue('subDistrict', id)}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                <div className="md:col-span-3">
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Alamat Lengkap (Jalan, RT/RW, dll)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Detail alamat..."
+                            className="min-h-[40px] text-sm dark:bg-zinc-900 resize-none"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name="postalCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Kode Pos</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Kode Pos"
+                            className="h-14 text-sm dark:bg-zinc-900"
+                            {...field}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-xs" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* Notes */}
             <FormField

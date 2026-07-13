@@ -1,5 +1,5 @@
 import { getDb } from '@/db/client';
-import { students, classStudents } from '@/db/schema/students';
+import { people, studentProfiles, classStudents } from '@/db/schema';
 import { classes } from '@/db/schema/classes';
 import { users } from '@/db/schema/users';
 import { eq, and } from 'drizzle-orm';
@@ -36,14 +36,15 @@ export async function GET() {
     if (parentPhone) {
       studentRows = await db
         .select({
-          studentProfileId: students.id,
-          nisn: students.nisn,
-          entryYear: students.entryYear,
-          status: students.status,
-          fullName: students.name,
+          studentProfileId: studentProfiles.id,
+          nisn: studentProfiles.nisn,
+          entryYear: studentProfiles.entryYear,
+          status: studentProfiles.status,
+          fullName: people.fullName,
         })
-        .from(students)
-        .where(and(eq(students.parentPhone, parentPhone), eq(students.status, 'active')));
+        .from(studentProfiles)
+        .innerJoin(people, eq(people.id, studentProfiles.personId))
+        .where(and(eq(people.phone, parentPhone), eq(studentProfiles.status, 'active')));
     }
 
     // Jika tidak ditemukan siswi terhubung lewat nomor HP wali (atau wali demo tanpa HP),
@@ -51,14 +52,15 @@ export async function GET() {
     if (studentRows.length === 0) {
       studentRows = await db
         .select({
-          studentProfileId: students.id,
-          nisn: students.nisn,
-          entryYear: students.entryYear,
-          status: students.status,
-          fullName: students.name,
+          studentProfileId: studentProfiles.id,
+          nisn: studentProfiles.nisn,
+          entryYear: studentProfiles.entryYear,
+          status: studentProfiles.status,
+          fullName: people.fullName,
         })
-        .from(students)
-        .where(eq(students.id, 'demo_st_1_1')) // Khadijah Al-Adawiyah
+        .from(studentProfiles)
+        .innerJoin(people, eq(people.id, studentProfiles.personId))
+        .where(eq(studentProfiles.id, 'demo_st_1_1')) // Khadijah Al-Adawiyah
         .limit(1);
     }
 
@@ -77,7 +79,7 @@ export async function GET() {
           })
           .from(classStudents)
           .leftJoin(classes, eq(classStudents.classId, classes.id))
-          .where(eq(classStudents.studentId, student.studentProfileId))
+          .where(eq(classStudents.studentProfileId, student.studentProfileId))
           .limit(1);
 
         const activeClass = activeClassRows[0];

@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 import { academicYears } from './academic-years';
-import { students } from './students';
+import { studentProfiles as students } from './person-profiles';
 import { classes } from './classes';
 
 // ============================================================

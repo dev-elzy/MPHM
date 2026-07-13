@@ -16,7 +16,7 @@ const importUserSchema = z.object({
       name: z.string().min(3),
       email: z.string().email(),
       password: z.string().min(6),
-      role: z.enum(['admin', 'operator', 'mustahiq', 'mudir']),
+      role: z.enum(['sekretariat', 'mustahiq', 'mudir']),
       phone: z.string().optional().nullable(),
     })
   ),
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     if (!session) return apiError('Unauthorized', 401);
 
     // RBAC: Only super_admin and admin can import users
-    const rbac = checkRole(session, ['super_admin', 'admin']);
+    const rbac = checkRole(session, ['sekretariat']);
     if (!rbac.authorized) return rbac.response!;
 
     const body = await validateBody(request, importUserSchema);

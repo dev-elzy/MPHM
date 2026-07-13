@@ -199,7 +199,7 @@ function DataCenterContent() {
           filteredResults.map((person) => (
             <Card
               key={person.id}
-              onClick={() => router.push(`/dashboard/data-center/profile/${person.id}`)}
+              onClick={() => router.push(`/dashboard/sekretariat/data-center/profile/${person.id}`)}
               className="border-zinc-200/60 dark:border-zinc-800/60 bg-white/50 hover:bg-white dark:bg-zinc-950/40 dark:hover:bg-zinc-900/40 hover:shadow-md cursor-pointer transition-all duration-300 group rounded-2xl"
             >
               <CardContent className="p-5 flex items-center justify-between gap-4">

@@ -1,6 +1,6 @@
 import { isNotNull, eq, and } from 'drizzle-orm';
 import { getDb } from '@/db/client';
-import { students } from '@/db/schema/students';
+import { people, studentProfiles } from '@/db/schema';
 import { users } from '@/db/schema/users';
 import { classes } from '@/db/schema/classes';
 import { curriculums } from '@/db/schema/curriculums';
@@ -16,7 +16,7 @@ export async function GET() {
     if (!session) return apiError('Unauthorized', 401);
 
     // RBAC: Only super_admin and admin can view Recycle Bin
-    const rbac = checkRole(session, ['super_admin', 'admin']);
+    const rbac = checkRole(session, ['sekretariat']);
     if (!rbac.authorized) return rbac.response!;
 
     const db = getDb();
@@ -24,9 +24,9 @@ export async function GET() {
     // Fetch all soft-deleted records across modules
     const [deletedStudents, deletedUsers, deletedClasses, deletedCurriculums] = await Promise.all([
       db
-        .select({ id: students.id, name: students.name, deletedAt: students.deletedAt })
-        .from(students)
-        .where(and(eq(students.institutionId, session.institutionId), isNotNull(students.deletedAt))),
+        .select({ id: studentProfiles.id, name: people.fullName, deletedAt: studentProfiles.deletedAt })
+        .from(studentProfiles).innerJoin(people, eq(people.id, studentProfiles.personId))
+        .where(isNotNull(studentProfiles.deletedAt)),
       db
         .select({ id: users.id, name: users.name, deletedAt: users.deletedAt })
         .from(users)
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     if (!session) return apiError('Unauthorized', 401);
 
     // RBAC: Only super_admin and admin can restore items
-    const rbac = checkRole(session, ['super_admin', 'admin']);
+    const rbac = checkRole(session, ['sekretariat']);
     if (!rbac.authorized) return rbac.response!;
 
     const body = await request.json() as { module?: string; id?: string };
@@ -98,10 +98,10 @@ export async function POST(request: Request) {
 
     if (mod === 'students') {
       // Verify ownership
-      const check = await db.select({ id: students.id }).from(students)
-        .where(and(eq(students.id, id), eq(students.institutionId, session.institutionId))).limit(1);
+      const check = await db.select({ id: studentProfiles.id }).from(studentProfiles).innerJoin(people, eq(people.id, studentProfiles.personId))
+        .where(eq(studentProfiles.id, id)).limit(1);
       if (check.length === 0) return apiError('Item tidak ditemukan', 404);
-      await db.update(students).set({ deletedAt: null, updatedAt: now }).where(eq(students.id, id));
+      await db.update(studentProfiles).set({ deletedAt: null, updatedAt: now }).where(eq(studentProfiles.id, id));
     } else if (mod === 'users') {
       const check = await db.select({ id: users.id }).from(users)
         .where(and(eq(users.id, id), eq(users.institutionId, session.institutionId))).limit(1);

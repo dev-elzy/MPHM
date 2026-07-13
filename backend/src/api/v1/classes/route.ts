@@ -131,6 +131,8 @@ export async function GET(request: Request) {
         // Wali kelas joins
         waliKelasId: users.id,
         waliKelasName: users.name,
+        // Agregasi jumlah siswa
+        totalStudents: sql<number>`(SELECT COUNT(*) FROM class_students WHERE class_students.class_id = ${classes.id} AND class_students.status = 'active')`,
       })
       .from(classes)
       .innerJoin(academicYears, eq(classes.academicYearId, academicYears.id))
@@ -171,7 +173,7 @@ export async function POST(request: Request) {
     }
 
     // Role Guard: super_admin, admin, operator
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk membuat kelas', 403);
     }

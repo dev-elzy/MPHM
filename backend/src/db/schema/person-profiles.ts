@@ -12,7 +12,7 @@ export const studentProfiles = sqliteTable('student_profiles', {
   nisn: text('nisn').unique(),
   entryYear: text('entry_year'), // Contoh: '2023'
   currentClassId: text('current_class_id'), // Kelas saat ini jika aktif
-  status: text('status').notNull().default('active'), // 'active' | 'cuti' | 'boyong' | 'alumni'
+  status: text('status').notNull().default('active'), // 'active' | 'cuti' | 'boyong' | 'dikeluarkan' | 'khidmah' | 'alumni'
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(strftime('%s', 'now'))`),
   createdBy: text('created_by'),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`(strftime('%s', 'now'))`),

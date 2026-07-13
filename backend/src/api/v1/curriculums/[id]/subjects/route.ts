@@ -106,7 +106,7 @@ export async function POST(
     }
 
     // Role Guard: super_admin, admin, and operator
-    const ALLOWED_ROLES = ['super_admin', 'admin', 'operator'];
+    const ALLOWED_ROLES = ['sekretariat'];
     if (!ALLOWED_ROLES.includes(session.role)) {
       return apiError('Anda tidak memiliki izin untuk mengedit isi kurikulum', 403);
     }
